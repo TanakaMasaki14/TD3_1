@@ -45,14 +45,40 @@ private:
 
 	Vector3 Armspeed_ = { 0.3f,0.3f,0.0f };
 
+	//âÒì]äp
 	Vector3 radius_ = { 0.0f,0.0f, -30.0f };
+
+	bool movement_ = true;
 
 	//ÉuÉçÉbÉN
 	void Block();
 	bool block_ = false;
 
-	float blockstartmotionframe_ = 6;
-	float blockchanceframe_ = 60;
-	float blockendmotionflame_ = 6;
+	float blockstartmotionframe_ = 6.0f;
+	float blockchanceframe_ = 60.0f;
+	float blockendmotionflame_ = 6.0f;
+
+	//é„çUåÇ
+	void WeakAttack();
+	bool weakAttack_ = false;
+
+	float weakstartmotionframe_ = 3.0f;
+	float weakAttackingframe_ = 10.0f;
+	float weakendmotionframe_ = 6.0f;
+
+	float motionspeedX = 2.0f;
+	float motionspeedY = 4.0f;
+
+	float bufferpointX = 0.0f;
+	float bufferpointY = 0.0f;
+
+	//ã≠çUåÇ
+	void HeavyAttack();
+	bool heavyAttack_ = false;
+
+
+	//ÉXÉ^Éì
+	void StunAttack();
+	bool stanAttack_ = false;
 
 };

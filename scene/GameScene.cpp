@@ -35,6 +35,8 @@ void GameScene::Update() {
 	}
 	Stop();
 
+	
+
 	playerArm_->Update();
 	viewProjection_.UpdateMatrix();
 }
