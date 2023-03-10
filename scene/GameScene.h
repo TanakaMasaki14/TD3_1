@@ -16,32 +16,15 @@
 class GameScene {
 
   public: // メンバ関数
-	/// <summary>
-	/// コンストクラタ
-	/// </summary>
 	GameScene();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
 	~GameScene();
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
+	//初期化
 	void Initialize();
-
 	//終了
 	void Finalize();
-
-	/// <summary>
-	/// 毎フレーム処理
-	/// </summary>
+	//毎フレーム処理
 	void Update();
-
-	/// <summary>
-	/// 描画
-	/// </summary>
+	//描画
 	void Draw();
 
   private: // メンバ変数
@@ -50,8 +33,11 @@ class GameScene {
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
 	uint32_t textureHandle_ = 0;
-	Sprite* stage1Sprite_ = nullptr;;
+	Sprite* sprite_ = new Sprite;
+	Sprite* stage1Sprite_ = new Sprite;
 	//Model* model_ = nullptr;
+
+	int scene = 0;
 
 	/// <summary>
 	/// ゲームシーン用
