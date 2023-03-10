@@ -31,6 +31,9 @@ class GameScene {
 	/// </summary>
 	void Initialize();
 
+	//終了
+	void Finalize();
+
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -46,6 +49,9 @@ class GameScene {
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
+	uint32_t textureHandle_ = 0;
+	Sprite* stage1Sprite_ = nullptr;;
+	//Model* model_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用

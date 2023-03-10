@@ -12,6 +12,12 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
+	textureHandle_ = TextureManager::Load("sora.png");
+	stage1Sprite_ = Sprite::Create(textureHandle_, { 0, 0 });
+}
+
+void GameScene::Finalize() {
+	delete stage1Sprite_;
 }
 
 void GameScene::Update() {}
@@ -54,6 +60,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	stage1Sprite_->Draw();
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
