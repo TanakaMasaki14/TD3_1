@@ -18,7 +18,6 @@ void GameScene::Initialize() {
 
 void GameScene::Finalize() {
 	delete stage1Sprite_;
-	//delete input_;
 }
 
 void GameScene::Update() {
@@ -60,7 +59,6 @@ void GameScene::Draw() {
 	switch (scene)
 	{
 	case 0:// タイトル
-		stage1Sprite_->Draw();
 		break;
 
 	case 1:// ステージ1
