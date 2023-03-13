@@ -14,16 +14,16 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 	textureHandle_ = TextureManager::Load("sora.png");
 	stage1Sprite_ = Sprite::Create(textureHandle_, { 0, 0 });
+	//viewProjection_.eye = { 0,0,0 };
+	//skyDome_ = Model::CreateFromOBJ("sora", true);
 }
 
 void GameScene::Finalize() {
 	delete stage1Sprite_;
+	//delete skyDome_;
 }
 
 void GameScene::Update() {
-
-	////入力の更新
-	//input_->Update();
 	
 	switch (scene)
 	{
@@ -33,7 +33,6 @@ void GameScene::Update() {
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 1;
 		}
-
 		break;
 
 	case 1:// ステージ1
@@ -42,7 +41,6 @@ void GameScene::Update() {
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 0;
 		}
-
 		break;
 	}
 }
@@ -62,6 +60,7 @@ void GameScene::Draw() {
 		break;
 
 	case 1:// ステージ1
+		//skyDome_->Draw();
 		stage1Sprite_->Draw();
 		break;
 	}
@@ -71,7 +70,7 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 3Dオブジェクト描画後処理
-	//model_->PostDraw();
+	//Model::PostDraw();
 	// 深度バッファクリア
 	dxCommon_->ClearDepthBuffer();
 }

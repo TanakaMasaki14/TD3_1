@@ -35,7 +35,7 @@ class GameScene {
 	uint32_t textureHandle_ = 0;
 	Sprite* sprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
-	//Model* model_ = nullptr;
+	//Model*skyDome_ = nullptr;
 
 	int scene = 0;
 
