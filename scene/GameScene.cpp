@@ -1,6 +1,7 @@
 ﻿#include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <math.h>
 
 GameScene::GameScene() {}
 
@@ -14,7 +15,10 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 	textureHandle_ = TextureManager::Load("sora.png");
 	stage1Sprite_ = Sprite::Create(textureHandle_, { 0, 0 });
-	//viewProjection_.eye = { 0,0,0 };
+	worldTransform_.Initialize();
+	viewProjection_.eye = { 0,0,0 };
+	viewProjection_.Initialize();
+	
 	//skyDome_ = Model::CreateFromOBJ("sora", true);
 }
 
@@ -37,9 +41,35 @@ void GameScene::Update() {
 
 	case 1:// ステージ1
 		debugText_->Print("Stage1", 300, 300, 5.0f);
+		debugText_->Print("F = shake", 300, 0, 3.0f);
 		//次のシーンへ
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 0;
+		}
+		if (input_->TriggerKey(DIK_F)) {
+			shakeFlag = 1;
+		}
+		if (shakeFlag == 1) {
+			shakeTimer--;
+			if (shakeTimer > 0) {
+			}
+			if (shakeTimer == 25) {
+				stage1Sprite_ = Sprite::Create(textureHandle_, { -25, -25 });
+			}
+			if (shakeTimer == 20) {
+				stage1Sprite_ = Sprite::Create(textureHandle_, { 25, 25 });
+			}
+			if (shakeTimer == 15) {
+				stage1Sprite_ = Sprite::Create(textureHandle_, { 25, -25 });
+			}
+			if (shakeTimer == 10) {
+				stage1Sprite_ = Sprite::Create(textureHandle_, { -25,  25});
+			}
+			if (shakeTimer == 0) {
+				stage1Sprite_ = Sprite::Create(textureHandle_, { 0, 0 });
+				shakeTimer = 30;
+				shakeFlag = 0;
+			}
 		}
 		break;
 	}

@@ -10,9 +10,6 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
-/// <summary>
-/// ゲームシーン
-/// </summary>
 class GameScene {
 
   public: // メンバ関数
@@ -35,11 +32,11 @@ class GameScene {
 	uint32_t textureHandle_ = 0;
 	Sprite* sprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
-	//Model*skyDome_ = nullptr;
+	WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
+	//Model* skyDome_ = nullptr;
 
 	int scene = 0;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
+	int shakeFlag = 0;
+	int shakeTimer = 30;
 };
