@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "DebugText.h"
@@ -9,16 +8,17 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include"Skydome.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
 class GameScene {
 
-  public: // メンバ関数
-	/// <summary>
-	/// コンストクラタ
-	/// </summary>
+public: // メンバ関数
+  /// <summary>
+  /// コンストクラタ
+  /// </summary>
 	GameScene();
 
 	/// <summary>
@@ -41,7 +41,7 @@ class GameScene {
 	/// </summary>
 	void Draw();
 
-  private: // メンバ変数
+private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -50,4 +50,14 @@ class GameScene {
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+	Skydome* skydome_ = nullptr;
+	
+	Model* modelSkyDome_ = nullptr;
+
+	ViewProjection viewProjection_;
+
+	//シーン
+	int scene_ = 0;
+
 };
