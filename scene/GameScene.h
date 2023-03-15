@@ -10,6 +10,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+#include "PlayerArm.h"
+
 class GameScene {
 
   public: // メンバ関数
@@ -23,6 +25,7 @@ class GameScene {
 	void Update();
 	//描画
 	void Draw();
+	void Stop();
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -34,9 +37,16 @@ class GameScene {
 	Sprite* stage1Sprite_ = new Sprite;
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
+	PlayerArm* playerArm_ = nullptr;
+	Model* modelPlayerArm_ = nullptr;
+	uint32_t textureHandlePlayerArm_ = 0;
 	//Model* skyDome_ = nullptr;
 
 	int scene = 0;
 	int shakeFlag = 0;
 	int shakeTimer = 30;
+	bool stop = false;
+	int stopSecond_ = 1;
+	int stopTimer_ = stopSecond_ * 60;
+	Vector3 SpeedBuffer = { 0,0,0 };
 };

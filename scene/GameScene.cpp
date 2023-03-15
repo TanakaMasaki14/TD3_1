@@ -1,11 +1,15 @@
 ﻿#include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "SafeDelete.h"
 #include <math.h>
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	SafeDelete(modelPlayerArm_);
+	SafeDelete(playerArm_);
+}
 
 void GameScene::Initialize() {
 
@@ -18,6 +22,11 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	viewProjection_.eye = { 0,0,0 };
 	viewProjection_.Initialize();
+	playerArm_ = new PlayerArm();
+	modelPlayerArm_ = Model::Create();
+	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
+	playerArm_->Initialize(modelPlayerArm_, textureHandlePlayerArm_);
+
 	//skyDome_ = Model::CreateFromOBJ("sora", true);
 }
 
@@ -41,6 +50,14 @@ void GameScene::Update() {
 	case 1:// ステージ1
 		debugText_->Print("Stage1", 300, 300, 5.0f);
 		debugText_->Print("F = shake", 300, 0, 3.0f);
+		if (input_->TriggerKey(DIK_S)) {
+			SpeedBuffer = playerArm_->GetSpeed();
+			stop = true;
+		}
+		Stop();
+
+		playerArm_->Update();
+		viewProjection_.UpdateMatrix();
 		if (input_->TriggerKey(DIK_F)) {
 			shakeFlag = 1;
 		}
@@ -81,7 +98,7 @@ void GameScene::Draw() {
 	// スプライト描画前処理
 	Sprite::PreDraw(commandList);           
 	// 3Dオブジェクト描画前処理
-	//Model::PreDraw(commandList);
+	Model::PreDraw(commandList);
 
 	switch (scene)
 	{
@@ -91,6 +108,7 @@ void GameScene::Draw() {
 	case 1:// ステージ1
 		//skyDome_->Draw();
 		stage1Sprite_->Draw();
+		playerArm_->Draw(viewProjection_);
 		break;
 	}
 
@@ -99,7 +117,23 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 3Dオブジェクト描画後処理
-	//Model::PostDraw();
+	Model::PostDraw();
 	// 深度バッファクリア
 	dxCommon_->ClearDepthBuffer();
+}
+
+void GameScene::Stop() {
+
+	if (stop == true) {
+		stopTimer_ -= 1;
+		if (stopTimer_ > 0) {
+			playerArm_->SetSpeed({ 0.0f,0.0f,0.0f });
+		}
+		if (stopTimer_ < 0) {
+			playerArm_->SetSpeed(SpeedBuffer);
+			SpeedBuffer = { 0,0,0 };
+			stop = false;
+			stopTimer_ = stopSecond_ * 60;
+		}
+	}
 }

@@ -17,7 +17,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
 	GameScene* gameScene = nullptr;
-	
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -27,6 +26,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon = DirectXCommon::GetInstance();
 	dxCommon->Initialize(win);
 
+#pragma region 汎用機能初期化
 	// 入力の初期化
 	input = Input::GetInstance();
 	input->Initialize();
@@ -55,13 +55,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	primitiveDrawer = PrimitiveDrawer::GetInstance();
 	primitiveDrawer->Initialize();
+#pragma endregion
 
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
-
-	//視点の初期化
-
 
 	// メインループ
 	while (true) {
@@ -76,6 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gameScene->Update();
 		// 軸表示の更新
 		axisIndicator->Update();
+
 		// 描画開始
 		dxCommon->PreDraw();
 		// ゲームシーンの描画
@@ -96,4 +95,5 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	win->TerminateGameWindow();
 
 	return 0;
+
 }
