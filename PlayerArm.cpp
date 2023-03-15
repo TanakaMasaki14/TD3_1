@@ -51,8 +51,24 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_K)) {
+		motionspeedX = 2.0f;
+		motionspeedY = 4.0f;
+
 		weakAttack_ = true;
-		//movement_ = false;
+		movement_ = false;
+	}
+
+	if (input_->TriggerKey(DIK_L)) {
+		motionspeedX = 0.5f;
+		motionspeedY = 1.0f;
+
+		heavyAttack_ = true;
+		movement_ = false;
+	}
+
+	if (input_->TriggerKey(DIK_N)) {
+		stunAttack_ = true;
+		movement_ = false;
 	}
 
 
@@ -105,10 +121,10 @@ void PlayerArm::Motion()
 void PlayerArm::Block()
 {
 	if (block_) {
-		blockstartmotionframe_ -= 1;
+		blockStartmotionFrame_ -= 1;
 
 		///ブロック前モーション
-		if (blockstartmotionframe_ > 0) {
+		if (blockStartmotionFrame_ > 0) {
 			//移動
 			worldTransform_.translation_.x -= 3.0f;
 			worldTransform_.translation_.y += 1.0f;
@@ -119,23 +135,23 @@ void PlayerArm::Block()
 			}
 		}
 
-		if (blockstartmotionframe_ < 0) {
-			blockchanceframe_ -= 1;
+		if (blockStartmotionFrame_ < 0) {
+			blockChanceFrame_ -= 1;
 		}
 
 
 		//ブロック中モーション
-		if (blockstartmotionframe_ < 0 && blockchanceframe_ > 0) {
+		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ > 0) {
 
 		}
 
-		if (blockstartmotionframe_ < 0 && blockchanceframe_ < 0) {
-			blockendmotionflame_ -= 1;
+		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ < 0) {
+			blockEndmotionFlame_ -= 1;
 		}
 
 
 		///ブロック後モーション
-		if (blockstartmotionframe_ < 0 && blockchanceframe_ < 0 && blockendmotionflame_ > 0) {
+		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ < 0 && blockEndmotionFlame_ > 0) {
 			//移動
 			worldTransform_.translation_.x += 3.0f;
 			worldTransform_.translation_.y -= 1.0f;
@@ -146,23 +162,25 @@ void PlayerArm::Block()
 			}
 		}
 
-		if (blockstartmotionframe_ < 0 && blockchanceframe_ < 0 && blockendmotionflame_ < 0) {
-			blockstartmotionframe_ = 6.0f;
-			blockchanceframe_ = 60.0f;
-			blockendmotionflame_ = 6.0f;
+		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ < 0 && blockEndmotionFlame_ < 0) {
+			blockStartmotionFrame_ = 6;
+			blockChanceFrame_ = 60;
+			blockEndmotionFlame_ = 6;
 			block_ = false;
 			movement_ = true;
 		}
 	}
 }
-
+/// <summary>
+/// 弱攻撃
+/// </summary>
 void PlayerArm::WeakAttack()
 {
 	if (weakAttack_) {
-		weakstartmotionframe_ -= 1;
+		weakStartmotionFrame_ -= 1;
 	
 		///弱攻撃前モーション
-		if (weakstartmotionframe_ > 0) {
+		if (weakStartmotionFrame_ > 0) {
 			//移動
 			worldTransform_.translation_.y += motionspeedY; //初期値4.0f
 			worldTransform_.translation_.x -= motionspeedX; //初期値2.0f
@@ -174,30 +192,30 @@ void PlayerArm::WeakAttack()
 			}
 		}
 
-		if (weakstartmotionframe_ == 0) {
+		if (weakStartmotionFrame_ == 0) {
 			motionspeedX = 0.0f;
 			motionspeedY = -10.0f;
 			bufferpointY = worldTransform_.translation_.y;
 		}
 
-		if (weakstartmotionframe_ < 0) {
-			weakAttackingframe_ -= 1;
+		if (weakStartmotionFrame_ < 0) {
+			weakAttackingFrame_ -= 1;
 		}
 
 
 		//弱攻撃中モーション
-		if (weakstartmotionframe_ < 0 && weakAttackingframe_ > 0) {
+		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ > 0) {
 			///移動
 			//縦
 			worldTransform_.translation_.y += motionspeedY;
 			//横
-			if (weakAttackingframe_ >= 9) {
+			if (weakAttackingFrame_ >= 9) {
 				worldTransform_.translation_.x -= 9.8f;
 			}
-			if (weakAttackingframe_ == 8) {
+			if (weakAttackingFrame_ == 8) {
 
 			}
-			if (weakAttackingframe_ <= 7 && weakAttackingframe_ > 0) {
+			if (weakAttackingFrame_ <= 7 && weakAttackingFrame_ > 0) {
 				worldTransform_.translation_.x += 1.4f;
 			}
 
@@ -215,20 +233,20 @@ void PlayerArm::WeakAttack()
 		}
 
 		
-		if (weakstartmotionframe_ < 0 && weakAttackingframe_ == 0) {
+		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
 		}
 		
 
-
-		if (weakstartmotionframe_ < 0 && weakAttackingframe_ < 0) {
-			weakendmotionframe_ -= 1;
+		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0) {
+			weakEndmotionFrame_ -= 1;
 		}
 
 
+
 		///弱攻撃後モーション
-		if (weakstartmotionframe_ < 0 && weakAttackingframe_ < 0 && weakendmotionframe_ > 0) {
+		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0 && weakEndmotionFrame_ > 0) {
 			//移動
 			worldTransform_.translation_.x += 2.0f;
 			worldTransform_.translation_.y += 2.0f;
@@ -246,13 +264,13 @@ void PlayerArm::WeakAttack()
 			}
 		}
 
-		if (weakstartmotionframe_ < 0 && weakAttackingframe_ < 0 && weakendmotionframe_ < 0) {
-			weakstartmotionframe_ = 3.0f;
-			weakAttackingframe_ = 10.0f;
-			weakendmotionframe_ = 6.0f;
+		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0 && weakEndmotionFrame_ < 0) {
+			weakStartmotionFrame_ = 3;
+			weakAttackingFrame_ = 10;
+			weakEndmotionFrame_ = 6;
 
-			motionspeedX = 2.0f;
-			motionspeedY = 4.0f;
+			motionspeedX = 0.0f;
+			motionspeedY = 0.0f;
 
 			bufferpointX = 0.0f;
 			bufferpointY = 0.0f;
@@ -261,15 +279,147 @@ void PlayerArm::WeakAttack()
 		}
 	}
 }
-
+/// <summary>
+/// 強攻撃
+/// </summary>
 void PlayerArm::HeavyAttack()
 {
+	if (heavyAttack_) {
+		heavyStartmotionFrame_ -= 1;
 
+		///強攻撃前モーション
+		if (heavyStartmotionFrame_ > 0) {
+			worldTransform_.translation_.y += motionspeedY; 
+			worldTransform_.translation_.x -= motionspeedX; 
+			motionspeedX += 0.1f;
+
+			//回転
+			worldTransform_.rotation_.z -= 0.07f;
+			if (worldTransform_.rotation_.z < -1.4f) {
+				worldTransform_.rotation_.z = -1.4f;
+			}
+		}
+
+		if (heavyStartmotionFrame_ == 0) {
+			motionspeedX = 0.0f;
+			motionspeedY = -10.0f;
+			bufferpointY = worldTransform_.translation_.y;
+		}
+
+		if (heavyStartmotionFrame_ < 0) {
+			heavyAttackingFrame_ -= 1;
+		}
+
+		//強攻撃中モーション
+		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ > 0) {
+			///移動
+			//縦
+			worldTransform_.translation_.y += motionspeedY;
+			//横
+			if (heavyAttackingFrame_ >= 9) {
+				worldTransform_.translation_.x -= 9.8f;
+			}
+			if (heavyAttackingFrame_ == 8) {
+
+			}
+			if (heavyAttackingFrame_ <= 7 && heavyAttackingFrame_ > 0) {
+				worldTransform_.translation_.x += 1.4f;
+			}
+
+			//移動制限(-13)
+			if ((worldTransform_.translation_.y - bufferpointY) < -13) {
+				motionspeedY = 0;
+				worldTransform_.translation_.y = bufferpointY - 13.0f;
+			}
+
+			//回転
+			worldTransform_.rotation_.z += 0.4f;
+			if (worldTransform_.rotation_.z > 0.6f) {
+				worldTransform_.rotation_.z = 0.6f;
+			}
+		}
+
+		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ == 0) {
+			bufferpointX = worldTransform_.translation_.x;
+			bufferpointY = worldTransform_.translation_.y;
+		}
+
+
+		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ < 0) {
+			heavyEndmotionFrame_ -= 1;
+		}
+
+
+		///強攻撃後モーション
+		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ < 0 && heavyEndmotionFrame_ > 0) {
+			//移動
+			worldTransform_.translation_.x += 2.5f;
+			worldTransform_.translation_.y += 2.0f;
+			if ((worldTransform_.translation_.x - bufferpointX) > 11) {
+				worldTransform_.translation_.x = bufferpointX + 11;
+			}
+			if ((worldTransform_.translation_.y - bufferpointY) > 2) {
+				worldTransform_.translation_.y = bufferpointY + 2;
+			}
+
+			//回転
+			worldTransform_.rotation_.z -= 0.5f;
+			if (worldTransform_.rotation_.z < -0.5f) {
+				worldTransform_.rotation_.z = -0.5f;
+			}
+		}
+
+		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ < 0 && heavyEndmotionFrame_ < 0) {
+			heavyStartmotionFrame_ = 12;
+			heavyAttackingFrame_ = 10;
+			heavyEndmotionFrame_ = 6;
+
+			motionspeedX = 0.0f;
+			motionspeedY = 0.0f;
+
+			bufferpointX = 0.0f;
+			bufferpointY = 0.0f;
+			heavyAttack_ = false;
+			movement_ = true;
+		}
+	}
 }
-
+/// <summary>
+/// スタン攻撃
+/// </summary>
 void PlayerArm::StunAttack()
 {
+	if (stunAttack_) {
+		stunStartmotionFrame_ -= 1;
+		if (stunStartmotionFrame_ > 0) {
 
+		}
+
+		if (stunStartmotionFrame_ < 0) {
+			stunAttackingFrame_ -= 1;
+		}
+
+
+
+		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
+
+		}
+
+		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0) {
+			stunEndmotionFrame_ -= 1;
+		}
+
+
+
+		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ > 0) {
+
+		}
+
+		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ < 0) {
+			stunAttack_ = false;
+			movement_ = true;
+		}
+	}
 }
 
 

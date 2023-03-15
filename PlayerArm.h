@@ -54,31 +54,41 @@ private:
 	void Block();
 	bool block_ = false;
 
-	float blockstartmotionframe_ = 6.0f;
-	float blockchanceframe_ = 60.0f;
-	float blockendmotionflame_ = 6.0f;
+	int blockStartmotionFrame_ = 6;
+	int blockChanceFrame_ = 60;
+	int blockEndmotionFlame_ = 6;
+
+
+
+
+	float motionspeedX = 0.0f;
+	float motionspeedY = 0.0f;
+
+	float bufferpointX = 0.0f;
+	float bufferpointY = 0.0f;
 
 	//é„çUåÇ
 	void WeakAttack();
 	bool weakAttack_ = false;
 
-	float weakstartmotionframe_ = 3.0f;
-	float weakAttackingframe_ = 10.0f;
-	float weakendmotionframe_ = 6.0f;
-
-	float motionspeedX = 2.0f;
-	float motionspeedY = 4.0f;
-
-	float bufferpointX = 0.0f;
-	float bufferpointY = 0.0f;
+	int weakStartmotionFrame_ = 3;
+	int weakAttackingFrame_ = 10;
+	int weakEndmotionFrame_ = 6;
 
 	//ã≠çUåÇ
 	void HeavyAttack();
 	bool heavyAttack_ = false;
 
+	int heavyStartmotionFrame_ = 12;
+	int heavyAttackingFrame_ = 10;
+	int heavyEndmotionFrame_ = 6;
 
 	//ÉXÉ^Éì
 	void StunAttack();
-	bool stanAttack_ = false;
+	bool stunAttack_ = false;
+
+	int stunStartmotionFrame_ = 20;
+	int stunAttackingFrame_ = 60;
+	int stunEndmotionFrame_ = 12;
 
 };
