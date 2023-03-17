@@ -38,7 +38,7 @@ void GameScene::Update() {
 	switch (scene)
 	{
 	case 0:// タイトル
-		debugText_->Print("Title", 300, 300, 5.0f);
+		debugText_->Print("Title", 300, 300, 2.0f);
 		//バトルシーンへ
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 1;
@@ -46,8 +46,8 @@ void GameScene::Update() {
 		break;
 
 	case 1:// ステージ1
-		debugText_->Print("Stage1", 300, 300, 5.0f);
-		debugText_->Print("F = shake", 300, 0, 3.0f);
+		debugText_->Print("Stage1", 300, 300, 2.0f);
+		debugText_->Print("F = shake", 300, 0, 2.0f);
 		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
 			stop = true;
@@ -93,31 +93,37 @@ void GameScene::Draw() {
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
-	// スプライト描画前処理
-	Sprite::PreDraw(commandList);           
-	// 3Dオブジェクト描画前処理
-	//Model::PreDraw(commandList);
+	//描画前処理
+	Sprite::PreDraw(commandList);
 
 	switch (scene)
 	{
+
 	case 0:// タイトル
 		break;
-
 	case 1:// ステージ1
-		//skyDome_->Draw();
 		stage1Sprite_->Draw();
+		break;
+	}
+	// デバッグテキストの描画
+	debugText_->DrawAll(commandList);
+	// 深度バッファクリア
+	dxCommon_->ClearDepthBuffer();
+	//描画後処理
+	Sprite::PostDraw();
+
+	Model::PreDraw(commandList);
+	
+	switch (scene)
+	{
+
+	case 0:// タイトル
+		break;
+	case 1:// ステージ1
 		playerArm_->Draw(viewProjection_);
 		break;
 	}
-
-	// デバッグテキストの描画
-	debugText_->DrawAll(commandList);
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 3Dオブジェクト描画後処理
-	//Model::PostDraw();
-	// 深度バッファクリア
-	dxCommon_->ClearDepthBuffer();
+	Model::PostDraw();
 }
 
 void GameScene::Stop() {
