@@ -439,9 +439,10 @@ void PlayerArm::StunAttack()
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
 
 			//37.0f, 20.0f, 0.0f x:7 y:7
-
-
-
+			if (stunAttackingFrame_ > 55) {
+				worldTransformFace_.translation_.x -= 1.4f;
+				worldTransformFace_.translation_.y -= 1.4f;
+			}
 		}
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0) {
@@ -451,10 +452,17 @@ void PlayerArm::StunAttack()
 
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ > 0) {
-
+			if (stunEndmotionFrame_ > 7) {
+				worldTransformFace_.translation_.x += 1.4f;
+				worldTransformFace_.translation_.y += 1.4f;
+			}
 		}
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ < 0) {
+			stunStartmotionFrame_ = 20;
+			stunAttackingFrame_ = 60;
+			stunEndmotionFrame_ = 12;
+
 			stunAttack_ = false;
 			movement_ = true;
 		}
