@@ -9,6 +9,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	SafeDelete(modelPlayerArm_);
 	SafeDelete(playerArm_);
+	SafeDelete(modelPlayerFace_);
 }
 
 void GameScene::Initialize() {
@@ -22,7 +23,8 @@ void GameScene::Initialize() {
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
 	modelPlayerArm_ = Model::Create();
 	playerArm_ = new PlayerArm();
-	playerArm_->Initialize(modelPlayerArm_, textureHandlePlayerArm_);
+	modelPlayerFace_ = Model::Create();
+	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	//worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	//skyDome_ = Model::CreateFromOBJ("sora", true);

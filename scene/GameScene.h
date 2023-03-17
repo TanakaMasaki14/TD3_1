@@ -37,6 +37,7 @@ class GameScene {
 	uint32_t textureHandlePlayerArm_ = 0;
 	PlayerArm* playerArm_ = nullptr;
 	Model* modelPlayerArm_ = nullptr;
+	Model* modelPlayerFace_ = nullptr;
 	//WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 	//Model* skyDome_ = nullptr;

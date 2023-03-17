@@ -5,16 +5,20 @@
 using namespace MathUtility;
 using namespace DirectX;
 
-void PlayerArm::Initialize(Model* model, uint32_t textureHandle)
+void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 {
 	assert(model);
+	assert(modelFace);
+
 	model_ = model;
+	modelFace_ = modelFace;
 	textureHandle_ = textureHandle;
 
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	///
 	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
 	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
 	worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
@@ -25,6 +29,19 @@ void PlayerArm::Initialize(Model* model, uint32_t textureHandle)
 	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	worldTransform_.TransferMatrix();
+
+	///
+	worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
+	worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
+	worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+
+	worldTransformFace_.Initialize();
+
+	worldTransformFace_.matWorld_ = Mat_Identity();
+	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
+
+	worldTransformFace_.TransferMatrix();
+
 }
 
 void PlayerArm::Update()
@@ -51,19 +68,23 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_K)) {
-		motionspeedX = 2.0f;
-		motionspeedY = 4.0f;
+		if (weakAttack_ == false) {
+			motionspeedX = 2.0f;
+			motionspeedY = 4.0f;
 
-		weakAttack_ = true;
-		movement_ = false;
+			weakAttack_ = true;
+			movement_ = false;
+		}
 	}
 
 	if (input_->TriggerKey(DIK_L)) {
-		motionspeedX = 0.5f;
-		motionspeedY = 1.0f;
+		if (heavyAttack_ == false) {
+			motionspeedX = 0.5f;
+			motionspeedY = 1.0f;
 
-		heavyAttack_ = true;
-		movement_ = false;
+			heavyAttack_ = true;
+			movement_ = false;
+		}
 	}
 
 	if (input_->TriggerKey(DIK_N)) {
@@ -78,6 +99,8 @@ void PlayerArm::Update()
 	//debugText_->SetPos(0, 30);
 	//debugText_->Printf("translation:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 
+	//debugText_->SetPos(0, 60);
+	//debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
 
 
 	///‰ñ‚·•ûŒü–Y‚ê‚È‚¢‚æ‚¤‚É
@@ -96,12 +119,17 @@ void PlayerArm::Update()
 	worldTransform_.matWorld_ = Mat_Identity();
 	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
+
+	worldTransformFace_.matWorld_ = Mat_Identity();
+	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
+	worldTransformFace_.TransferMatrix();
 }
 
 void PlayerArm::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
+	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 }
 
 /// <summary>
@@ -402,6 +430,8 @@ void PlayerArm::StunAttack()
 
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
+
+			//37.0f, 20.0f, 0.0f x:7 y:7
 
 		}
 
