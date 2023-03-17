@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "SafeDelete.h"
-#include <math.h>
+
 
 GameScene::GameScene() {}
 
@@ -17,16 +17,14 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
-	textureHandle_ = TextureManager::Load("sora.png");
-	stage1Sprite_ = Sprite::Create(textureHandle_, { 0, 0 });
-	worldTransform_.Initialize();
-	viewProjection_.eye = { 0,0,0 };
-	viewProjection_.Initialize();
-	playerArm_ = new PlayerArm();
-	modelPlayerArm_ = Model::Create();
+	textureHandleStage1_ = TextureManager::Load("sora.png");
+	stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
+	modelPlayerArm_ = Model::Create();
+	playerArm_ = new PlayerArm();
 	playerArm_->Initialize(modelPlayerArm_, textureHandlePlayerArm_);
-
+	//worldTransform_.Initialize();
+	viewProjection_.Initialize();
 	//skyDome_ = Model::CreateFromOBJ("sora", true);
 }
 
@@ -41,7 +39,7 @@ void GameScene::Update() {
 	{
 	case 0:// タイトル
 		debugText_->Print("Title", 300, 300, 5.0f);
-		//次のシーンへ
+		//バトルシーンへ
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 1;
 		}
@@ -50,14 +48,14 @@ void GameScene::Update() {
 	case 1:// ステージ1
 		debugText_->Print("Stage1", 300, 300, 5.0f);
 		debugText_->Print("F = shake", 300, 0, 3.0f);
-		if (input_->TriggerKey(DIK_S)) {
+		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
 			stop = true;
 		}
 		Stop();
-
 		playerArm_->Update();
 		viewProjection_.UpdateMatrix();
+
 		if (input_->TriggerKey(DIK_F)) {
 			shakeFlag = 1;
 		}
@@ -66,24 +64,24 @@ void GameScene::Update() {
 			if (shakeTimer > 0) {
 			}
 			if (shakeTimer == 25) {
-				stage1Sprite_ = Sprite::Create(textureHandle_, { -25, -25 });
+				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { -25, -25 });
 			}
 			if (shakeTimer == 20) {
-				stage1Sprite_ = Sprite::Create(textureHandle_, { 25, 25 });
+				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 25, 25 });
 			}
 			if (shakeTimer == 15) {
-				stage1Sprite_ = Sprite::Create(textureHandle_, { 25, -25 });
+				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 25, -25 });
 			}
 			if (shakeTimer == 10) {
-				stage1Sprite_ = Sprite::Create(textureHandle_, { -25,  25 });
+				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { -25,  25 });
 			}
 			if (shakeTimer == 0) {
-				stage1Sprite_ = Sprite::Create(textureHandle_, { 0, 0 });
+				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
 				shakeTimer = 30;
 				shakeFlag = 0;
 			}
 		}
-		//次のシーンへ
+		//タイトルに戻る
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 0;
 		}
@@ -98,7 +96,7 @@ void GameScene::Draw() {
 	// スプライト描画前処理
 	Sprite::PreDraw(commandList);           
 	// 3Dオブジェクト描画前処理
-	Model::PreDraw(commandList);
+	//Model::PreDraw(commandList);
 
 	switch (scene)
 	{
@@ -117,7 +115,7 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 3Dオブジェクト描画後処理
-	Model::PostDraw();
+	//Model::PostDraw();
 	// 深度バッファクリア
 	dxCommon_->ClearDepthBuffer();
 }

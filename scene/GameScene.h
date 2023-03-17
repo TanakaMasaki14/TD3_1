@@ -32,14 +32,13 @@ class GameScene {
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
-	uint32_t textureHandle_ = 0;
-	Sprite* sprite_ = new Sprite;
+	uint32_t textureHandleStage1_ = 0;
 	Sprite* stage1Sprite_ = new Sprite;
-	WorldTransform worldTransform_;
-	ViewProjection viewProjection_;
+	uint32_t textureHandlePlayerArm_ = 0;
 	PlayerArm* playerArm_ = nullptr;
 	Model* modelPlayerArm_ = nullptr;
-	uint32_t textureHandlePlayerArm_ = 0;
+	//WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
 	//Model* skyDome_ = nullptr;
 
 	int scene = 0;

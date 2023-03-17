@@ -34,27 +34,27 @@ Matrix4 Mat_Rotation(Vector3& rotation)
 	Matrix4 matRotX, matRotY, matRotZ;
 
 	// Zé≤âÒì]çsóÒ
-	matRotZ.m[0][0] = cos(rotation.z);
-	matRotZ.m[0][1] = sin(rotation.z);
-	matRotZ.m[1][0] = -sin(rotation.z);
-	matRotZ.m[1][1] = cos(rotation.z);
+	matRotZ.m[0][0] = static_cast<float>(cos(rotation.z));
+	matRotZ.m[0][1] = static_cast<float>(sin(rotation.z));
+	matRotZ.m[1][0] = static_cast<float>(-sin(rotation.z));
+	matRotZ.m[1][1] = static_cast<float>(cos(rotation.z));
 	matRotZ.m[2][2] = 1;
 	matRotZ.m[3][3] = 1;
 
 	// Xé≤âÒì]çsóÒ
 	matRotX.m[0][0] = 1;
-	matRotX.m[1][1] = cos(rotation.x);
-	matRotX.m[1][2] = sin(rotation.x);
-	matRotX.m[2][1] = -sin(rotation.x);
-	matRotX.m[2][2] = cos(rotation.x);
+	matRotX.m[1][1] = static_cast<float>(cos(rotation.x));
+	matRotX.m[1][2] = static_cast<float>(sin(rotation.x));
+	matRotX.m[2][1] = static_cast<float>(-sin(rotation.x));
+	matRotX.m[2][2] = static_cast<float>(cos(rotation.x));
 	matRotX.m[3][3] = 1;
 
 	// Yé≤âÒì]çsóÒz
-	matRotY.m[0][0] = cos(rotation.y);
-	matRotY.m[0][2] = -sin(rotation.y);
+	matRotY.m[0][0] = static_cast<float>(cos(rotation.y));
+	matRotY.m[0][2] = static_cast<float>(-sin(rotation.y));
 	matRotY.m[1][1] = 1;
-	matRotY.m[2][0] = sin(rotation.y);
-	matRotY.m[2][2] = cos(rotation.y);
+	matRotY.m[2][0] = static_cast<float>(sin(rotation.y));
+	matRotY.m[2][2] = static_cast<float>(cos(rotation.y));
 	matRotY.m[3][3] = 1;
 
 	// äeé≤ÇÃâÒì]çsóÒÇçáê¨
@@ -109,7 +109,7 @@ Vector3 Mat_Velocity(Vector3 velocity, Matrix4 matWorld)
 
 float Length(Vector3 vector)
 {
-	return sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+	return static_cast<float> (sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
 }
 
 Vector3 Vectornorm(Vector3 vec1, Vector3 vec2)
