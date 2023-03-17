@@ -63,12 +63,14 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_B)) {
-		block_ = true;
-		movement_ = false;
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			block_ = true;
+			movement_ = false;
+		}
 	}
 
 	if (input_->TriggerKey(DIK_K)) {
-		if (weakAttack_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
@@ -78,7 +80,7 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_L)) {
-		if (heavyAttack_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
 
@@ -88,8 +90,10 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_N)) {
-		stunAttack_ = true;
-		movement_ = false;
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			stunAttack_ = true;
+			movement_ = false;
+		}
 	}
 
 
@@ -101,6 +105,9 @@ void PlayerArm::Update()
 
 	debugText_->SetPos(0, 60);
 	debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
+
+	debugText_->SetPos(0, 80);
+	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);
 
 
 	///‰ñ‚·•ûŒü–Y‚ê‚È‚¢‚æ‚¤‚É
@@ -432,6 +439,8 @@ void PlayerArm::StunAttack()
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
 
 			//37.0f, 20.0f, 0.0f x:7 y:7
+
+
 
 		}
 
