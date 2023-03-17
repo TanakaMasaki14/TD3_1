@@ -8,6 +8,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	SafeDelete(modelPlayerArm_);
 	SafeDelete(playerArm_);
+	SafeDelete(modelPlayerFace_);
 }
 
 void GameScene::Initialize() {
@@ -22,7 +23,10 @@ void GameScene::Initialize() {
 	modelPlayerArm_ = Model::Create();
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
 
-	playerArm_->Initialize(modelPlayerArm_,textureHandlePlayerArm_);
+	modelPlayerFace_ = Model::Create();
+
+
+	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 
 	viewProjection_.Initialize();
 }

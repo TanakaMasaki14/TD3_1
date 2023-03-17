@@ -11,7 +11,7 @@
 
 class PlayerArm {
 public:
-	void Initialize(Model* model,uint32_t textureHandle);
+	void Initialize(Model* model,Model* modelFace,uint32_t textureHandle);
 
 	void Update();
 	
@@ -31,6 +31,8 @@ public:
 
 private:
 	Model* model_ = nullptr;
+
+	Model* modelFace_ = nullptr;
 	
 	Input* input_ = nullptr;
 	
@@ -40,6 +42,8 @@ private:
 
 private:
 	WorldTransform worldTransform_;
+
+	WorldTransform worldTransformFace_;
 
 	uint32_t textureHandle_ = 0;
 

@@ -62,6 +62,7 @@ class GameScene {
 	Model* modelPlayerArm_ = nullptr;
 	uint32_t textureHandlePlayerArm_ = 0;
 
+	Model* modelPlayerFace_ = nullptr;
 
 	bool stop = false;
 	int stopSecond_ = 1;
