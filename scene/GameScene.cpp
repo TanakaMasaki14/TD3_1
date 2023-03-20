@@ -18,8 +18,12 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
-	textureHandleStage1_ = TextureManager::Load("sora.png");
+	textureHandleStage1_ = TextureManager::Load("stage1.png");
 	stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
+	textureHandleStage2_ = TextureManager::Load("stage2.png");
+	stage2Sprite_ = Sprite::Create(textureHandleStage2_, { 0, 0 });
+	textureHandleStage3_ = TextureManager::Load("stage3.png");
+	stage3Sprite_ = Sprite::Create(textureHandleStage3_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
 	modelPlayerArm_ = Model::Create();
 	playerArm_ = new PlayerArm();
@@ -32,6 +36,8 @@ void GameScene::Initialize() {
 
 void GameScene::Finalize() {
 	delete stage1Sprite_;
+	delete stage2Sprite_;
+	delete stage3Sprite_;
 	//delete skyDome_;
 }
 
@@ -39,15 +45,14 @@ void GameScene::Update() {
 	
 	switch (scene)
 	{
-	case 0:// タイトル
+	case 0://タイトル
 		debugText_->Print("Title", 300, 300, 2.0f);
-		//バトルシーンへ
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 1;
 		}
 		break;
 
-	case 1:// ステージ1
+	case 1://ステージ１
 		debugText_->Print("Stage1", 300, 300, 2.0f);
 		debugText_->Print("F = shake", 300, 0, 2.0f);
 		if (input_->TriggerKey(DIK_T)) {
@@ -83,7 +88,32 @@ void GameScene::Update() {
 				shakeFlag = 0;
 			}
 		}
-		//タイトルに戻る
+		if (input_->TriggerKey(DIK_SPACE)) {
+			scene = 2;
+		}
+		break;
+	case 2://ステージ２
+		debugText_->Print("Stage2", 300, 300, 2.0f);
+		if (input_->TriggerKey(DIK_T)) {
+			SpeedBuffer = playerArm_->GetSpeed();
+			stop = true;
+		}
+		Stop();
+		playerArm_->Update();
+		viewProjection_.UpdateMatrix();
+		if (input_->TriggerKey(DIK_SPACE)) {
+			scene = 3;
+		}
+		break;
+	case 3://ステージ３
+		debugText_->Print("Stage3", 300, 300, 2.0f);
+		if (input_->TriggerKey(DIK_T)) {
+			SpeedBuffer = playerArm_->GetSpeed();
+			stop = true;
+		}
+		Stop();
+		playerArm_->Update();
+		viewProjection_.UpdateMatrix();
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 0;
 		}
@@ -106,6 +136,12 @@ void GameScene::Draw() {
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
 		break;
+	case 2:// ステージ2
+		stage2Sprite_->Draw();
+		break;
+	case 3:// ステージ3
+		stage3Sprite_->Draw();
+		break;
 	}
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
@@ -122,6 +158,12 @@ void GameScene::Draw() {
 	case 0:// タイトル
 		break;
 	case 1:// ステージ1
+		playerArm_->Draw(viewProjection_);
+		break;
+	case 2:// ステージ2
+		playerArm_->Draw(viewProjection_);
+		break;
+	case 3:// ステージ3
 		playerArm_->Draw(viewProjection_);
 		break;
 	}
