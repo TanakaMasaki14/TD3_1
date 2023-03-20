@@ -9,8 +9,12 @@
 #include "Input.h"
 #include "Audio.h"
 
+
+
 class PlayerArm {
 public:
+	~PlayerArm();
+
 	void Initialize(Model* model,Model* modelFace,uint32_t textureHandle);
 
 	void Update();
@@ -33,6 +37,8 @@ private:
 	Model* model_ = nullptr;
 
 	Model* modelFace_ = nullptr;
+
+	Model* modelAttackRange_ = nullptr;
 	
 	Input* input_ = nullptr;
 	
@@ -45,6 +51,8 @@ private:
 
 	WorldTransform worldTransformFace_;
 
+	WorldTransform worldTransformAttackrange_;
+
 	uint32_t textureHandle_ = 0;
 
 	Vector3 Armspeed_ = { 0.3f,0.3f,0.0f };
@@ -53,6 +61,12 @@ private:
 	Vector3 radius_ = { 0.0f,0.0f, -30.0f };
 
 	bool movement_ = true;
+
+	//çUåÇîÕàÕ
+	bool attackrange_ = false;
+
+	float attackbufferX_ = 0.0f;
+	float attackbufferY_ = 0.0f;
 
 	//ÉuÉçÉbÉN
 	void Block();
