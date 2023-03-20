@@ -5,6 +5,11 @@
 using namespace MathUtility;
 using namespace DirectX;
 
+PlayerArm::~PlayerArm()
+{
+	SafeDelete(modelAttackRange_);
+}
+
 void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 {
 	assert(model);
@@ -14,6 +19,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	modelFace_ = modelFace;
 	textureHandle_ = textureHandle;
 
+	modelAttackRange_ = Model::Create();
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -44,6 +50,17 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
 
 	worldTransformFace_.TransferMatrix();
+
+	worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+	worldTransformAttackrange_.rotation_ = { 0.0f,0.0f,0.0f };
+	worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+
+	worldTransformAttackrange_.Initialize();
+
+	worldTransformAttackrange_.matWorld_ = Mat_Identity();
+	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
+
+	worldTransformAttackrange_.TransferMatrix();
 
 }
 
@@ -77,6 +94,11 @@ void PlayerArm::Update()
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
+			attackbufferX_ = worldTransform_.translation_.x;
+			attackbufferY_ = worldTransform_.translation_.y;
+
+			worldTransformAttackrange_.scale_ = { 2.0f,10.0f,1.0f };
+
 			weakAttack_ = true;
 			movement_ = false;
 			audio_->PlayWave(soundHandleWeak_, false, 3);
@@ -88,6 +110,11 @@ void PlayerArm::Update()
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
 
+			attackbufferX_ = worldTransform_.translation_.x;
+			attackbufferY_ = worldTransform_.translation_.y;
+
+			worldTransformAttackrange_.scale_ = { 3.0f,10.0f,1.0f };
+
 			heavyAttack_ = true;
 			movement_ = false;
 			audio_->PlayWave(soundHandleHeavy_, false, 3);
@@ -96,6 +123,14 @@ void PlayerArm::Update()
 
 	if (input_->TriggerKey(DIK_N)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			attackbufferX_ = 43.0f;
+			attackbufferY_ = -5.0f;
+
+			worldTransformAttackrange_.translation_.x = attackbufferX_;
+			worldTransformAttackrange_.translation_.y = attackbufferY_;
+
+			worldTransformAttackrange_.scale_ = { 2.0f,20.0f,1.0f };
+
 			stunAttack_ = true;
 			movement_ = false;
 			audio_->PlayWave(soundHandleStun_, false, 8);
@@ -136,6 +171,11 @@ void PlayerArm::Update()
 	worldTransformFace_.matWorld_ = Mat_Identity();
 	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
 	worldTransformFace_.TransferMatrix();
+
+	worldTransformAttackrange_.matWorld_ = Mat_Identity();
+	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
+	worldTransformAttackrange_.TransferMatrix();
+
 }
 
 void PlayerArm::Draw(ViewProjection& viewProjection)
@@ -143,6 +183,10 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
+
+	if (attackrange_ == true) {
+		modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
+	}
 }
 
 /// <summary>
@@ -271,12 +315,19 @@ void PlayerArm::WeakAttack()
 			if (worldTransform_.rotation_.z > 0.6f) {
 				worldTransform_.rotation_.z = 0.6f;
 			}
+			//UŒ‚”»’èˆÊ’u
+			attackrange_ = true;
+
+			worldTransformAttackrange_.translation_.x = attackbufferX_ - 30.0f;
+			worldTransformAttackrange_.translation_.y = attackbufferY_;
 		}
 
 
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
+			//UŒ‚”»’èÁ–Å
+			attackrange_ = false;
 		}
 
 
@@ -315,6 +366,8 @@ void PlayerArm::WeakAttack()
 
 			bufferpointX = 0.0f;
 			bufferpointY = 0.0f;
+			attackbufferX_ = 0.0f;
+			attackbufferY_ = 0.0f;
 			weakAttack_ = false;
 			movement_ = true;
 		}
@@ -378,11 +431,19 @@ void PlayerArm::HeavyAttack()
 			if (worldTransform_.rotation_.z > 0.6f) {
 				worldTransform_.rotation_.z = 0.6f;
 			}
+
+			//UŒ‚”»’èˆÊ’u
+			attackrange_ = true;
+
+			worldTransformAttackrange_.translation_.x = attackbufferX_ - 35.0f;
+			worldTransformAttackrange_.translation_.y = attackbufferY_;
 		}
 
 		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
+			//UŒ‚”»’èÁ–Å
+			attackrange_ = false;
 		}
 
 
@@ -420,6 +481,8 @@ void PlayerArm::HeavyAttack()
 
 			bufferpointX = 0.0f;
 			bufferpointY = 0.0f;
+			attackbufferX_ = 0.0f;
+			attackbufferY_ = 0.0f;
 			heavyAttack_ = false;
 			movement_ = true;
 		}
@@ -449,9 +512,12 @@ void PlayerArm::StunAttack()
 				worldTransformFace_.translation_.x -= 1.4f;
 				worldTransformFace_.translation_.y -= 1.4f;
 			}
+			attackrange_ = true;
+			worldTransformAttackrange_.translation_.x -= 1.3f;
 		}
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0) {
+			attackrange_ = false;
 			stunEndmotionFrame_ -= 1;
 		}
 

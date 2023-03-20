@@ -11,6 +11,8 @@
 
 class PlayerArm {
 public:
+	~PlayerArm();
+
 	void Initialize(Model* model, Model* modelFace, uint32_t textureHandle);
 
 	void Update();
@@ -34,6 +36,8 @@ private:
 
 	Model* modelFace_ = nullptr;
 
+	Model* modelAttackRange_ = nullptr;
+
 	Input* input_ = nullptr;
 
 	DebugText* debugText_ = nullptr;
@@ -44,6 +48,8 @@ private:
 	WorldTransform worldTransform_;
 
 	WorldTransform worldTransformFace_;
+
+	WorldTransform worldTransformAttackrange_;
 
 	uint32_t textureHandle_ = 0;
 	uint32_t soundHandleWeak_ = 0;
@@ -56,6 +62,11 @@ private:
 	Vector3 radius_ = { 0.0f,0.0f, -30.0f };
 
 	bool movement_ = true;
+
+	bool attackrange_ = false;
+
+	float attackbufferX_ = 0.0f;
+	float attackbufferY_ = 0.0f;
 
 	//ÉuÉçÉbÉN
 	void Block();
