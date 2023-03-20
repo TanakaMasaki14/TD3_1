@@ -52,6 +52,7 @@ class GameScene {
 	int scene = 0;
 	int shakeFlag = 0;
 	int shakeTimer = 30;
+	bool soundloop = false;
 	bool stop = false;
 	int stopSecond_ = 1;
 	int stopTimer_ = stopSecond_ * 60;

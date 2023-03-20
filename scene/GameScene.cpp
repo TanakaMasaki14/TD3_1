@@ -19,7 +19,7 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 
 	soundHandleTitle_ = audio_->LoadWave("Neownch.mp3");
-	audio_->PlayWave(soundHandleTitle_);
+	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 	textureHandleStage1_ = TextureManager::Load("stage1.png");
 	stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
 	textureHandleStage2_ = TextureManager::Load("stage2.png");
@@ -49,7 +49,6 @@ void GameScene::Update() {
 	{
 	case 0://タイトル
 		debugText_->Print("Title", 300, 300, 2.0f);
-		soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true);
 		if (input_->TriggerKey(DIK_SPACE)) {
 			audio_->StopWave(soundHandleLoop_);
 			scene = 1;
@@ -119,6 +118,7 @@ void GameScene::Update() {
 		playerArm_->Update();
 		viewProjection_.UpdateMatrix();
 		if (input_->TriggerKey(DIK_SPACE)) {
+			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 			scene = 0;
 		}
 		break;
