@@ -18,6 +18,8 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	debugText_ = DebugText::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	soundHandleIkaku_ = audio_->LoadWave("ikaku.mp3");
+
 	///
 	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
 	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
@@ -93,6 +95,7 @@ void PlayerArm::Update()
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			stunAttack_ = true;
 			movement_ = false;
+			audio_->PlayWave(soundHandleIkaku_, false, 8);
 		}
 	}
 
