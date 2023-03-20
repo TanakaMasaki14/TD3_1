@@ -46,7 +46,9 @@ private:
 	WorldTransform worldTransformFace_;
 
 	uint32_t textureHandle_ = 0;
-	uint32_t soundHandleIkaku_ = 0;
+	uint32_t soundHandleWeak_ = 0;
+	uint32_t soundHandleHeavy_ = 0;
+	uint32_t soundHandleStun_ = 0;
 
 	Vector3 Armspeed_ = { 0.3f,0.3f,0.0f };
 
