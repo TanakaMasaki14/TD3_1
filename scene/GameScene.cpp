@@ -27,19 +27,21 @@ void GameScene::Initialize() {
 	textureHandleStage3_ = TextureManager::Load("stage3.png");
 	stage3Sprite_ = Sprite::Create(textureHandleStage3_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
+	textureHandleNya_ = TextureManager::Load("nya.png");
+	nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
 	modelPlayerArm_ = Model::Create();
 	playerArm_ = new PlayerArm();
 	modelPlayerFace_ = Model::Create();
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	//worldTransform_.Initialize();
 	viewProjection_.Initialize();
-	//skyDome_ = Model::CreateFromOBJ("sora", true);
 }
 
 void GameScene::Finalize() {
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
+	delete nyaSprite_;
 	//delete skyDome_;
 }
 
@@ -66,30 +68,40 @@ void GameScene::Update() {
 		playerArm_->Update();
 		viewProjection_.UpdateMatrix();
 
-		if (input_->TriggerKey(DIK_F)) {
-			shakeFlag = 1;
+		/*if (input_->TriggerKey(DIK_F)) {
+			shakeFlag_ = 1;
 		}
-		if (shakeFlag == 1) {
-			shakeTimer--;
-			if (shakeTimer > 0) {
+		if (shakeFlag_ == 1) {
+			shakeTimer_--;
+			if (shakeTimer_ > 0) {
 			}
-			if (shakeTimer == 25) {
+			if (shakeTimer_ == 25) {
 				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { -25, -25 });
 			}
-			if (shakeTimer == 20) {
+			if (shakeTimer_ == 20) {
 				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 25, 25 });
 			}
-			if (shakeTimer == 15) {
+			if (shakeTimer_ == 15) {
 				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 25, -25 });
 			}
-			if (shakeTimer == 10) {
+			if (shakeTimer_ == 10) {
 				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { -25,  25 });
 			}
-			if (shakeTimer == 0) {
+			if (shakeTimer_ == 0) {
 				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
-				shakeTimer = 30;
-				shakeFlag = 0;
+				shakeTimer_ = 30;
+				shakeFlag_ = 0;
 			}
+		}*/
+		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			fontFlag_ = 1;
+		}
+		if (fontFlag_ == 1) {
+			fontTimer_++;
+		}
+		if (fontTimer_ == 13) {
+			fontFlag_ = 0;
+			fontTimer_ = 0;
 		}
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 2;
@@ -104,6 +116,16 @@ void GameScene::Update() {
 		Stop();
 		playerArm_->Update();
 		viewProjection_.UpdateMatrix();
+		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			fontFlag_ = 1;
+		}
+		if (fontFlag_ == 1) {
+			fontTimer_++;
+		}
+		if (fontTimer_ == 13) {
+			fontFlag_ = 0;
+			fontTimer_ = 0;
+		}
 		if (input_->TriggerKey(DIK_SPACE)) {
 			scene = 3;
 		}
@@ -117,6 +139,19 @@ void GameScene::Update() {
 		Stop();
 		playerArm_->Update();
 		viewProjection_.UpdateMatrix();
+		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			fontFlag_ = 1;
+		}
+		if (fontFlag_ == 1) {
+			fontTimer_++;
+		}
+		if (fontTimer_ == 13) {
+			fontFlag_ = 0;
+			fontTimer_ = 0;
+		}
+		if (input_->TriggerKey(DIK_SPACE)) {
+			scene = 2;
+		}
 		if (input_->TriggerKey(DIK_SPACE)) {
 			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 			scene = 0;
@@ -139,12 +174,21 @@ void GameScene::Draw() {
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
+		if (fontTimer_ > 0) {
+			nyaSprite_->Draw();
+		}
 		break;
 	case 2:// ステージ2
 		stage2Sprite_->Draw();
+		if (fontTimer_ > 0) {
+			nyaSprite_->Draw();
+		}
 		break;
 	case 3:// ステージ3
 		stage3Sprite_->Draw();
+		if (fontTimer_ > 0) {
+			nyaSprite_->Draw();
+		}
 		break;
 	}
 	// デバッグテキストの描画
@@ -158,7 +202,6 @@ void GameScene::Draw() {
 	
 	switch (scene)
 	{
-
 	case 0:// タイトル
 		break;
 	case 1:// ステージ1

@@ -38,20 +38,24 @@ class GameScene {
 	uint32_t textureHandleStage1_ = 0;
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
+	uint32_t textureHandleNya_ = 0;
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;
+	Sprite* nyaSprite_ = new Sprite;
+
 	uint32_t textureHandlePlayerArm_ = 0;
 	PlayerArm* playerArm_ = nullptr;
 	Model* modelPlayerArm_ = nullptr;
 	Model* modelPlayerFace_ = nullptr;
 	//WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
-	//Model* skyDome_ = nullptr;
 
 	int scene = 0;
-	int shakeFlag = 0;
-	int shakeTimer = 30;
+	int shakeFlag_ = 0;
+	int shakeTimer_ = 30;
+	int fontFlag_ = 0;
+	int fontTimer_ = 0;
 	bool soundloop = false;
 	bool stop = false;
 	int stopSecond_ = 1;

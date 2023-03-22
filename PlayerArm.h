@@ -77,8 +77,6 @@ private:
 	int blockEndmotionFlame_ = 6;
 
 
-
-
 	float motionspeedX = 0.0f;
 	float motionspeedY = 0.0f;
 
@@ -108,5 +106,4 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
-
 };
