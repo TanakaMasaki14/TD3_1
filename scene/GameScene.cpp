@@ -31,6 +31,13 @@ void GameScene::Initialize() {
 	nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
 	soundHandleTitle_ = audio_->LoadWave("Neownch.mp3");
 	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
+	soundHandleNext_ = audio_->LoadWave("next.mp3");
+
+	//k.o
+	textureHandleKo_ = TextureManager::Load("ko.png");
+	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
+	soundHandleKo_ = audio_->LoadWave("ko.mp3");
+
 	modelPlayerArm_ = Model::Create();
 	playerArm_ = new PlayerArm();
 	modelPlayerFace_ = Model::Create();
@@ -40,6 +47,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Finalize() {
+	delete titleSprite_;
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
@@ -53,13 +61,13 @@ void GameScene::Update() {
 	{
 	case 0://タイトル
 		if (input_->TriggerKey(DIK_SPACE)) {
+			audio_->PlayWave(soundHandleNext_, false, 3);
 			audio_->StopWave(soundHandleLoop_);
 			scene = 1;
 		}
 		break;
 
 	case 1://ステージ１
-		debugText_->Print("F = shake", 300, 0, 2.0f);
 		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
 			stop = true;
@@ -68,31 +76,6 @@ void GameScene::Update() {
 		playerArm_->Update();
 		viewProjection_.UpdateMatrix();
 
-		/*if (input_->TriggerKey(DIK_F)) {
-			shakeFlag_ = 1;
-		}
-		if (shakeFlag_ == 1) {
-			shakeTimer_--;
-			if (shakeTimer_ > 0) {
-			}
-			if (shakeTimer_ == 25) {
-				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { -25, -25 });
-			}
-			if (shakeTimer_ == 20) {
-				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 25, 25 });
-			}
-			if (shakeTimer_ == 15) {
-				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 25, -25 });
-			}
-			if (shakeTimer_ == 10) {
-				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { -25,  25 });
-			}
-			if (shakeTimer_ == 0) {
-				stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
-				shakeTimer_ = 30;
-				shakeFlag_ = 0;
-			}
-		}*/
 		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
 			fontFlag_ = 1;
 		}
@@ -103,7 +86,16 @@ void GameScene::Update() {
 			fontFlag_ = 0;
 			fontTimer_ = 0;
 		}
+		//k.o
+		if (input_->TriggerKey(DIK_G)) {
+			koFlag_ = 1;
+			if (koFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
+		}
+
 		if (input_->TriggerKey(DIK_SPACE)) {
+			koFlag_ = 0;
 			scene = 2;
 		}
 		break;
@@ -126,6 +118,7 @@ void GameScene::Update() {
 			fontTimer_ = 0;
 		}
 		if (input_->TriggerKey(DIK_SPACE)) {
+			//audio_->PlayWave(soundHandleNext_, false, 3);
 			scene = 3;
 		}
 		break;
@@ -146,9 +139,6 @@ void GameScene::Update() {
 		if (fontTimer_ == 13) {
 			fontFlag_ = 0;
 			fontTimer_ = 0;
-		}
-		if (input_->TriggerKey(DIK_SPACE)) {
-			scene = 2;
 		}
 		if (input_->TriggerKey(DIK_SPACE)) {
 			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
@@ -175,6 +165,10 @@ void GameScene::Draw() {
 		stage1Sprite_->Draw();
 		if (fontTimer_ > 0) {
 			nyaSprite_->Draw();
+		}
+		//k.o
+		if (koFlag_ == 1) {
+			koSprite_->Draw();
 		}
 		break;
 	case 2:// ステージ2
