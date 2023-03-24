@@ -6,13 +6,19 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	SafeDelete(modelPlayerArm_);
+
+	SafeDelete(enemy_);
 	SafeDelete(playerArm_);
+
 	SafeDelete(modelPlayerFace_);
+	SafeDelete(modelPlayerArm_);
+	SafeDelete(modelEnemy_);
+	SafeDelete(modelEnemyFace_);
 }
 
 void GameScene::Initialize() {
 	playerArm_ = new PlayerArm();
+	enemy_ = new Enemy();
 
 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -25,8 +31,14 @@ void GameScene::Initialize() {
 
 	modelPlayerFace_ = Model::Create();
 
+	modelEnemy_ = Model::Create();
+
+	modelEnemyFace_ = Model::Create();
+
 
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
+
+	enemy_->Initialize(modelEnemy_,modelEnemyFace_,textureHandlePlayerArm_);
 
 	viewProjection_.Initialize();
 }
@@ -42,6 +54,7 @@ void GameScene::Update() {
 	
 
 	playerArm_->Update();
+	enemy_->Update();
 	viewProjection_.UpdateMatrix();
 }
 
@@ -73,6 +86,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	playerArm_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

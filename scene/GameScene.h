@@ -11,6 +11,7 @@
 #include "WorldTransform.h"
 
 #include "PlayerArm.h"
+#include "Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -52,6 +53,7 @@ class GameScene {
 	DebugText* debugText_ = nullptr;
 
 	PlayerArm* playerArm_ = nullptr;
+	Enemy* enemy_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
@@ -63,6 +65,10 @@ class GameScene {
 	uint32_t textureHandlePlayerArm_ = 0;
 
 	Model* modelPlayerFace_ = nullptr;
+
+	Model* modelEnemy_ = nullptr;
+
+	Model* modelEnemyFace_ = nullptr;
 
 	bool stop = false;
 	int stopSecond_ = 1;

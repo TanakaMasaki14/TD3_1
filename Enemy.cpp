@@ -1,16 +1,19 @@
-#include "PlayerArm.h"
+#include "Enemy.h"
+
 #include <cassert>
 
 #include "Procession.h"
 using namespace MathUtility;
 using namespace DirectX;
 
-PlayerArm::~PlayerArm()
+
+Enemy::~Enemy()
 {
 	SafeDelete(modelAttackRange_);
+	
 }
 
-void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
+void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 {
 	assert(model);
 	assert(modelFace);
@@ -27,8 +30,8 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///
 	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
-	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
-	worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
+	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(30.0f) };
+	worldTransform_.translation_ = { -25.0f,-5.0f,0.0f };
 
 	worldTransform_.Initialize();
 
@@ -40,7 +43,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	///
 	worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
 	worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
-	worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+	worldTransformFace_.translation_ = { -44.0f,27.0f,0.0f };
 
 	worldTransformFace_.Initialize();
 
@@ -60,35 +63,17 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
 
 	worldTransformAttackrange_.TransferMatrix();
-
 }
 
-void PlayerArm::Update()
+void Enemy::Update()
 {
-	if (movement_ == true) {
-		///移動
-		if (input_->PushKey(DIK_W)) {
-			worldTransform_.translation_.y += Armspeed_.y;
-		}
-		if (input_->PushKey(DIK_S)) {
-			worldTransform_.translation_.y -= Armspeed_.y;
-		}
-		if (input_->PushKey(DIK_A)) {
-			worldTransform_.translation_.x -= Armspeed_.x;
-		}
-		if (input_->PushKey(DIK_D)) {
-			worldTransform_.translation_.x += Armspeed_.x;
-		}
-	}
-
-	if (input_->TriggerKey(DIK_B)) {
+	if (input_->TriggerKey(DIK_U)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			block_ = true;
-			movement_ = false;
 		}
 	}
 
-	if (input_->TriggerKey(DIK_K)) {
+	if (input_->TriggerKey(DIK_I)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
@@ -100,11 +85,10 @@ void PlayerArm::Update()
 			worldTransformAttackrange_.scale_ = { 2.0f,10.0f,1.0f };
 
 			weakAttack_ = true;
-			movement_ = false;
 		}
 	}
 
-	if (input_->TriggerKey(DIK_L)) {
+	if (input_->TriggerKey(DIK_O)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
@@ -115,13 +99,13 @@ void PlayerArm::Update()
 			worldTransformAttackrange_.scale_ = { 3.0f,10.0f,1.0f };
 
 			heavyAttack_ = true;
-			movement_ = false;
+			
 		}
 	}
 
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->TriggerKey(DIK_P)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
-			attackbufferX_ = 43.0f;
+			attackbufferX_ = -43.0f;
 			attackbufferY_ = -5.0f;
 
 			worldTransformAttackrange_.translation_.x = attackbufferX_;
@@ -130,34 +114,9 @@ void PlayerArm::Update()
 			worldTransformAttackrange_.scale_ = { 2.0f,20.0f,1.0f };
 
 			stunAttack_ = true;
-			movement_ = false;
 		}
 	}
 
-
-	debugText_->SetPos(0, 0);
-	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y,  worldTransform_.rotation_.z);
-
-	debugText_->SetPos(0, 30);
-	debugText_->Printf("translation:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-
-	debugText_->SetPos(0, 60);
-	debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
-
-	debugText_->SetPos(0, 80);
-	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);
-
-
-	///回す方向忘れないように
-	if (input_->PushKey(DIK_LEFTARROW)) {
-		worldTransform_.rotation_.z += 0.1f;
-	}
-
-	if (input_->PushKey(DIK_RIGHTARROW)) {
-		worldTransform_.rotation_.z -= 0.1f;
-	}
-
-	///モーションまとめ
 	Motion();
 
 	///更新
@@ -175,10 +134,9 @@ void PlayerArm::Update()
 	worldTransformAttackrange_.matWorld_ = Mat_Identity();
 	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
 	worldTransformAttackrange_.TransferMatrix();
-
 }
 
-void PlayerArm::Draw(ViewProjection& viewProjection)
+void Enemy::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
@@ -189,10 +147,7 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 	}
 }
 
-/// <summary>
-/// モーションぶち込み場
-/// </summary>
-void PlayerArm::Motion()
+void Enemy::Motion()
 {
 	Block();
 	WeakAttack();
@@ -200,10 +155,7 @@ void PlayerArm::Motion()
 	StunAttack();
 }
 
-/// <summary>
-/// ブロックモーション
-/// </summary>
-void PlayerArm::Block()
+void Enemy::Block()
 {
 	if (block_) {
 		blockStartmotionFrame_ -= 1;
@@ -211,12 +163,12 @@ void PlayerArm::Block()
 		///ブロック前モーション
 		if (blockStartmotionFrame_ > 0) {
 			//移動
-			worldTransform_.translation_.x -= 3.0f;
+			worldTransform_.translation_.x += 3.0f;
 			worldTransform_.translation_.y += 1.0f;
 			//回転
-			worldTransform_.rotation_.z -= 0.3f;
-			if (worldTransform_.rotation_.z < -1.55f) {
-				worldTransform_.rotation_.z = -1.55f;
+			worldTransform_.rotation_.z += 0.3f;
+			if (worldTransform_.rotation_.z > 1.55f) {
+				worldTransform_.rotation_.z = 1.55f;
 			}
 		}
 
@@ -238,12 +190,12 @@ void PlayerArm::Block()
 		///ブロック後モーション
 		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ < 0 && blockEndmotionFlame_ > 0) {
 			//移動
-			worldTransform_.translation_.x += 3.0f;
+			worldTransform_.translation_.x -= 3.0f;
 			worldTransform_.translation_.y -= 1.0f;
 			//回転
-			worldTransform_.rotation_.z += 0.3f;
-			if (worldTransform_.rotation_.z > -0.5f) {
-				worldTransform_.rotation_.z = -0.5f;
+			worldTransform_.rotation_.z -= 0.3f;
+			if (worldTransform_.rotation_.z < 0.5f) {
+				worldTransform_.rotation_.z = 0.5f;
 			}
 		}
 
@@ -252,28 +204,25 @@ void PlayerArm::Block()
 			blockChanceFrame_ = 60;
 			blockEndmotionFlame_ = 6;
 			block_ = false;
-			movement_ = true;
 		}
 	}
 }
-/// <summary>
-/// 弱攻撃
-/// </summary>
-void PlayerArm::WeakAttack()
+
+void Enemy::WeakAttack()
 {
 	if (weakAttack_) {
 		weakStartmotionFrame_ -= 1;
-	
+
 		///弱攻撃前モーション
 		if (weakStartmotionFrame_ > 0) {
 			//移動
 			worldTransform_.translation_.y += motionspeedY; //初期値4.0f
-			worldTransform_.translation_.x -= motionspeedX; //初期値2.0f
+			worldTransform_.translation_.x += motionspeedX; //初期値2.0f
 			motionspeedX += 1.0f;
 			//回転
-			worldTransform_.rotation_.z -= 0.3f;
-			if (worldTransform_.rotation_.z < -1.4f) {
-				worldTransform_.rotation_.z = -1.4f;
+			worldTransform_.rotation_.z += 0.3f;
+			if (worldTransform_.rotation_.z > 1.4f) {
+				worldTransform_.rotation_.z = 1.4f;
 			}
 		}
 
@@ -288,20 +237,20 @@ void PlayerArm::WeakAttack()
 		}
 
 
-		//弱攻撃中モーション
+		///弱攻撃中モーション
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ > 0) {
 			///移動
 			//縦
 			worldTransform_.translation_.y += motionspeedY;
 			//横
 			if (weakAttackingFrame_ >= 9) {
-				worldTransform_.translation_.x -= 9.8f;
+				worldTransform_.translation_.x += 9.8f;
 			}
 			if (weakAttackingFrame_ == 8) {
 
 			}
 			if (weakAttackingFrame_ <= 7 && weakAttackingFrame_ > 0) {
-				worldTransform_.translation_.x += 1.4f;
+				worldTransform_.translation_.x -= 1.4f;
 			}
 
 			//移動制限(-13)
@@ -309,21 +258,21 @@ void PlayerArm::WeakAttack()
 				motionspeedY = 0;
 				worldTransform_.translation_.y = bufferpointY - 13.0f;
 			}
-			
+
 			//回転
-			worldTransform_.rotation_.z += 0.4f;
-			if (worldTransform_.rotation_.z > 0.6f) {
-				worldTransform_.rotation_.z = 0.6f;
+			worldTransform_.rotation_.z -= 0.4f;
+			if (worldTransform_.rotation_.z < -0.6f) {
+				worldTransform_.rotation_.z = -0.6f;
 			}
 
 			//攻撃判定位置
 			attackrange_ = true;
 
-			worldTransformAttackrange_.translation_.x = attackbufferX_ - 30.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ + 30.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 		}
 
-		
+
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
@@ -331,7 +280,7 @@ void PlayerArm::WeakAttack()
 			//攻撃判定消滅
 			attackrange_ = false;
 		}
-		
+
 
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0) {
 			weakEndmotionFrame_ -= 1;
@@ -342,19 +291,19 @@ void PlayerArm::WeakAttack()
 		///弱攻撃後モーション
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0 && weakEndmotionFrame_ > 0) {
 			//移動
-			worldTransform_.translation_.x += 2.0f;
+			worldTransform_.translation_.x -= 2.0f;
 			worldTransform_.translation_.y += 2.0f;
-			if ((worldTransform_.translation_.x - bufferpointX) > 5) {
-				worldTransform_.translation_.x = bufferpointX + 5;
+			if ((worldTransform_.translation_.x - bufferpointX) < 5) {
+				worldTransform_.translation_.x = bufferpointX - 5;
 			}
 			if ((worldTransform_.translation_.y - bufferpointY) > 5) {
 				worldTransform_.translation_.y = bufferpointY + 5;
 			}
 
 			//回転
-			worldTransform_.rotation_.z -= 0.5f;
-			if (worldTransform_.rotation_.z < -0.5f) {
-				worldTransform_.rotation_.z = -0.5f;
+			worldTransform_.rotation_.z += 0.5f;
+			if (worldTransform_.rotation_.z > 0.5f) {
+				worldTransform_.rotation_.z = 0.5f;
 			}
 		}
 
@@ -371,28 +320,25 @@ void PlayerArm::WeakAttack()
 			attackbufferX_ = 0.0f;
 			attackbufferY_ = 0.0f;
 			weakAttack_ = false;
-			movement_ = true;
 		}
 	}
 }
-/// <summary>
-/// 強攻撃
-/// </summary>
-void PlayerArm::HeavyAttack()
+
+void Enemy::HeavyAttack()
 {
 	if (heavyAttack_) {
 		heavyStartmotionFrame_ -= 1;
 
 		///強攻撃前モーション
 		if (heavyStartmotionFrame_ > 0) {
-			worldTransform_.translation_.y += motionspeedY; 
-			worldTransform_.translation_.x -= motionspeedX; 
+			worldTransform_.translation_.y += motionspeedY;
+			worldTransform_.translation_.x += motionspeedX;
 			motionspeedX += 0.1f;
 
 			//回転
-			worldTransform_.rotation_.z -= 0.07f;
-			if (worldTransform_.rotation_.z < -1.4f) {
-				worldTransform_.rotation_.z = -1.4f;
+			worldTransform_.rotation_.z += 0.07f;
+			if (worldTransform_.rotation_.z > 1.4f) {
+				worldTransform_.rotation_.z = 1.4f;
 			}
 		}
 
@@ -413,13 +359,13 @@ void PlayerArm::HeavyAttack()
 			worldTransform_.translation_.y += motionspeedY;
 			//横
 			if (heavyAttackingFrame_ >= 9) {
-				worldTransform_.translation_.x -= 9.8f;
+				worldTransform_.translation_.x += 9.8f;
 			}
 			if (heavyAttackingFrame_ == 8) {
 
 			}
 			if (heavyAttackingFrame_ <= 7 && heavyAttackingFrame_ > 0) {
-				worldTransform_.translation_.x += 1.4f;
+				worldTransform_.translation_.x -= 1.4f;
 			}
 
 			//移動制限(-13)
@@ -429,15 +375,15 @@ void PlayerArm::HeavyAttack()
 			}
 
 			//回転
-			worldTransform_.rotation_.z += 0.4f;
-			if (worldTransform_.rotation_.z > 0.6f) {
-				worldTransform_.rotation_.z = 0.6f;
+			worldTransform_.rotation_.z -= 0.4f;
+			if (worldTransform_.rotation_.z < -0.6f) {
+				worldTransform_.rotation_.z = -0.6f;
 			}
 
 			//攻撃判定位置
 			attackrange_ = true;
 
-			worldTransformAttackrange_.translation_.x = attackbufferX_ - 35.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ + 35.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 		}
 
@@ -458,19 +404,19 @@ void PlayerArm::HeavyAttack()
 		///強攻撃後モーション
 		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ < 0 && heavyEndmotionFrame_ > 0) {
 			//移動
-			worldTransform_.translation_.x += 2.5f;
+			worldTransform_.translation_.x -= 2.5f;
 			worldTransform_.translation_.y += 2.0f;
-			if ((worldTransform_.translation_.x - bufferpointX) > 11) {
-				worldTransform_.translation_.x = bufferpointX + 11;
+			if ((worldTransform_.translation_.x - bufferpointX) < 11) {
+				worldTransform_.translation_.x = bufferpointX - 11;
 			}
 			if ((worldTransform_.translation_.y - bufferpointY) > 2) {
 				worldTransform_.translation_.y = bufferpointY + 2;
 			}
 
 			//回転
-			worldTransform_.rotation_.z -= 0.5f;
-			if (worldTransform_.rotation_.z < -0.5f) {
-				worldTransform_.rotation_.z = -0.5f;
+			worldTransform_.rotation_.z += 0.5f;
+			if (worldTransform_.rotation_.z > 0.5f) {
+				worldTransform_.rotation_.z = 0.5f;
 			}
 		}
 
@@ -487,14 +433,12 @@ void PlayerArm::HeavyAttack()
 			attackbufferX_ = 0.0f;
 			attackbufferY_ = 0.0f;
 			heavyAttack_ = false;
-			movement_ = true;
 		}
+		
 	}
 }
-/// <summary>
-/// スタン攻撃
-/// </summary>
-void PlayerArm::StunAttack()
+
+void Enemy::StunAttack()
 {
 	if (stunAttack_) {
 		stunStartmotionFrame_ -= 1;
@@ -513,12 +457,12 @@ void PlayerArm::StunAttack()
 
 			//37.0f, 20.0f, 0.0f x:7 y:7
 			if (stunAttackingFrame_ > 55) {
-				worldTransformFace_.translation_.x -= 1.4f;
+				worldTransformFace_.translation_.x += 1.4f;
 				worldTransformFace_.translation_.y -= 1.4f;
 			}
 
 			attackrange_ = true;
-			worldTransformAttackrange_.translation_.x -= 1.3f;
+			worldTransformAttackrange_.translation_.x += 1.3f;
 		}
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0) {
@@ -531,7 +475,7 @@ void PlayerArm::StunAttack()
 		//攻撃後モーション
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ > 0) {
 			if (stunEndmotionFrame_ > 7) {
-				worldTransformFace_.translation_.x += 1.4f;
+				worldTransformFace_.translation_.x -= 1.4f;
 				worldTransformFace_.translation_.y += 1.4f;
 			}
 		}
@@ -542,41 +486,9 @@ void PlayerArm::StunAttack()
 			stunEndmotionFrame_ = 12;
 
 			stunAttack_ = false;
-			movement_ = true;
+			
 		}
 	}
 }
-
-
-
-
-///アームのセッター,ゲッター
-Vector3 PlayerArm::GetWorldTransform()
-{
-	Vector3 worldPos;
-
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
-
-	return worldPos;
-}
-
-void PlayerArm::SetWorldTransform(Vector3 WorldTransform)
-{
-	worldTransform_.translation_.x = WorldTransform.x;
-	worldTransform_.translation_.y = WorldTransform.y;
-	worldTransform_.translation_.z = WorldTransform.z;
-}
-
-///スピードのセッター
-void PlayerArm::SetSpeed(Vector3 Speed)
-{
-	Armspeed_.x = Speed.x;
-	Armspeed_.y = Speed.y;
-	Armspeed_.z = Speed.z;
-}
-
-
 
 
