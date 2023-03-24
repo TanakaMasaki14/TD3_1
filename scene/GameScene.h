@@ -33,12 +33,14 @@ class GameScene {
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
 
-	uint32_t soundHandleTitle_ = 0;
-	uint32_t soundHandleLoop_ = 0;
+	uint32_t textureHandleTitle_ = 0;
 	uint32_t textureHandleStage1_ = 0;
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
 	uint32_t textureHandleNya_ = 0;
+	uint32_t soundHandleTitle_ = 0;
+	uint32_t soundHandleLoop_ = 0;
+	Sprite* titleSprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;

@@ -18,8 +18,8 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
-	soundHandleTitle_ = audio_->LoadWave("Neownch.mp3");
-	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
+	textureHandleTitle_ = TextureManager::Load("neownch.png");
+	titleSprite_ = Sprite::Create(textureHandleTitle_, { 0, 0 });
 	textureHandleStage1_ = TextureManager::Load("stage1.png");
 	stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
 	textureHandleStage2_ = TextureManager::Load("stage2.png");
@@ -29,6 +29,8 @@ void GameScene::Initialize() {
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
 	textureHandleNya_ = TextureManager::Load("nya.png");
 	nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
+	soundHandleTitle_ = audio_->LoadWave("Neownch.mp3");
+	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 	modelPlayerArm_ = Model::Create();
 	playerArm_ = new PlayerArm();
 	modelPlayerFace_ = Model::Create();
@@ -50,7 +52,6 @@ void GameScene::Update() {
 	switch (scene)
 	{
 	case 0://タイトル
-		debugText_->Print("Title", 300, 300, 2.0f);
 		if (input_->TriggerKey(DIK_SPACE)) {
 			audio_->StopWave(soundHandleLoop_);
 			scene = 1;
@@ -58,7 +59,6 @@ void GameScene::Update() {
 		break;
 
 	case 1://ステージ１
-		debugText_->Print("Stage1", 300, 300, 2.0f);
 		debugText_->Print("F = shake", 300, 0, 2.0f);
 		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
@@ -108,7 +108,6 @@ void GameScene::Update() {
 		}
 		break;
 	case 2://ステージ２
-		debugText_->Print("Stage2", 300, 300, 2.0f);
 		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
 			stop = true;
@@ -131,7 +130,6 @@ void GameScene::Update() {
 		}
 		break;
 	case 3://ステージ３
-		debugText_->Print("Stage3", 300, 300, 2.0f);
 		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
 			stop = true;
@@ -171,6 +169,7 @@ void GameScene::Draw() {
 	{
 
 	case 0:// タイトル
+		titleSprite_->Draw();
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();

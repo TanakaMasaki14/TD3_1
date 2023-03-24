@@ -24,9 +24,11 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	debugText_ = DebugText::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	soundHandleBlock_ = audio_->LoadWave("block.mp3");
 	soundHandleWeak_ = audio_->LoadWave("weak.mp3");
 	soundHandleHeavy_ = audio_->LoadWave("heavy.mp3");
 	soundHandleStun_ = audio_->LoadWave("stun.mp3");
+	//soundHandleHit_ = audio_->LoadWave("hit.mp3");
 	///
 	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
 	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
@@ -85,6 +87,7 @@ void PlayerArm::Update()
 	if (input_->TriggerKey(DIK_B)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			block_ = true;
+			audio_->PlayWave(soundHandleBlock_, false, 3);
 			movement_ = false;
 		}
 	}
