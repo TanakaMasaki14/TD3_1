@@ -17,29 +17,22 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-	playerArm_ = new PlayerArm();
-	enemy_ = new Enemy();
-
-
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
+	playerArm_ = new PlayerArm();
+	enemy_ = new Enemy();
+
 	modelPlayerArm_ = Model::Create();
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
-
 	modelPlayerFace_ = Model::Create();
-
 	modelEnemy_ = Model::Create();
-
 	modelEnemyFace_ = Model::Create();
 
-
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
-
 	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
-
 	viewProjection_.Initialize();
 
 	textureHandleTitle_ = TextureManager::Load("neownch.png");
