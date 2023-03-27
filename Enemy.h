@@ -44,8 +44,16 @@ private:
 	uint32_t textureHandle_ = 0;
 
 
-	int movementFase = 0; //0:待機中 1:行動
+	//行動
+	int movementFase_ = 0; //0:待機中 1:行動決定　2:行動中 3:待機移行
 
+
+	int waitbaseTime_ = 120;
+	int waitrandomTime_ = 0;
+
+	int waitTime_ = 0;
+
+	int attackPattern_ = 0; //1:ブロック 2:弱攻撃 3:強攻撃 4:スタン
 
 
 	//攻撃範囲
