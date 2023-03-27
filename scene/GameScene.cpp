@@ -117,6 +117,7 @@ void GameScene::Update() {
 		}
 		Stop();
 		playerArm_->Update();
+		enemy_->Update();
 		viewProjection_.UpdateMatrix();
 		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
 			fontFlag_ = 1;
@@ -140,6 +141,7 @@ void GameScene::Update() {
 		}
 		Stop();
 		playerArm_->Update();
+		enemy_->Update();
 		viewProjection_.UpdateMatrix();
 		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
 			fontFlag_ = 1;

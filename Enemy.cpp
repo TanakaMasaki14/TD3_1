@@ -28,6 +28,19 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 
 	modelAttackRange_ = Model::Create();
 
+
+
+
+	//
+	srand((unsigned)time(NULL));
+
+	waitrandomTime_ = rand() % 61;
+
+	waitTime_ = waitbaseTime_ + waitrandomTime_;
+
+
+
+
 	///
 	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
 	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(30.0f) };
@@ -67,6 +80,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 
 void Enemy::Update()
 {
+	///手動動作用
 	if (input_->TriggerKey(DIK_U)) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 			block_ = true;
@@ -116,6 +130,98 @@ void Enemy::Update()
 			stunAttack_ = true;
 		}
 	}
+
+
+
+	if (movementFase_ == 0) {
+		waitTime_ -= 1;
+		if (waitTime_ == 0) {
+			attackPattern_ = rand() % 4 + 1;
+		}
+		if (waitTime_ < 0) {
+			movementFase_ = 1;
+		}
+	}
+
+	if (movementFase_ == 1) {
+
+		///ブロック
+		if (attackPattern_ == 1) {
+			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+				block_ = true;
+			}
+
+			movementFase_ = 2;
+		}
+
+		///弱攻撃
+		if (attackPattern_ == 2) {
+			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+				motionspeedX = 2.0f;
+				motionspeedY = 4.0f;
+
+
+				attackbufferX_ = worldTransform_.translation_.x;
+				attackbufferY_ = worldTransform_.translation_.y;
+
+				worldTransformAttackrange_.scale_ = { 2.0f,10.0f,1.0f };
+
+				weakAttack_ = true;
+			}
+
+			movementFase_ = 2;
+		}
+
+		///強攻撃
+		if (attackPattern_ == 3) {
+			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+				motionspeedX = 0.5f;
+				motionspeedY = 1.0f;
+
+				attackbufferX_ = worldTransform_.translation_.x;
+				attackbufferY_ = worldTransform_.translation_.y;
+
+				worldTransformAttackrange_.scale_ = { 3.0f,10.0f,1.0f };
+
+				heavyAttack_ = true;
+
+			}
+
+			movementFase_ = 2;
+		}
+
+		///スタン
+		if (attackPattern_ == 4) {
+			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+				attackbufferX_ = -43.0f;
+				attackbufferY_ = -5.0f;
+
+				worldTransformAttackrange_.translation_.x = attackbufferX_;
+				worldTransformAttackrange_.translation_.y = attackbufferY_;
+
+				worldTransformAttackrange_.scale_ = { 2.0f,20.0f,1.0f };
+
+				stunAttack_ = true;
+			}
+
+			movementFase_ = 2;
+		}
+
+	}
+
+	if (movementFase_ == 2) {
+
+	}
+
+	if (movementFase_ == 3) {
+		waitrandomTime_ = rand() % 61;
+
+		waitTime_ = waitbaseTime_ + waitrandomTime_;
+
+		movementFase_ = 0;
+	}
+
+
 
 	Motion();
 
@@ -204,6 +310,10 @@ void Enemy::Block()
 			blockChanceFrame_ = 60;
 			blockEndmotionFlame_ = 6;
 			block_ = false;
+
+			if (movementFase_ == 2) {
+				movementFase_ = 3;
+			}
 		}
 	}
 }
@@ -319,7 +429,11 @@ void Enemy::WeakAttack()
 			bufferpointY = 0.0f;
 			attackbufferX_ = 0.0f;
 			attackbufferY_ = 0.0f;
+
 			weakAttack_ = false;
+			if (movementFase_ == 2) {
+				movementFase_ = 3;
+			}
 		}
 	}
 }
@@ -432,7 +546,11 @@ void Enemy::HeavyAttack()
 			bufferpointY = 0.0f;
 			attackbufferX_ = 0.0f;
 			attackbufferY_ = 0.0f;
+
 			heavyAttack_ = false;
+			if (movementFase_ == 2) {
+				movementFase_ = 3;
+			}
 		}
 
 	}
@@ -486,6 +604,9 @@ void Enemy::StunAttack()
 			stunEndmotionFrame_ = 12;
 
 			stunAttack_ = false;
+			if (movementFase_ == 2) {
+				movementFase_ = 3;
+			}
 
 		}
 	}
