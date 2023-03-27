@@ -11,6 +11,7 @@
 #include "WorldTransform.h"
 
 #include "PlayerArm.h"
+#include "Enemy.h"
 
 class GameScene {
 
@@ -54,8 +55,11 @@ class GameScene {
 
 	uint32_t textureHandlePlayerArm_ = 0;
 	PlayerArm* playerArm_ = nullptr;
+	Enemy* enemy_ = nullptr;
 	Model* modelPlayerArm_ = nullptr;
 	Model* modelPlayerFace_ = nullptr;
+	Model* modelEnemy_ = nullptr;
+	Model* modelEnemyFace_ = nullptr;
 	//WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
