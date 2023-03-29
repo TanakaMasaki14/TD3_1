@@ -1,13 +1,17 @@
 #include "PlayerArm.h"
 #include <cassert>
+#include <cmath>
 
 #include "Procession.h"
+#include <corecrt_math_defines.h>
 using namespace MathUtility;
 using namespace DirectX;
+using namespace std;
 
 PlayerArm::~PlayerArm()
 {
 	SafeDelete(modelAttackRange_);
+	SafeDelete(modelPlayerCollision_);
 }
 
 void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
@@ -25,7 +29,9 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	modelAttackRange_ = Model::Create();
 
-	///
+	modelPlayerCollision_ = Model::CreateFromOBJ("C");
+
+	///腕
 	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
 	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
 	worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
@@ -37,7 +43,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	worldTransform_.TransferMatrix();
 
-	///
+	///顔
 	worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
 	worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
 	worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
@@ -49,7 +55,38 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	worldTransformFace_.TransferMatrix();
 
-	///
+	///腕当たり判定エリア
+
+	radian = radius_.z * M_PI / 180.0;
+	//0
+	worldTransformPlayerCollision_[0].scale_ = {2.5f,2.5f,2.5f};
+	worldTransformPlayerCollision_[0].rotation_ = {0.0f,0.0f,0.0f};
+	worldTransformPlayerCollision_[0].translation_ = {worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z};
+
+	worldTransformPlayerCollision_[0].Initialize();
+
+	worldTransformPlayerCollision_[0].matWorld_ = Mat_Identity();
+	worldTransformPlayerCollision_[0].matWorld_ = MatWorld(worldTransformPlayerCollision_[0].scale_, worldTransformPlayerCollision_[0].rotation_, worldTransformPlayerCollision_[0].translation_);
+
+	worldTransformPlayerCollision_[0].TransferMatrix();
+
+	//1
+	worldTransformPlayerCollision_[1].scale_ = { 2.5f,2.5f,2.5f };
+	worldTransformPlayerCollision_[1].rotation_ = { 0.0f,0.0f,0.0f };
+	r[0] = 5.0f; //距離
+	worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float> (radian));
+	worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float> (radian));
+	worldTransformPlayerCollision_[1].translation_.z = 0.0f;
+
+	worldTransformPlayerCollision_[1].Initialize();
+
+	worldTransformPlayerCollision_[1].matWorld_ = Mat_Identity();
+	worldTransformPlayerCollision_[1].matWorld_ = MatWorld(worldTransformPlayerCollision_[1].scale_, worldTransformPlayerCollision_[1].rotation_, worldTransformPlayerCollision_[1].translation_);
+
+	worldTransformPlayerCollision_[1].TransferMatrix();
+
+
+	///攻撃当たり判定エリア
 	worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
 	worldTransformAttackrange_.rotation_ = { 0.0f,0.0f,0.0f };
 	worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
@@ -157,10 +194,21 @@ void PlayerArm::Update()
 		worldTransform_.rotation_.z -= 0.1f;
 	}
 
+	
+
+
 	///モーションまとめ
 	Motion();
 
-	///更新
+	///当たり判定エリア更新(rは-1したものが正しい)
+	//0
+	worldTransformPlayerCollision_[0].translation_ = worldTransform_.translation_;
+
+	//1 
+	worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(worldTransform_.rotation_.z);
+	worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(worldTransform_.rotation_.z);
+
+	///座標更新
 	//
 	worldTransform_.matWorld_ = Mat_Identity();
 	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -172,6 +220,13 @@ void PlayerArm::Update()
 	worldTransformFace_.TransferMatrix();
 
 	//
+	for (int i = 0; i < PlayerCollisionquantity; i++) {
+		worldTransformPlayerCollision_[i].matWorld_ = Mat_Identity();
+		worldTransformPlayerCollision_[i].matWorld_ = MatWorld(worldTransformPlayerCollision_[i].scale_, worldTransformPlayerCollision_[i].rotation_, worldTransformPlayerCollision_[i].translation_);
+		worldTransformPlayerCollision_[i].TransferMatrix();
+	}
+
+	//
 	worldTransformAttackrange_.matWorld_ = Mat_Identity();
 	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
 	worldTransformAttackrange_.TransferMatrix();
@@ -180,9 +235,14 @@ void PlayerArm::Update()
 
 void PlayerArm::Draw(ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-
+	if (input_->PushKey(DIK_Q) == 0) {
+		model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	}
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
+
+	for (int i = 0; i < PlayerCollisionquantity; i++) {
+		modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
+	}
 
 	if (attackrange_ == true) {
 		modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);

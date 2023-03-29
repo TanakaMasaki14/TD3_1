@@ -27,7 +27,7 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 
 	modelPlayerArm_ = Model::Create();
-	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
+	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
 
 	modelPlayerFace_ = Model::Create();
 
