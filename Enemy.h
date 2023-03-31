@@ -27,7 +27,11 @@ private:
 
 	Model* modelFace_ = nullptr;
 
+	Model* modelEnemyCollision_ = nullptr;
+
 	Model* modelAttackRange_ = nullptr;
+
+	Model* modelAttackCollision_ = nullptr;
 
 	Input* input_ = nullptr;
 
@@ -39,9 +43,24 @@ private:
 
 	WorldTransform worldTransformFace_;
 
+	const static int EnemyCollisionquantity = 7;
+
+	WorldTransform worldTransformEnemyCollision_[EnemyCollisionquantity];
+
 	WorldTransform worldTransformAttackrange_;
 
+	WorldTransform worldTransformAttackCollision_[10];
+
 	uint32_t textureHandle_ = 0;
+
+	//回転角
+	Vector3 radius_{ 0.0f,0.0f,30.0f };
+
+	//距離
+	float r[EnemyCollisionquantity];
+
+	//ラジアン角度
+	double radian_;
 
 
 	//行動
@@ -110,3 +129,4 @@ private:
 //次に、点Aが1度動いた時の移動量ΔxとΔyを求めます。 Δx = r * sin(1°) Δy = r * cos(1°)
 
 //以上の式で求められます。1
+

@@ -12,6 +12,7 @@ PlayerArm::~PlayerArm()
 {
 	SafeDelete(modelAttackRange_);
 	SafeDelete(modelPlayerCollision_);
+	SafeDelete(modelAttackCollision_);
 }
 
 void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
@@ -28,77 +29,143 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	audio_ = Audio::GetInstance();
 
 	modelAttackRange_ = Model::Create();
+
 	modelPlayerCollision_ = Model::CreateFromOBJ("C");
+	modelAttackCollision_ = Model::CreateFromOBJ("C");
 
 	soundHandleBlock_ = audio_->LoadWave("block.mp3");
 	soundHandleWeak_ = audio_->LoadWave("weak.mp3");
 	soundHandleHeavy_ = audio_->LoadWave("heavy.mp3");
 	soundHandleStun_ = audio_->LoadWave("stun.mp3");
 	//soundHandleHit_ = audio_->LoadWave("hit.mp3");
-	///
-	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
-	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
-	worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
 
-	worldTransform_.Initialize();
+	///òr
+	{
+		worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
+		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
+		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
 
-	worldTransform_.matWorld_ = Mat_Identity();
-	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+		worldTransform_.Initialize();
 
-	worldTransform_.TransferMatrix();
+		worldTransform_.matWorld_ = Mat_Identity();
+		worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
-	///
-	worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
-	worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
-	worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+		worldTransform_.TransferMatrix();
+	}
 
-	worldTransformFace_.Initialize();
+	///äÁ
+	{
+		worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
+		worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
 
-	worldTransformFace_.matWorld_ = Mat_Identity();
-	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
+		worldTransformFace_.Initialize();
 
-	worldTransformFace_.TransferMatrix();
+		worldTransformFace_.matWorld_ = Mat_Identity();
+		worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
+
+		worldTransformFace_.TransferMatrix();
+	}
 
 	///òrìñÇΩÇËîªíËÉGÉäÉA
-	radian = radius_.z * M_PI / 180.0;
-	//0
-	worldTransformPlayerCollision_[0].scale_ = { 2.5f,2.5f,2.5f };
-	worldTransformPlayerCollision_[0].rotation_ = { 0.0f,0.0f,0.0f };
-	worldTransformPlayerCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
+	{
+		radian = radius_.z * M_PI / 180.0;
+		//0
+		worldTransformPlayerCollision_[0].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[0].rotation_ = { 0.0f,0.0f,0.0f };
+		worldTransformPlayerCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
 
-	worldTransformPlayerCollision_[0].Initialize();
 
-	worldTransformPlayerCollision_[0].matWorld_ = Mat_Identity();
-	worldTransformPlayerCollision_[0].matWorld_ = MatWorld(worldTransformPlayerCollision_[0].scale_, worldTransformPlayerCollision_[0].rotation_, worldTransformPlayerCollision_[0].translation_);
 
-	worldTransformPlayerCollision_[0].TransferMatrix();
+		//1
+		worldTransformPlayerCollision_[1].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[1].rotation_ = { 0.0f,0.0f,0.0f };
+		r[0] = 5.0f; //ãóó£
+		worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float> (radian));
+		worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float> (radian));
+		worldTransformPlayerCollision_[1].translation_.z = 0.0f;
 
-	//1
-	worldTransformPlayerCollision_[1].scale_ = { 2.5f,2.5f,2.5f };
-	worldTransformPlayerCollision_[1].rotation_ = { 0.0f,0.0f,0.0f };
-	r[0] = 5.0f; //ãóó£
-	worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float> (radian));
-	worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float> (radian));
-	worldTransformPlayerCollision_[1].translation_.z = 0.0f;
 
-	worldTransformPlayerCollision_[1].Initialize();
+		//2
+		worldTransformPlayerCollision_[2].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[2].rotation_ = { 0.0f,0.0f,0.0f };
+		r[1] = -5.0f;
+		worldTransformPlayerCollision_[2].translation_.x = worldTransform_.translation_.x + r[1] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[2].translation_.y = worldTransform_.translation_.y + r[1] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[2].translation_.z = 0.0f;
 
-	worldTransformPlayerCollision_[1].matWorld_ = Mat_Identity();
-	worldTransformPlayerCollision_[1].matWorld_ = MatWorld(worldTransformPlayerCollision_[1].scale_, worldTransformPlayerCollision_[1].rotation_, worldTransformPlayerCollision_[1].translation_);
+		//3
+		worldTransformPlayerCollision_[3].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[3].rotation_ = { 0.0f,0.0f,0.0f };
+		r[2] = 10.0f;
+		worldTransformPlayerCollision_[3].translation_.x = worldTransform_.translation_.x + r[2] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[3].translation_.y = worldTransform_.translation_.y + r[2] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[3].translation_.z = 0.0f;
 
-	worldTransformPlayerCollision_[1].TransferMatrix();
+		//4
+		worldTransformPlayerCollision_[4].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[4].rotation_ = { 0.0f,0.0f,0.0f };
+		r[3] = -10.0f;
+		worldTransformPlayerCollision_[4].translation_.x = worldTransform_.translation_.x + r[3] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[4].translation_.y = worldTransform_.translation_.y + r[3] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[4].translation_.z = 0.0f;
+
+		//5
+		worldTransformPlayerCollision_[5].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[5].rotation_ = { 0.0f,0.0f,0.0f };
+		r[4] = 15.0f;
+		worldTransformPlayerCollision_[5].translation_.x = worldTransform_.translation_.x + r[4] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[5].translation_.y = worldTransform_.translation_.y + r[4] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[5].translation_.z = 0.0f;
+
+		//6
+		worldTransformPlayerCollision_[6].scale_ = { 2.5f,2.5f,2.5f };
+		worldTransformPlayerCollision_[6].rotation_ = { 0.0f,0.0f,0.0f };
+		r[5] = -15.0f;
+		worldTransformPlayerCollision_[6].translation_.x = worldTransform_.translation_.x + r[5] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[6].translation_.y = worldTransform_.translation_.y + r[5] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[6].translation_.z = 0.0f;
+
+
+		for (int i = 0; i < PlayerCollisionquantity; i++) {
+			worldTransformPlayerCollision_[i].Initialize();
+
+			worldTransformPlayerCollision_[i].matWorld_ = Mat_Identity();
+			worldTransformPlayerCollision_[i].matWorld_ = MatWorld(worldTransformPlayerCollision_[i].scale_, worldTransformPlayerCollision_[i].rotation_, worldTransformPlayerCollision_[i].translation_);
+
+			worldTransformPlayerCollision_[i].TransferMatrix();
+		}
+	}
+
 
 	///çUåÇìñÇΩÇËîªíËÉGÉäÉA
-	worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
-	worldTransformAttackrange_.rotation_ = { 0.0f,0.0f,0.0f };
-	worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+	{
+		//
+		worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+		worldTransformAttackrange_.rotation_ = { 0.0f,0.0f,0.0f };
+		worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
 
-	worldTransformAttackrange_.Initialize();
+		worldTransformAttackrange_.Initialize();
 
-	worldTransformAttackrange_.matWorld_ = Mat_Identity();
-	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
+		worldTransformAttackrange_.matWorld_ = Mat_Identity();
+		worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
 
-	worldTransformAttackrange_.TransferMatrix();
+		worldTransformAttackrange_.TransferMatrix();
+
+		//
+		for (int i = 0; i < 10; i++) {
+			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
+
+			worldTransformAttackCollision_[i].Initialize();
+
+			worldTransformAttackCollision_[i].matWorld_ = Mat_Identity();
+			worldTransformAttackCollision_[i].matWorld_ = MatWorld(worldTransformAttackCollision_[i].scale_, worldTransformAttackCollision_[i].rotation_, worldTransformAttackCollision_[i].translation_);
+
+			worldTransformAttackCollision_[i].TransferMatrix();
+		}
+	}
 
 }
 
@@ -133,14 +200,19 @@ void PlayerArm::Update()
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
+
 			attackbufferX_ = worldTransform_.translation_.x;
 			attackbufferY_ = worldTransform_.translation_.y;
 
-			worldTransformAttackrange_.scale_ = { 2.0f,10.0f,1.0f };
+			worldTransformAttackrange_.scale_ = { 2.0f,10.0f,2.0f };
+
+			for (int i = 0; i < 10; i++) {
+				worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
+			}
 
 			weakAttack_ = true;
-			movement_ = false;
 			audio_->PlayWave(soundHandleWeak_, false, 3);
+			movement_ = false;
 		}
 	}
 
@@ -152,7 +224,11 @@ void PlayerArm::Update()
 			attackbufferX_ = worldTransform_.translation_.x;
 			attackbufferY_ = worldTransform_.translation_.y;
 
-			worldTransformAttackrange_.scale_ = { 3.0f,10.0f,1.0f };
+			worldTransformAttackrange_.scale_ = { 3.0f,10.0f,3.0f };
+
+			for (int i = 0; i < 10; i++) {
+				worldTransformAttackCollision_[i].scale_ = { 3.0f,3.0f,3.0f };
+			}
 
 			heavyAttack_ = true;
 			movement_ = false;
@@ -168,7 +244,11 @@ void PlayerArm::Update()
 			worldTransformAttackrange_.translation_.x = attackbufferX_;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 
-			worldTransformAttackrange_.scale_ = { 2.0f,20.0f,1.0f };
+			worldTransformAttackrange_.scale_ = { 2.0f,20.0f,2.0f };
+
+			for (int i = 0; i < 10; i++) {
+				worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
+			}
 
 			stunAttack_ = true;
 			movement_ = false;
@@ -177,7 +257,7 @@ void PlayerArm::Update()
 	}
 
 
-	/*debugText_->SetPos(0, 0);
+	debugText_->SetPos(0, 0);
 	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
 
 	debugText_->SetPos(0, 30);
@@ -187,7 +267,7 @@ void PlayerArm::Update()
 	debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
 
 	debugText_->SetPos(0, 80);
-	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);*/
+	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);
 
 
 	///âÒÇ∑ï˚å¸ñYÇÍÇ»Ç¢ÇÊÇ§Ç…
@@ -199,36 +279,51 @@ void PlayerArm::Update()
 		worldTransform_.rotation_.z -= 0.1f;
 	}
 
+
+
+
 	///ÉÇÅ[ÉVÉáÉìÇ‹Ç∆Çﬂ
 	Motion();
 
 	///ìñÇΩÇËîªíËÉGÉäÉAçXêV(rÇÕ-1ÇµÇΩÇ‡ÇÃÇ™ê≥ÇµÇ¢)
 	//0
 	worldTransformPlayerCollision_[0].translation_ = worldTransform_.translation_;
-
-	//1 
-	worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(worldTransform_.rotation_.z);
-	worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(worldTransform_.rotation_.z);
+	//1à»ç~
+	for (int i = 1; i < PlayerCollisionquantity; i++) {
+		//1 
+		worldTransformPlayerCollision_[i].translation_.x = worldTransform_.translation_.x + r[i - 1] * cos(worldTransform_.rotation_.z);
+		worldTransformPlayerCollision_[i].translation_.y = worldTransform_.translation_.y + r[i - 1] * sin(worldTransform_.rotation_.z);
+	}
 
 	///ç¿ïWçXêV
+	//
 	worldTransform_.matWorld_ = Mat_Identity();
 	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 
+	//
 	worldTransformFace_.matWorld_ = Mat_Identity();
 	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
 	worldTransformFace_.TransferMatrix();
 
+	//
 	for (int i = 0; i < PlayerCollisionquantity; i++) {
 		worldTransformPlayerCollision_[i].matWorld_ = Mat_Identity();
 		worldTransformPlayerCollision_[i].matWorld_ = MatWorld(worldTransformPlayerCollision_[i].scale_, worldTransformPlayerCollision_[i].rotation_, worldTransformPlayerCollision_[i].translation_);
 		worldTransformPlayerCollision_[i].TransferMatrix();
 	}
 
+	//
 	worldTransformAttackrange_.matWorld_ = Mat_Identity();
 	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
 	worldTransformAttackrange_.TransferMatrix();
 
+	for (int i = 0; i < 10; i++) {
+		worldTransformAttackCollision_[i].matWorld_ = Mat_Identity();
+		worldTransformAttackCollision_[i].matWorld_ = MatWorld(worldTransformAttackCollision_[i].scale_, worldTransformAttackCollision_[i].rotation_, worldTransformAttackCollision_[i].translation_);
+
+		worldTransformAttackCollision_[i].TransferMatrix();
+	}
 }
 
 void PlayerArm::Draw(ViewProjection& viewProjection)
@@ -236,7 +331,6 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 	if (input_->PushKey(DIK_Q) == 0) {
 		model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	}
-
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 
 	for (int i = 0; i < PlayerCollisionquantity; i++) {
@@ -244,7 +338,13 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 	}
 
 	if (attackrange_ == true) {
-		modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
+		if (input_->PushKey(DIK_Q) == 0) {
+			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
+		}
+
+		for (int i = 0; i < 10; i++) {
+			modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
+		}
 	}
 }
 
@@ -374,17 +474,40 @@ void PlayerArm::WeakAttack()
 			if (worldTransform_.rotation_.z > 0.6f) {
 				worldTransform_.rotation_.z = 0.6f;
 			}
+
 			//çUåÇîªíËà íu
 			attackrange_ = true;
 
 			worldTransformAttackrange_.translation_.x = attackbufferX_ - 30.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
+
+			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[0].translation_.y = worldTransformAttackrange_.translation_.y;
+
+			worldTransformAttackCollision_[1].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[1].translation_.y = worldTransformAttackrange_.translation_.y + 4.0f;
+
+			worldTransformAttackCollision_[2].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[2].translation_.y = worldTransformAttackrange_.translation_.y - 4.0f;
+
+			worldTransformAttackCollision_[3].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[3].translation_.y = worldTransformAttackrange_.translation_.y + 8.0f;
+
+			worldTransformAttackCollision_[4].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[4].translation_.y = worldTransformAttackrange_.translation_.y - 8.0f;
+
 		}
 
 
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
+
+			for (int i = 0; i < 10; i++) {
+				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			}
+
 			//çUåÇîªíËè¡ñ≈
 			attackrange_ = false;
 		}
@@ -496,11 +619,27 @@ void PlayerArm::HeavyAttack()
 
 			worldTransformAttackrange_.translation_.x = attackbufferX_ - 35.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
+
+			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[0].translation_.y = worldTransformAttackrange_.translation_.y;
+
+			worldTransformAttackCollision_[1].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[1].translation_.y = worldTransformAttackrange_.translation_.y + 6.0f;
+
+			worldTransformAttackCollision_[2].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[2].translation_.y = worldTransformAttackrange_.translation_.y - 6.0f;
+
 		}
 
 		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
+
+			for (int i = 0; i < 10; i++) {
+				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			}
+
 			//çUåÇîªíËè¡ñ≈
 			attackrange_ = false;
 		}
@@ -554,6 +693,7 @@ void PlayerArm::StunAttack()
 {
 	if (stunAttack_) {
 		stunStartmotionFrame_ -= 1;
+		//çUåÇëOÉÇÅ[ÉVÉáÉì
 		if (stunStartmotionFrame_ > 0) {
 
 		}
@@ -563,7 +703,7 @@ void PlayerArm::StunAttack()
 		}
 
 
-
+		//çUåÇíÜ
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
 
 			//37.0f, 20.0f, 0.0f x:7 y:7
@@ -571,17 +711,52 @@ void PlayerArm::StunAttack()
 				worldTransformFace_.translation_.x -= 1.4f;
 				worldTransformFace_.translation_.y -= 1.4f;
 			}
+
 			attackrange_ = true;
 			worldTransformAttackrange_.translation_.x -= 1.3f;
+
+			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[0].translation_.y = worldTransformAttackrange_.translation_.y;
+
+			worldTransformAttackCollision_[1].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[1].translation_.y = worldTransformAttackrange_.translation_.y + 4.0f;
+
+			worldTransformAttackCollision_[2].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[2].translation_.y = worldTransformAttackrange_.translation_.y - 4.0f;
+
+			worldTransformAttackCollision_[3].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[3].translation_.y = worldTransformAttackrange_.translation_.y + 8.0f;
+
+			worldTransformAttackCollision_[4].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[4].translation_.y = worldTransformAttackrange_.translation_.y - 8.0f;
+
+			worldTransformAttackCollision_[5].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[5].translation_.y = worldTransformAttackrange_.translation_.y + 12.0f;
+
+			worldTransformAttackCollision_[6].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[6].translation_.y = worldTransformAttackrange_.translation_.y - 12.0f;
+
+			worldTransformAttackCollision_[7].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[7].translation_.y = worldTransformAttackrange_.translation_.y + 16.0f;
+
+			worldTransformAttackCollision_[8].translation_.x = worldTransformAttackrange_.translation_.x;
+			worldTransformAttackCollision_[8].translation_.y = worldTransformAttackrange_.translation_.y - 16.0f;
+
 		}
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0) {
+			for (int i = 0; i < 10; i++) {
+				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			}
+
 			attackrange_ = false;
 			stunEndmotionFrame_ -= 1;
+
 		}
 
 
-
+		//çUåÇå„ÉÇÅ[ÉVÉáÉì
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ > 0) {
 			if (stunEndmotionFrame_ > 7) {
 				worldTransformFace_.translation_.x += 1.4f;

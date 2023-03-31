@@ -119,18 +119,17 @@ void GameScene::Update() {
 		playerArm_->Update();
 		enemy_->Update();
 		viewProjection_.UpdateMatrix();
-		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			fontFlag_ = 1;
+		//k.o
+		if (input_->TriggerKey(DIK_G)) {
+			koFlag_ = 1;
+			if (koFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
 		}
-		if (fontFlag_ == 1) {
-			fontTimer_++;
-		}
-		if (fontTimer_ == 13) {
-			fontFlag_ = 0;
-			fontTimer_ = 0;
-		}
+
 		if (input_->TriggerKey(DIK_SPACE)) {
 			audio_->PlayWave(soundHandleNext_, false, 3);
+			koFlag_ = 0;
 			scene = 3;
 		}
 		break;
@@ -143,18 +142,17 @@ void GameScene::Update() {
 		playerArm_->Update();
 		enemy_->Update();
 		viewProjection_.UpdateMatrix();
-		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			fontFlag_ = 1;
+		//k.o
+		if (input_->TriggerKey(DIK_G)) {
+			koFlag_ = 1;
+			if (koFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
 		}
-		if (fontFlag_ == 1) {
-			fontTimer_++;
-		}
-		if (fontTimer_ == 13) {
-			fontFlag_ = 0;
-			fontTimer_ = 0;
-		}
+
 		if (input_->TriggerKey(DIK_SPACE)) {
 			audio_->PlayWave(soundHandleNext_, false, 3);
+			koFlag_ = 0;
 			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 			scene = 0;
 		}
@@ -187,14 +185,16 @@ void GameScene::Draw() {
 		break;
 	case 2:// ステージ2
 		stage2Sprite_->Draw();
-		if (fontTimer_ > 0) {
-			nyaSprite_->Draw();
+		//k.o
+		if (koFlag_ == 1) {
+			koSprite_->Draw();
 		}
 		break;
 	case 3:// ステージ3
 		stage3Sprite_->Draw();
-		if (fontTimer_ > 0) {
-			nyaSprite_->Draw();
+		//k.o
+		if (koFlag_ == 1) {
+			koSprite_->Draw();
 		}
 		break;
 	}

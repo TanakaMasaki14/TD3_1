@@ -40,6 +40,8 @@ private:
 
 	Model* modelAttackRange_ = nullptr;
 
+	Model* modelAttackCollision_ = nullptr;
+
 	Input* input_ = nullptr;
 
 	DebugText* debugText_ = nullptr;
@@ -51,10 +53,12 @@ private:
 
 	WorldTransform worldTransformFace_;
 
-	const static int PlayerCollisionquantity = 2;
+	const static int PlayerCollisionquantity = 7;
 	WorldTransform worldTransformPlayerCollision_[PlayerCollisionquantity];
 
 	WorldTransform worldTransformAttackrange_;
+
+	WorldTransform worldTransformAttackCollision_[10];
 
 	uint32_t textureHandle_ = 0;
 	uint32_t soundHandleBlock_ = 0;
