@@ -26,7 +26,7 @@ void GameScene::Initialize() {
 	enemy_ = new Enemy();
 
 	modelPlayerArm_ = Model::Create();
-	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
+	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
 	modelPlayerFace_ = Model::Create();
 	modelEnemy_ = Model::Create();
 	modelEnemyFace_ = Model::Create();

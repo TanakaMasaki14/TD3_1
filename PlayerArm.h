@@ -36,6 +36,8 @@ private:
 
 	Model* modelFace_ = nullptr;
 
+	Model* modelPlayerCollision_ = nullptr;
+
 	Model* modelAttackRange_ = nullptr;
 
 	Input* input_ = nullptr;
@@ -48,6 +50,9 @@ private:
 	WorldTransform worldTransform_;
 
 	WorldTransform worldTransformFace_;
+
+	const static int PlayerCollisionquantity = 2;
+	WorldTransform worldTransformPlayerCollision_[PlayerCollisionquantity];
 
 	WorldTransform worldTransformAttackrange_;
 
@@ -62,6 +67,12 @@ private:
 
 	//‰ñ“]Šp
 	Vector3 radius_ = { 0.0f,0.0f, -30.0f };
+
+	//‹——£
+	float r[PlayerCollisionquantity - 1];
+
+	//ƒ‰ƒWƒAƒ“Šp“x
+	double radian;
 
 	bool movement_ = true;
 
