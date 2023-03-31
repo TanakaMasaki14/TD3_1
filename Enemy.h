@@ -27,7 +27,11 @@ private:
 
 	Model* modelFace_ = nullptr;
 
+	Model* modelEnemyCollision_ = nullptr;
+
 	Model* modelAttackRange_ = nullptr;
+
+	Model* modelAttackCollision_ = nullptr;
 
 	Input* input_ = nullptr;
 
@@ -39,9 +43,24 @@ private:
 
 	WorldTransform worldTransformFace_;
 
+	const static int EnemyCollisionquantity = 7;
+
+	WorldTransform worldTransformEnemyCollision_[EnemyCollisionquantity];
+
 	WorldTransform worldTransformAttackrange_;
 
+	WorldTransform worldTransformAttackCollision_[10];
+
 	uint32_t textureHandle_ = 0;
+
+	//âÒì]äp
+	Vector3 radius_{ 0.0f,0.0f,30.0f };
+	
+	//ãóó£
+	float r[EnemyCollisionquantity];
+
+	//ÉâÉWÉAÉìäpìx
+	double radian_;
 
 
 	//çsìÆ
