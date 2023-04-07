@@ -39,18 +39,21 @@ class GameScene {
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
 	uint32_t textureHandleNya_ = 0;
+	uint32_t textureHandleBatin_ = 0;
+	uint32_t textureHandleDon_ = 0;
+	uint32_t textureHandleKo_ = 0;
 	uint32_t soundHandleTitle_ = 0;
 	uint32_t soundHandleNext_ = 0;
 	uint32_t soundHandleLoop_ = 0;
+	uint32_t soundHandleKo_ = 0;
+
 	Sprite* titleSprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;
 	Sprite* nyaSprite_ = new Sprite;
-
-	//k.o
-	uint32_t textureHandleKo_ = 0;
-	uint32_t soundHandleKo_ = 0;
+	Sprite* batinSprite_ = new Sprite;
+	Sprite* donSprite_ = new Sprite;
 	Sprite* koSprite_ = new Sprite;
 
 	uint32_t textureHandlePlayerArm_ = 0;
@@ -60,7 +63,6 @@ class GameScene {
 	Model* modelPlayerFace_ = nullptr;
 	Model* modelEnemy_ = nullptr;
 	Model* modelEnemyFace_ = nullptr;
-	//WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
 	int scene = 0;

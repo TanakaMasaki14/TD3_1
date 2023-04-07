@@ -74,9 +74,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[0].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[0].rotation_ = { 0.0f,0.0f,0.0f };
 		worldTransformPlayerCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
-
-
-
 		//1
 		worldTransformPlayerCollision_[1].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[1].rotation_ = { 0.0f,0.0f,0.0f };
@@ -84,8 +81,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float> (radian));
 		worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float> (radian));
 		worldTransformPlayerCollision_[1].translation_.z = 0.0f;
-
-
 		//2
 		worldTransformPlayerCollision_[2].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[2].rotation_ = { 0.0f,0.0f,0.0f };
@@ -93,7 +88,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[2].translation_.x = worldTransform_.translation_.x + r[1] * cos(static_cast<float>(radian));
 		worldTransformPlayerCollision_[2].translation_.y = worldTransform_.translation_.y + r[1] * sin(static_cast<float>(radian));
 		worldTransformPlayerCollision_[2].translation_.z = 0.0f;
-
 		//3
 		worldTransformPlayerCollision_[3].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[3].rotation_ = { 0.0f,0.0f,0.0f };
@@ -101,7 +95,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[3].translation_.x = worldTransform_.translation_.x + r[2] * cos(static_cast<float>(radian));
 		worldTransformPlayerCollision_[3].translation_.y = worldTransform_.translation_.y + r[2] * sin(static_cast<float>(radian));
 		worldTransformPlayerCollision_[3].translation_.z = 0.0f;
-
 		//4
 		worldTransformPlayerCollision_[4].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[4].rotation_ = { 0.0f,0.0f,0.0f };
@@ -109,7 +102,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[4].translation_.x = worldTransform_.translation_.x + r[3] * cos(static_cast<float>(radian));
 		worldTransformPlayerCollision_[4].translation_.y = worldTransform_.translation_.y + r[3] * sin(static_cast<float>(radian));
 		worldTransformPlayerCollision_[4].translation_.z = 0.0f;
-
 		//5
 		worldTransformPlayerCollision_[5].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[5].rotation_ = { 0.0f,0.0f,0.0f };
@@ -117,7 +109,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[5].translation_.x = worldTransform_.translation_.x + r[4] * cos(static_cast<float>(radian));
 		worldTransformPlayerCollision_[5].translation_.y = worldTransform_.translation_.y + r[4] * sin(static_cast<float>(radian));
 		worldTransformPlayerCollision_[5].translation_.z = 0.0f;
-
 		//6
 		worldTransformPlayerCollision_[6].scale_ = { 2.5f,2.5f,2.5f };
 		worldTransformPlayerCollision_[6].rotation_ = { 0.0f,0.0f,0.0f };
@@ -125,7 +116,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		worldTransformPlayerCollision_[6].translation_.x = worldTransform_.translation_.x + r[5] * cos(static_cast<float>(radian));
 		worldTransformPlayerCollision_[6].translation_.y = worldTransform_.translation_.y + r[5] * sin(static_cast<float>(radian));
 		worldTransformPlayerCollision_[6].translation_.z = 0.0f;
-
 
 		for (int i = 0; i < PlayerCollisionquantity; i++) {
 			worldTransformPlayerCollision_[i].Initialize();
@@ -136,8 +126,6 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 			worldTransformPlayerCollision_[i].TransferMatrix();
 		}
 	}
-
-
 	///攻撃当たり判定エリア
 	{
 		//
@@ -256,7 +244,6 @@ void PlayerArm::Update()
 		}
 	}
 
-
 	debugText_->SetPos(0, 0);
 	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
 
@@ -269,7 +256,6 @@ void PlayerArm::Update()
 	debugText_->SetPos(0, 80);
 	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);
 
-
 	///回す方向忘れないように
 	if (input_->PushKey(DIK_LEFTARROW)) {
 		worldTransform_.rotation_.z += 0.1f;
@@ -278,9 +264,6 @@ void PlayerArm::Update()
 	if (input_->PushKey(DIK_RIGHTARROW)) {
 		worldTransform_.rotation_.z -= 0.1f;
 	}
-
-
-
 
 	///モーションまとめ
 	Motion();
@@ -774,9 +757,6 @@ void PlayerArm::StunAttack()
 		}
 	}
 }
-
-
-
 
 ///アームのセッター,ゲッター
 Vector3 PlayerArm::GetWorldTransform()

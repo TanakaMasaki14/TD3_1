@@ -32,6 +32,7 @@ public:
 	void SetSpeed(Vector3 Speed);
 
 private:
+
 	Model* model_ = nullptr;
 
 	Model* modelFace_ = nullptr;
@@ -68,7 +69,6 @@ private:
 	//uint32_t soundHandleHit_ = 0;
 
 	Vector3 Armspeed_ = { 0.3f,0.3f,0.0f };
-
 	//‰ñ“]Šp
 	Vector3 radius_ = { 0.0f,0.0f, -30.0f };
 
