@@ -44,7 +44,16 @@ class GameScene {
 	/// </summary>
 	void Draw();
 
+	void CheckCollision();
+
+	void CollisionPlayerAttackToEnemy();
+
+	void CollisionEnemyAttackToPlayer();
+
+
 	void Stop();
+
+
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -76,4 +85,7 @@ class GameScene {
 
 	Vector3 SpeedBuffer = { 0,0,0 };
 
+	int PlayerAttackToEnemy = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
+
+	int EnemyAttackToPlayer = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
 };

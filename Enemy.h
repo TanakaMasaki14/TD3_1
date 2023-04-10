@@ -9,6 +9,7 @@
 #include "Input.h"
 #include "Audio.h"
 
+
 class Enemy
 {
 public:
@@ -21,6 +22,52 @@ public:
 	void Draw(ViewProjection& viewProjection);
 
 	void Motion();
+
+	//当たり判定
+
+	void GetBlock();
+
+	void GetWeak();
+
+	void GetHeavy();
+
+	void GetStun();
+
+	///ゲッター
+	//カス
+	Vector3 GetWorldTransformEnemyCollision0();
+	Vector3 GetWorldTransformEnemyCollision1();
+	Vector3 GetWorldTransformEnemyCollision2();
+	Vector3 GetWorldTransformEnemyCollision3();
+	Vector3 GetWorldTransformEnemyCollision4();
+	Vector3 GetWorldTransformEnemyCollision5();
+	Vector3 GetWorldTransformEnemyCollision6();
+
+	//カス
+	Vector3 GetWorldTransformEnemyAttackCollision0();
+	Vector3 GetWorldTransformEnemyAttackCollision1();
+	Vector3 GetWorldTransformEnemyAttackCollision2();
+	Vector3 GetWorldTransformEnemyAttackCollision3();
+	Vector3 GetWorldTransformEnemyAttackCollision4();
+	Vector3 GetWorldTransformEnemyAttackCollision5();
+	Vector3 GetWorldTransformEnemyAttackCollision6();
+	Vector3 GetWorldTransformEnemyAttackCollision7();
+	Vector3 GetWorldTransformEnemyAttackCollision8();
+	Vector3 GetWorldTransformEnemyAttackCollision9();
+
+	const bool& GetIsBlock() const { return block_; }
+
+	const bool& GetIsWeak() const { return weakAttack_; }
+
+	const bool& GetIsHeavy() const { return heavyAttack_; }
+
+	const bool& GetIsStun() const { return stunAttack_; }
+
+	int GetFase() { return movementFase_; }
+
+	Vector3 GetScaleEnemyCollision();
+
+	Vector3 GetScaleEnemyAttackCollision();
 
 private:
 	Model* model_ = nullptr;
@@ -52,6 +99,10 @@ private:
 	WorldTransform worldTransformAttackCollision_[10];
 
 	uint32_t textureHandle_ = 0;
+
+	uint32_t TesttextureHandle_ = 0;
+	bool testhit = false;
+	int testTime = 30;
 
 	//回転角
 	Vector3 radius_{ 0.0f,0.0f,30.0f };

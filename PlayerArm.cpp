@@ -24,6 +24,8 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	modelFace_ = modelFace;
 	textureHandle_ = textureHandle;
 
+	TesttextureHandle_ = TextureManager::Load("blocktest.png");
+
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -275,6 +277,16 @@ void PlayerArm::Update()
 	///モーションまとめ
 	Motion();
 
+	//当たり判定テスト
+	if (testhit == true) {
+		testTime -= 1;
+		if (testTime < 0) {
+			testhit = false;
+			testTime = 30;
+		}
+	}
+	
+
 	///当たり判定エリア更新(rは-1したものが正しい)
 	//0
 	worldTransformPlayerCollision_[0].translation_ = worldTransform_.translation_;
@@ -321,6 +333,12 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 	if (input_->PushKey(DIK_Q) == 0) {
 		model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	}
+
+	//テスト用
+	if (testhit == true) {
+		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
+	}
+
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 
 	for (int i = 0; i < PlayerCollisionquantity; i++) {
@@ -347,6 +365,34 @@ void PlayerArm::Motion()
 	WeakAttack();
 	HeavyAttack();
 	StunAttack();
+}
+
+
+
+
+
+//ブロックを食らったら
+void PlayerArm::GetBlock()
+{
+	
+}
+
+//弱攻撃に当たったら
+void PlayerArm::GetWeak()
+{
+	testhit = true;
+}
+
+//強攻撃に当たったら
+void PlayerArm::GetHeavy()
+{
+	testhit = true;
+}
+
+//スタン攻撃に当たったら
+void PlayerArm::GetStun()
+{
+	testhit = true;
 }
 
 /// <summary>
@@ -786,6 +832,245 @@ void PlayerArm::SetWorldTransform(Vector3 WorldTransform)
 	worldTransform_.translation_.y = WorldTransform.y;
 	worldTransform_.translation_.z = WorldTransform.z;
 }
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision0()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[0].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[0].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[0].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision1()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[1].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[1].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[1].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision2()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[2].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[2].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[2].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision3()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[3].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[3].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[3].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision4()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[4].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[4].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[4].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision5()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[5].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[5].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[5].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerCollision6()
+{
+	Vector3  PlayerCollisionWorldPos;
+
+	PlayerCollisionWorldPos.x = worldTransformPlayerCollision_[6].translation_.x;
+	PlayerCollisionWorldPos.y = worldTransformPlayerCollision_[6].translation_.y;
+	PlayerCollisionWorldPos.z = worldTransformPlayerCollision_[6].translation_.z;
+
+	return PlayerCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision0()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[0].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[0].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[0].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision1()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[1].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[1].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[1].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision2()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[2].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[2].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[2].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision3()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[3].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[3].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[3].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision4()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[4].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[4].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[4].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision5()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[5].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[5].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[5].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision6()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[6].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[6].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[6].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision7()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[7].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[7].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[7].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision8()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[8].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[8].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[8].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision9()
+{
+	Vector3   PlayerAttackCollisionWorldPos;
+
+	PlayerAttackCollisionWorldPos.x = worldTransformAttackCollision_[9].translation_.x;
+	PlayerAttackCollisionWorldPos.y = worldTransformAttackCollision_[9].translation_.y;
+	PlayerAttackCollisionWorldPos.z = worldTransformAttackCollision_[9].translation_.z;
+
+	return PlayerAttackCollisionWorldPos;
+}
+
+Vector3 PlayerArm::GetScalePlayerCollision()
+{
+	Vector3 PlayerCollisionScale;
+
+	PlayerCollisionScale.x = worldTransformPlayerCollision_[0].scale_.x;
+	PlayerCollisionScale.y = worldTransformPlayerCollision_[0].scale_.y;
+	PlayerCollisionScale.z = worldTransformPlayerCollision_[0].scale_.z;
+
+	return PlayerCollisionScale;
+}
+
+Vector3 PlayerArm::GetScalePlayerAttackCollision()
+{
+	Vector3 PlayerAttackCollisiionScale;
+
+	PlayerAttackCollisiionScale.x = worldTransformAttackCollision_[0].scale_.x;
+	PlayerAttackCollisiionScale.y = worldTransformAttackCollision_[0].scale_.y;
+	PlayerAttackCollisiionScale.z = worldTransformAttackCollision_[0].scale_.z;
+
+	return PlayerAttackCollisiionScale;
+}
+
+//Vector3 PlayerArm::GetWorldTransformPlayerCollision()
+//{
+//	Vector3 PlayerCollisionWorldPos[PlayerCollisionquantity];
+//
+//	for (int i = 0; i < PlayerCollisionquantity; i++) {
+//		PlayerCollisionWorldPos[i].x = worldTransformPlayerCollision_[i].translation_.x;
+//		PlayerCollisionWorldPos[i].y = worldTransformPlayerCollision_[i].translation_.y;
+//		PlayerCollisionWorldPos[i].z = worldTransformPlayerCollision_[i].translation_.z;
+//	}
+//
+//	for (int i = 0; i < PlayerCollisionquantity; i++) {
+//		return PlayerCollisionWorldPos[i];
+//	}
+//}
+
+//Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision()
+//{
+//	Vector3 PlayerAttackCollisionWorldPos[10];
+//
+//	for (int i = 0; i < 10; i++) {
+//		PlayerAttackCollisionWorldPos[i].x = worldTransformAttackCollision_[i].translation_.x;
+//		PlayerAttackCollisionWorldPos[i].y = worldTransformAttackCollision_[i].translation_.y;
+//		PlayerAttackCollisionWorldPos[i].z = worldTransformAttackCollision_[i].translation_.z;
+//	}
+//
+//	for (int i = 0; i < 10; i++) {
+//		return PlayerAttackCollisionWorldPos[i];
+//	}
+//}
 
 ///スピードのセッター
 void PlayerArm::SetSpeed(Vector3 Speed)
