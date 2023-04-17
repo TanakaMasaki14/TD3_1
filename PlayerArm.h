@@ -18,12 +18,12 @@ public:
 	void Initialize(Model* model,Model* modelFace,uint32_t textureHandle);
 
 	void Update();
-	
+
 	void Draw(ViewProjection& viewProjection);
 
 	void Motion();
 
-	
+
 
 	void GetBlock();
 
@@ -88,9 +88,9 @@ private:
 	Model* modelAttackRange_ = nullptr;
 
 	Model* modelAttackCollision_ = nullptr;
-	
+
 	Input* input_ = nullptr;
-	
+
 	DebugText* debugText_=nullptr;
 
 	Audio* audio_ = nullptr;
@@ -174,5 +174,9 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
+
+	//‘Ì—Í
+	int hp = 0;
+
 
 };

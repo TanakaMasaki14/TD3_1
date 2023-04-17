@@ -1,6 +1,9 @@
 #include "PlayerArm.h"
 #include <cassert>
 #include <cmath>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #include "Procession.h"
 #include <corecrt_math_defines.h>
@@ -34,6 +37,18 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	modelPlayerCollision_ = Model::CreateFromOBJ("C");
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
+
+	//ファイル読み込み
+	ifstream playerfile("Text/Player.txt");
+	if (playerfile.is_open()) {
+		string stringhp;
+
+		getline(playerfile, stringhp);
+		hp=stoi(stringhp);
+
+		playerfile.close();
+	}
+
 
 	///腕
 	{
@@ -261,6 +276,9 @@ void PlayerArm::Update()
 	debugText_->SetPos(0, 80);
 	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);
 
+	debugText_->SetPos(0, 100);
+	debugText_->Printf("hp=%d", hp);
+
 
 	///回す方向忘れないように
 	if (input_->PushKey(DIK_LEFTARROW)) {
@@ -330,8 +348,10 @@ void PlayerArm::Update()
 
 void PlayerArm::Draw(ViewProjection& viewProjection)
 {
-	if (input_->PushKey(DIK_Q) == 0) {
-		model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	if (testhit == false) {
+		if (input_->PushKey(DIK_Q) == 0) {
+			model_->Draw(worldTransform_, viewProjection, textureHandle_);
+		}
 	}
 
 	//テスト用

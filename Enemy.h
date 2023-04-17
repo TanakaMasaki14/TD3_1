@@ -171,6 +171,9 @@ private:
 	int stunEndmotionFrame_ = 12;
 
 
+	//体力
+	int hp = 0;
+
 };
 
 //中心座標Bからx座標がX cm、y座標がY cm離れている点AがBを中心に扇状に90°動いた時、1°毎の点Aの移動量を求める式は以下の通りです。

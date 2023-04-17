@@ -1,6 +1,9 @@
 #include "Enemy.h"
 #include <cmath>
 #include <cassert>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #include "Procession.h"
 #include "TextureManager.h"
@@ -45,6 +48,18 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	waitrandomTime_ = rand() % 61;
 
 	waitTime_ = waitbaseTime_ + waitrandomTime_;
+
+	//ファイル読み込み
+	ifstream enemyfile("Text/Enemy.txt");
+
+	if (enemyfile.is_open()) {
+		string stringhp;
+
+		getline(enemyfile, stringhp);
+		hp = stoi(stringhp);
+
+		enemyfile.close();
+	}
 
 
 
@@ -157,12 +172,12 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
 			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
-			
+
 			worldTransformAttackCollision_[i].Initialize();
 
 			worldTransformAttackCollision_[i].matWorld_ = Mat_Identity();
 			worldTransformAttackCollision_[i].matWorld_ = MatWorld(worldTransformAttackCollision_[i].scale_, worldTransformAttackCollision_[i].rotation_, worldTransformAttackCollision_[i].translation_);
-			
+
 			worldTransformAttackCollision_[i].TransferMatrix();
 		}
 	}
@@ -350,7 +365,7 @@ void Enemy::Update()
 			testTime = 30;
 		}
 	}
-	
+
 
 	///当たり判定エリア更新
 	//0
@@ -387,7 +402,7 @@ void Enemy::Update()
 	for (int i = 0; i < 10; i++) {
 		worldTransformAttackCollision_[i].matWorld_ = Mat_Identity();
 		worldTransformAttackCollision_[i].matWorld_ = MatWorld(worldTransformAttackCollision_[i].scale_, worldTransformAttackCollision_[i].rotation_, worldTransformAttackCollision_[i].translation_);
-	
+
 		worldTransformAttackCollision_[i].TransferMatrix();
 	}
 }
@@ -436,7 +451,7 @@ void Enemy::Motion()
 
 void Enemy::GetBlock()
 {
-	
+
 }
 
 void Enemy::GetWeak()
@@ -536,7 +551,7 @@ Vector3 Enemy::GetWorldTransformEnemyCollision6()
 
 ///
 /// ////////////////////////////////////////////////////////////////////////////////////
-/// 
+///
 
 
 /// <summary>

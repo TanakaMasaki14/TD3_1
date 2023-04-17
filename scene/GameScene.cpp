@@ -125,6 +125,11 @@ void GameScene::CheckCollision()
 		//ヒット時
 		if (PlayerAttackToEnemy == 1) {
 
+			//ブロックされた
+			if (enemy_->GetIsBlock() == true) {
+				playerArm_->GetBlock();
+			}
+
 			//弱攻撃を敵にあてた
 			if (playerArm_->GetIsBlock() == false && playerArm_->GetIsWeak() == true && playerArm_->GetIsHeavy() == false && playerArm_->GetIsStun() == false) {
 				enemy_->GetWeak();
@@ -156,18 +161,23 @@ void GameScene::CheckCollision()
 		//ヒット時
 		if (EnemyAttackToPlayer == 1) {
 
-			//
+			//ブロックされた
+			if (playerArm_->GetIsBlock() == true) {
+				enemy_->GetBlock();
+			}
+
+			//弱攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == true && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == false) {
 				playerArm_->GetWeak();
 			}
 
-			//
+			//強攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == true && enemy_->GetIsStun() == false) {
 				playerArm_->GetHeavy();
 			}
 
-			//
-			//
+			
+			//スタン攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == true) {
 				playerArm_->GetStun();
 			}
