@@ -21,10 +21,51 @@ public:
 
 	void Motion();
 
+	void GetBlock();
+
+	void GetWeak();
+
+	void GetHeavy();
+
+	void GetStun();
+
 	//アームのゲッター,セッター
 	Vector3 GetWorldTransform();
 
 	void SetWorldTransform(Vector3 WorldTransform);
+
+	Vector3 GetWorldTransformPlayerCollision0();
+	Vector3 GetWorldTransformPlayerCollision1();
+	Vector3 GetWorldTransformPlayerCollision2();
+	Vector3 GetWorldTransformPlayerCollision3();
+	Vector3 GetWorldTransformPlayerCollision4();
+	Vector3 GetWorldTransformPlayerCollision5();
+	Vector3 GetWorldTransformPlayerCollision6();
+
+	Vector3 GetWorldTransformPlayerAttackCollision0();
+	Vector3 GetWorldTransformPlayerAttackCollision1();
+	Vector3 GetWorldTransformPlayerAttackCollision2();
+	Vector3 GetWorldTransformPlayerAttackCollision3();
+	Vector3 GetWorldTransformPlayerAttackCollision4();
+	Vector3 GetWorldTransformPlayerAttackCollision5();
+	Vector3 GetWorldTransformPlayerAttackCollision6();
+	Vector3 GetWorldTransformPlayerAttackCollision7();
+	Vector3 GetWorldTransformPlayerAttackCollision8();
+	Vector3 GetWorldTransformPlayerAttackCollision9();
+
+	Vector3 GetScalePlayerCollision();
+
+	Vector3 GetScalePlayerAttackCollision();
+
+	const bool& GetIsBlock() const { return block_; }
+
+	const bool& GetIsWeak() const { return weakAttack_; }
+
+	const bool& GetIsHeavy() const { return heavyAttack_; }
+
+	const bool& GetIsStun() const { return stunAttack_; }
+
+	const bool& GetIsMovement() const { return movement_; }
 
 	//アームスピードのゲッター,セッター
 	Vector3 GetSpeed() { return Armspeed_; }
@@ -62,6 +103,10 @@ private:
 	WorldTransform worldTransformAttackCollision_[10];
 
 	uint32_t textureHandle_ = 0;
+	uint32_t TesttextureHandle_ = 0;
+	bool testhit = false;
+	int testTime = 30;
+
 	uint32_t soundHandleBlock_ = 0;
 	uint32_t soundHandleWeak_ = 0;
 	uint32_t soundHandleHeavy_ = 0;
@@ -123,4 +168,6 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
+	//体力
+	int hp = 0;
 };

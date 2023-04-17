@@ -26,6 +26,9 @@ class GameScene {
 	void Update();
 	//描画
 	void Draw();
+	void CheckCollision();
+	void CollisionPlayerAttackToEnemy();
+	void CollisionEnemyAttackToPlayer();
 	void Stop();
 
   private: // メンバ変数
@@ -76,4 +79,6 @@ class GameScene {
 	int stopSecond_ = 1;
 	int stopTimer_ = stopSecond_ * 60;
 	Vector3 SpeedBuffer = { 0,0,0 };
+	int PlayerAttackToEnemy = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
+	int EnemyAttackToPlayer = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
 };

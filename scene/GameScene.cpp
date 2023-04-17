@@ -50,12 +50,12 @@ void GameScene::Initialize() {
 	batinSprite_ = Sprite::Create(textureHandleBatin_, { 400,400 });
 	textureHandleDon_ = TextureManager::Load("don.png");
 	donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
+	textureHandleKo_ = TextureManager::Load("ko.png");
+	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
 
 	soundHandleTitle_ = audio_->LoadWave("neownch.mp3");
 	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 	soundHandleNext_ = audio_->LoadWave("next.mp3");
-	textureHandleKo_ = TextureManager::Load("ko.png");
-	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
 	soundHandleKo_ = audio_->LoadWave("ko.mp3");
 }
 
@@ -90,13 +90,13 @@ void GameScene::Update() {
 		Stop();
 		playerArm_->Update();
 		enemy_->Update();
+		CheckCollision();
 		viewProjection_.UpdateMatrix();
 
-		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			fontFlag_ = 1;
-		}
-		if (fontFlag_ == 1) {
-			fontTimer_++;
+		if (input_->PushKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			if (fontTimer_ <= 13) {
+				fontTimer_++;
+			}
 		}
 		if (fontTimer_ == 13) {
 			fontFlag_ = 0;
@@ -104,9 +104,7 @@ void GameScene::Update() {
 		}
 		if (input_->TriggerKey(DIK_G)) {
 			koFlag_ = 1;
-			if (koFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
+			audio_->PlayWave(soundHandleKo_, false, 3);
 		}
 		if (koFlag_ == 1) {
 			if (input_->TriggerKey(DIK_SPACE)) {
@@ -132,6 +130,10 @@ void GameScene::Update() {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
+		if (input_->TriggerKey(DIK_G)) {
+			koFlag_ = 1;
+			audio_->PlayWave(soundHandleKo_, false, 3);
+		}
 		if (koFlag_ == 1) {
 			if (input_->TriggerKey(DIK_SPACE)) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
@@ -155,6 +157,10 @@ void GameScene::Update() {
 			if (koFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
+		}
+		if (input_->TriggerKey(DIK_G)) {
+			koFlag_ = 1;
+			audio_->PlayWave(soundHandleKo_, false, 3);
 		}
 		if (koFlag_ == 1) {
 			if (input_->TriggerKey(DIK_SPACE)) {
@@ -182,23 +188,25 @@ void GameScene::Draw() {
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
-		nyaSprite_->Draw();
+		if (fontTimer_ >= 1 ) {
+			nyaSprite_->Draw();
+		}
 		batinSprite_->Draw();
 		donSprite_->Draw();
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
+		debugText_->SetPos(0, 600);
+		debugText_->Printf("fontTimer = %d", fontTimer_);
 		break;
 	case 2:// ステージ2
 		stage2Sprite_->Draw();
-		//k.o
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;
 	case 3:// ステージ3
 		stage3Sprite_->Draw();
-		//k.o
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
@@ -231,6 +239,145 @@ void GameScene::Draw() {
 		break;
 	}
 	Model::PostDraw();
+}
+
+void GameScene::CheckCollision()
+{
+
+	CollisionPlayerAttackToEnemy();
+	CollisionEnemyAttackToPlayer();
+	///プレイヤーから敵への攻撃
+	{
+
+		//ヒット時
+		if (PlayerAttackToEnemy == 1) {
+
+			//
+			//ブロックされた
+			if (playerArm_->GetIsBlock() == true) {
+				enemy_->GetBlock();
+			}
+
+			//弱攻撃を当てた
+			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == true && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == false) {
+				playerArm_->GetWeak();
+			}
+
+			//
+			//強攻撃を当てた
+			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == true && enemy_->GetIsStun() == false) {
+				playerArm_->GetHeavy();
+			}
+
+			//
+			//
+
+			//スタン攻撃を当てた
+			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == true) {
+				playerArm_->GetStun();
+			}
+			EnemyAttackToPlayer = 2;
+		}
+
+		//ヒット待機移行待ち
+		if (EnemyAttackToPlayer == 2) {
+			if (enemy_->GetFase() == 3) {
+				EnemyAttackToPlayer = 0;
+			}
+
+		}
+	}
+}
+
+void GameScene::CollisionPlayerAttackToEnemy()
+{
+	Vector3 PlayerAttackPos[10];
+	Vector3 EnemyCollisionPos[7];
+
+	{
+		PlayerAttackPos[0] = playerArm_->GetWorldTransformPlayerAttackCollision0();
+		PlayerAttackPos[1] = playerArm_->GetWorldTransformPlayerAttackCollision1();
+		PlayerAttackPos[2] = playerArm_->GetWorldTransformPlayerAttackCollision2();
+		PlayerAttackPos[3] = playerArm_->GetWorldTransformPlayerAttackCollision3();
+		PlayerAttackPos[4] = playerArm_->GetWorldTransformPlayerAttackCollision4();
+		PlayerAttackPos[5] = playerArm_->GetWorldTransformPlayerAttackCollision5();
+		PlayerAttackPos[6] = playerArm_->GetWorldTransformPlayerAttackCollision6();
+		PlayerAttackPos[7] = playerArm_->GetWorldTransformPlayerAttackCollision7();
+		PlayerAttackPos[8] = playerArm_->GetWorldTransformPlayerAttackCollision8();
+		PlayerAttackPos[9] = playerArm_->GetWorldTransformPlayerAttackCollision9();
+	}
+
+	{
+		EnemyCollisionPos[0] = enemy_->GetWorldTransformEnemyCollision0();
+		EnemyCollisionPos[1] = enemy_->GetWorldTransformEnemyCollision1();
+		EnemyCollisionPos[2] = enemy_->GetWorldTransformEnemyCollision2();
+		EnemyCollisionPos[3] = enemy_->GetWorldTransformEnemyCollision3();
+		EnemyCollisionPos[4] = enemy_->GetWorldTransformEnemyCollision4();
+		EnemyCollisionPos[5] = enemy_->GetWorldTransformEnemyCollision5();
+		EnemyCollisionPos[6] = enemy_->GetWorldTransformEnemyCollision6();
+	}
+
+	for (int i = 0; i < 10; i++) {
+		for (int k = 0; k < 7; k++) {
+			if (
+				(PlayerAttackPos[i].x - EnemyCollisionPos[k].x) * (PlayerAttackPos[i].x - EnemyCollisionPos[k].x) +
+				(PlayerAttackPos[i].y - EnemyCollisionPos[k].y) * (PlayerAttackPos[i].y - EnemyCollisionPos[k].y) +
+				(PlayerAttackPos[i].z - EnemyCollisionPos[k].z) * (PlayerAttackPos[i].z - EnemyCollisionPos[k].z)
+				<= (enemy_->GetScaleEnemyCollision().x + playerArm_->GetScalePlayerAttackCollision().x) * (enemy_->GetScaleEnemyCollision().x + playerArm_->GetScalePlayerAttackCollision().x)
+				) {
+				if (PlayerAttackToEnemy == 0) {
+					PlayerAttackToEnemy = 1;
+				}
+
+			}
+		}
+	}
+
+}
+
+void GameScene::CollisionEnemyAttackToPlayer()
+{
+	Vector3 EnemyAttackPos[10];
+	Vector3 PlayerCollisionPos[7];
+
+	{
+		EnemyAttackPos[0] = enemy_->GetWorldTransformEnemyAttackCollision0();
+		EnemyAttackPos[1] = enemy_->GetWorldTransformEnemyAttackCollision1();
+		EnemyAttackPos[2] = enemy_->GetWorldTransformEnemyAttackCollision2();
+		EnemyAttackPos[3] = enemy_->GetWorldTransformEnemyAttackCollision3();
+		EnemyAttackPos[4] = enemy_->GetWorldTransformEnemyAttackCollision4();
+		EnemyAttackPos[5] = enemy_->GetWorldTransformEnemyAttackCollision5();
+		EnemyAttackPos[6] = enemy_->GetWorldTransformEnemyAttackCollision6();
+		EnemyAttackPos[7] = enemy_->GetWorldTransformEnemyAttackCollision7();
+		EnemyAttackPos[8] = enemy_->GetWorldTransformEnemyAttackCollision8();
+		EnemyAttackPos[9] = enemy_->GetWorldTransformEnemyAttackCollision9();
+	}
+
+	{
+		PlayerCollisionPos[0] = playerArm_->GetWorldTransformPlayerCollision0();
+		PlayerCollisionPos[1] = playerArm_->GetWorldTransformPlayerCollision1();
+		PlayerCollisionPos[2] = playerArm_->GetWorldTransformPlayerCollision2();
+		PlayerCollisionPos[3] = playerArm_->GetWorldTransformPlayerCollision3();
+		PlayerCollisionPos[4] = playerArm_->GetWorldTransformPlayerCollision4();
+		PlayerCollisionPos[5] = playerArm_->GetWorldTransformPlayerCollision5();
+		PlayerCollisionPos[6] = playerArm_->GetWorldTransformPlayerCollision6();
+	}
+
+	for (int i = 0; i < 10; i++) {
+		for (int k = 0; k < 7; k++) {
+			if (
+				(EnemyAttackPos[i].x - PlayerCollisionPos[k].x) * (EnemyAttackPos[i].x - PlayerCollisionPos[k].x) +
+				(EnemyAttackPos[i].y - PlayerCollisionPos[k].y) * (EnemyAttackPos[i].y - PlayerCollisionPos[k].y) +
+				(EnemyAttackPos[i].z - PlayerCollisionPos[k].z) * (EnemyAttackPos[i].z - PlayerCollisionPos[k].z)
+				<= (playerArm_->GetScalePlayerCollision().x + enemy_->GetScaleEnemyAttackCollision().x) * (playerArm_->GetScalePlayerCollision().x + enemy_->GetScaleEnemyAttackCollision().x)
+				) {
+				if (EnemyAttackToPlayer == 0) {
+					EnemyAttackToPlayer = 1;
+				}
+			}
+		}
+	}
+
 }
 
 void GameScene::Stop() {
