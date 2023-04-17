@@ -1,5 +1,4 @@
 #include "Enemy.h"
-#include <cmath>
 #include <cassert>
 #include <iostream>
 #include <fstream>
@@ -14,8 +13,6 @@ using namespace std;
 Enemy::~Enemy()
 {
 	SafeDelete(modelAttackRange_);
-	SafeDelete(modelEnemyCollision_);
-	SafeDelete(modelAttackCollision_);
 }
 void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 {
@@ -31,6 +28,10 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	modelAttackRange_ = Model::Create();
 	modelEnemyCollision_ = Model::CreateFromOBJ("C");
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
+
+
+
+
 	//
 	srand((unsigned)time(NULL));
 	waitrandomTime_ = rand() % 61;
@@ -147,6 +148,30 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 			worldTransformAttackCollision_[i].TransferMatrix();
 		}
 	}
+	///
+	worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
+	worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(30.0f) };
+	worldTransform_.translation_ = { -25.0f,-5.0f,0.0f };
+	worldTransform_.Initialize();
+	worldTransform_.matWorld_ = Mat_Identity();
+	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.TransferMatrix();
+	///
+	worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
+	worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
+	worldTransformFace_.translation_ = { -44.0f,27.0f,0.0f };
+	worldTransformFace_.Initialize();
+	worldTransformFace_.matWorld_ = Mat_Identity();
+	worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
+	worldTransformFace_.TransferMatrix();
+	///
+	worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+	worldTransformAttackrange_.rotation_ = { 0.0f,0.0f,0.0f };
+	worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+	worldTransformAttackrange_.Initialize();
+	worldTransformAttackrange_.matWorld_ = Mat_Identity();
+	worldTransformAttackrange_.matWorld_ = MatWorld(worldTransformAttackrange_.scale_, worldTransformAttackrange_.rotation_, worldTransformAttackrange_.translation_);
+	worldTransformAttackrange_.TransferMatrix();
 }
 void Enemy::Update()
 {
@@ -197,6 +222,44 @@ void Enemy::Update()
 			}
 		}
 	}
+	if (input_->TriggerKey(DIK_U)) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			block_ = true;
+		}
+	}
+	if (input_->TriggerKey(DIK_I)) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			motionspeedX = 2.0f;
+			motionspeedY = 4.0f;
+			attackbufferX_ = worldTransform_.translation_.x;
+			attackbufferY_ = worldTransform_.translation_.y;
+			worldTransformAttackrange_.scale_ = { 2.0f,10.0f,1.0f };
+			weakAttack_ = true;
+		}
+	}
+	if (input_->TriggerKey(DIK_O)) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			motionspeedX = 0.5f;
+			motionspeedY = 1.0f;
+			attackbufferX_ = worldTransform_.translation_.x;
+			attackbufferY_ = worldTransform_.translation_.y;
+			worldTransformAttackrange_.scale_ = { 3.0f,10.0f,1.0f };
+			heavyAttack_ = true;
+		}
+	}
+	if (input_->TriggerKey(DIK_P)) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+			attackbufferX_ = -43.0f;
+			attackbufferY_ = -5.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_;
+			worldTransformAttackrange_.translation_.y = attackbufferY_;
+			worldTransformAttackrange_.scale_ = { 2.0f,20.0f,1.0f };
+			stunAttack_ = true;
+		}
+	}
+
+
+
 	if (movementFase_ == 0) {
 		waitTime_ -= 1;
 		if (waitTime_ == 0) {
@@ -226,6 +289,9 @@ void Enemy::Update()
 				for (int i = 0; i < 10; i++) {
 					worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
 				}
+
+				worldTransformAttackrange_.scale_ = { 2.0f,10.0f,1.0f };
+
 				weakAttack_ = true;
 			}
 			movementFase_ = 2;
@@ -241,6 +307,9 @@ void Enemy::Update()
 				for (int i = 0; i < 10; i++) {
 					worldTransformAttackCollision_[i].scale_ = { 3.0f,3.0f,3.0f };
 				}
+
+				worldTransformAttackrange_.scale_ = { 3.0f,10.0f,1.0f };
+
 				heavyAttack_ = true;
 			}
 			movementFase_ = 2;
@@ -256,6 +325,9 @@ void Enemy::Update()
 				for (int i = 0; i < 10; i++) {
 					worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
 				}
+
+				worldTransformAttackrange_.scale_ = { 2.0f,20.0f,1.0f };
+
 				stunAttack_ = true;
 			}
 			movementFase_ = 2;
@@ -292,6 +364,7 @@ void Enemy::Update()
 		worldTransformEnemyCollision_[i].translation_.y = worldTransform_.translation_.y + r[i - 1] * sin(worldTransform_.rotation_.z);
 	}
 	///座標更新
+	///更新
 	//
 	worldTransform_.matWorld_ = Mat_Identity();
 	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -318,6 +391,7 @@ void Enemy::Update()
 		worldTransformAttackCollision_[i].TransferMatrix();
 	}
 }
+}
 void Enemy::Draw(ViewProjection& viewProjection)
 {
 	if (testhit == false) {
@@ -329,6 +403,7 @@ void Enemy::Draw(ViewProjection& viewProjection)
 	if (testhit == true) {
 		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
 	}
+	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 	for (int i = 0; i < EnemyCollisionquantity; i++) {
 		modelEnemyCollision_->Draw(worldTransformEnemyCollision_[i], viewProjection);
@@ -340,6 +415,9 @@ void Enemy::Draw(ViewProjection& viewProjection)
 		for (int i = 0; i < 10; i++) {
 			modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
 		}
+	}
+}
+		modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
 	}
 }
 void Enemy::Motion()

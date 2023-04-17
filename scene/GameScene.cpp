@@ -2,39 +2,30 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "SafeDelete.h"
-
-
 GameScene::GameScene() {}
-
 GameScene::~GameScene() {
 	SafeDelete(enemy_);
 	SafeDelete(playerArm_);
-
 	SafeDelete(modelPlayerFace_);
 	SafeDelete(modelPlayerArm_);
 	SafeDelete(modelEnemy_);
 	SafeDelete(modelEnemyFace_);
 }
-
 void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
-
 	playerArm_ = new PlayerArm();
 	enemy_ = new Enemy();
-
 	modelPlayerArm_ = Model::Create();
-	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
+	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
 	modelPlayerFace_ = Model::Create();
 	modelEnemy_ = Model::Create();
 	modelEnemyFace_ = Model::Create();
-
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
 	viewProjection_.Initialize();
-
 	textureHandleTitle_ = TextureManager::Load("neownch.png");
 	titleSprite_ = Sprite::Create(textureHandleTitle_, { 0, 0 });
 	textureHandleStage1_ = TextureManager::Load("stage1.png");
@@ -58,20 +49,16 @@ void GameScene::Initialize() {
 	soundHandleNext_ = audio_->LoadWave("next.mp3");
 	soundHandleKo_ = audio_->LoadWave("ko.mp3");
 }
-
 void GameScene::Finalize() {
 	delete titleSprite_;
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
 	delete nyaSprite_;
-	delete batinSprite_;
-	delete donSprite_;
 	delete koSprite_;
 }
-
 void GameScene::Update() {
-	
+
 	switch (scene)
 	{
 	case 0://タイトル
@@ -81,7 +68,6 @@ void GameScene::Update() {
 			scene = 1;
 		}
 		break;
-
 	case 1://ステージ１
 		if (input_->TriggerKey(DIK_T)) {
 			SpeedBuffer = playerArm_->GetSpeed();
@@ -92,6 +78,12 @@ void GameScene::Update() {
 		enemy_->Update();
 		CheckCollision();
 		viewProjection_.UpdateMatrix();
+		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			fontFlag_ = 1;
+		}
+		if (fontFlag_ == 1) {
+			fontTimer_++;
+		}
 
 		if (input_->PushKey(DIK_K) || input_->TriggerKey(DIK_L)) {
 			if (fontTimer_ <= 13) {
@@ -102,8 +94,18 @@ void GameScene::Update() {
 			fontFlag_ = 0;
 			fontTimer_ = 0;
 		}
+		//k.o
 		if (input_->TriggerKey(DIK_G)) {
 			koFlag_ = 1;
+			if (koFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
+		}
+		if (input_->TriggerKey(DIK_SPACE)) {
+			audio_->PlayWave(soundHandleNext_, false, 3);
+			koFlag_ = 0;
+			scene = 2;
+		}
 			audio_->PlayWave(soundHandleKo_, false, 3);
 		}
 		if (koFlag_ == 1) {
@@ -123,7 +125,21 @@ void GameScene::Update() {
 		playerArm_->Update();
 		enemy_->Update();
 		viewProjection_.UpdateMatrix();
-
+		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			fontFlag_ = 1;
+		}
+		if (fontFlag_ == 1) {
+			fontTimer_++;
+		}
+		if (fontTimer_ == 13) {
+			fontFlag_ = 0;
+			fontTimer_ = 0;
+		}
+		if (input_->TriggerKey(DIK_SPACE)) {
+			audio_->PlayWave(soundHandleNext_, false, 3);
+			scene = 3;
+		}
+		//k.o
 		if (input_->TriggerKey(DIK_G)) {
 			koFlag_ = 1;
 			if (koFlag_ == 1) {
@@ -151,7 +167,22 @@ void GameScene::Update() {
 		playerArm_->Update();
 		enemy_->Update();
 		viewProjection_.UpdateMatrix();
-
+		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
+			fontFlag_ = 1;
+		}
+		if (fontFlag_ == 1) {
+			fontTimer_++;
+		}
+		if (fontTimer_ == 13) {
+			fontFlag_ = 0;
+			fontTimer_ = 0;
+		}
+		if (input_->TriggerKey(DIK_SPACE)) {
+			audio_->PlayWave(soundHandleNext_, false, 3);
+			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
+			scene = 0;
+		}
+		//k.o
 		if (input_->TriggerKey(DIK_G)) {
 			koFlag_ = 1;
 			if (koFlag_ == 1) {
@@ -172,22 +203,22 @@ void GameScene::Update() {
 		break;
 	}
 }
-
 void GameScene::Draw() {
-
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 	//描画前処理
 	Sprite::PreDraw(commandList);
-
 	switch (scene)
 	{
-
 	case 0:// タイトル
 		titleSprite_->Draw();
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
+		if (fontTimer_ > 0) {
+			nyaSprite_->Draw();
+		}
+		//k.o
 		if (fontTimer_ >= 1 ) {
 			nyaSprite_->Draw();
 		}
@@ -218,9 +249,8 @@ void GameScene::Draw() {
 	dxCommon_->ClearDepthBuffer();
 	//描画後処理
 	Sprite::PostDraw();
-
 	Model::PreDraw(commandList);
-	
+
 	switch (scene)
 	{
 	case 0:// タイトル
@@ -381,7 +411,6 @@ void GameScene::CollisionEnemyAttackToPlayer()
 }
 
 void GameScene::Stop() {
-
 	if (stop == true) {
 		stopTimer_ -= 1;
 		if (stopTimer_ > 0) {

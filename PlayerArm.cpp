@@ -35,8 +35,8 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	TesttextureHandle_ = TextureManager::Load("blocktest.png");
 	modelAttackRange_ = Model::Create();
 
-	modelPlayerCollision_ = Model::CreateFromOBJ("C");
-	modelAttackCollision_ = Model::CreateFromOBJ("C");
+	modelPlayerCollision_ = Model::CreateFromOBJ("cathand");
+	modelAttackCollision_ = Model::CreateFromOBJ("cathand");
 
 	//ƒtƒ@ƒCƒ‹“Ç‚Ýž‚Ý
 	ifstream playerfile("Text/Player.txt");
@@ -348,9 +348,9 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 
-	for (int i = 0; i < PlayerCollisionquantity; i++) {
+	/*for (int i = 0; i < PlayerCollisionquantity; i++) {
 		modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
-	}
+	}*/
 
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {

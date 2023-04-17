@@ -71,10 +71,12 @@ private:
 	//回転角
 	Vector3 radius_{ 0.0f,0.0f,30.0f };
 
+
 	//距離
 	float r[EnemyCollisionquantity];
 	//ラジアン角度
 	double radian_;
+	int movementFase = 0; //0:待機中 1:行動
 	//行動
 	int movementFase_ = 0; //0:待機中 1:行動決定　2:行動中 3:待機移行
 	int waitbaseTime_ = 120;
@@ -124,3 +126,4 @@ private:
 //まず、点Aの初期位置から中心座標Bまでの距離rを求めます。 r = √(X ^ 2 + Y ^ 2)
 //次に、点Aが1度動いた時の移動量ΔxとΔyを求めます。 Δx = r * sin(1°) Δy = r * cos(1°)
 //以上の式で求められます。1
+};
