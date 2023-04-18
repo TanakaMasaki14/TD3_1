@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "SafeDelete.h"
+
 GameScene::GameScene() {}
 GameScene::~GameScene() {
 	SafeDelete(enemy_);
@@ -11,6 +12,7 @@ GameScene::~GameScene() {
 	SafeDelete(modelEnemy_);
 	SafeDelete(modelEnemyFace_);
 }
+
 void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -19,13 +21,14 @@ void GameScene::Initialize() {
 	playerArm_ = new PlayerArm();
 	enemy_ = new Enemy();
 	modelPlayerArm_ = Model::Create();
-	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
+	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
 	modelPlayerFace_ = Model::Create();
 	modelEnemy_ = Model::Create();
 	modelEnemyFace_ = Model::Create();
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
 	viewProjection_.Initialize();
+
 	textureHandleTitle_ = TextureManager::Load("neownch.png");
 	titleSprite_ = Sprite::Create(textureHandleTitle_, { 0, 0 });
 	textureHandleStage1_ = TextureManager::Load("stage1.png");
@@ -49,6 +52,7 @@ void GameScene::Initialize() {
 	soundHandleNext_ = audio_->LoadWave("next.mp3");
 	soundHandleKo_ = audio_->LoadWave("ko.mp3");
 }
+
 void GameScene::Finalize() {
 	delete titleSprite_;
 	delete stage1Sprite_;
@@ -57,6 +61,7 @@ void GameScene::Finalize() {
 	delete nyaSprite_;
 	delete koSprite_;
 }
+
 void GameScene::Update() {
 
 	switch (scene)
@@ -105,8 +110,6 @@ void GameScene::Update() {
 			audio_->PlayWave(soundHandleNext_, false, 3);
 			koFlag_ = 0;
 			scene = 2;
-		}
-			audio_->PlayWave(soundHandleKo_, false, 3);
 		}
 		if (koFlag_ == 1) {
 			if (input_->TriggerKey(DIK_SPACE)) {
@@ -219,7 +222,7 @@ void GameScene::Draw() {
 			nyaSprite_->Draw();
 		}
 		//k.o
-		if (fontTimer_ >= 1 ) {
+		if (fontTimer_ >= 1) {
 			nyaSprite_->Draw();
 		}
 		batinSprite_->Draw();

@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "DebugText.h"
@@ -9,33 +8,41 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
 #include "PlayerArm.h"
 #include "Enemy.h"
-
+/// <summary>
+/// ゲームシーン
+/// </summary>
 class GameScene {
-
-  public: // メンバ関数
+public: // メンバ関数
+	/// <summary>
+	/// コンストクラタ
+	/// </summary>
 	GameScene();
 	~GameScene();
-	//初期化
 	void Initialize();
-	//終了
 	void Finalize();
-	//毎フレーム処理
 	void Update();
-	//描画
 	void Draw();
 	void CheckCollision();
 	void CollisionPlayerAttackToEnemy();
 	void CollisionEnemyAttackToPlayer();
 	void Stop();
 
-  private: // メンバ変数
+private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
+	PlayerArm* playerArm_ = nullptr;
+	Enemy* enemy_ = nullptr;
+
+	ViewProjection viewProjection_;
+	Model* modelPlayerArm_ = nullptr;
+	uint32_t textureHandlePlayerArm_ = 0;
+	Model* modelPlayerFace_ = nullptr;
+	Model* modelEnemy_ = nullptr;
+	Model* modelEnemyFace_ = nullptr;
 
 	uint32_t textureHandleTitle_ = 0;
 	uint32_t textureHandleStage1_ = 0;
@@ -58,15 +65,6 @@ class GameScene {
 	Sprite* batinSprite_ = new Sprite;
 	Sprite* donSprite_ = new Sprite;
 	Sprite* koSprite_ = new Sprite;
-
-	uint32_t textureHandlePlayerArm_ = 0;
-	PlayerArm* playerArm_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	Model* modelPlayerArm_ = nullptr;
-	Model* modelPlayerFace_ = nullptr;
-	Model* modelEnemy_ = nullptr;
-	Model* modelEnemyFace_ = nullptr;
-	ViewProjection viewProjection_;
 
 	int scene = 0;
 	int shakeFlag_ = 0;
