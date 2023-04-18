@@ -204,7 +204,7 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_B)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			block_ = true;
 			audio_->PlayWave(soundHandleBlock_, false, 3);
 			movement_ = false;
@@ -212,7 +212,7 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_K)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
@@ -233,7 +233,7 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_L)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
 
@@ -253,7 +253,7 @@ void PlayerArm::Update()
 	}
 
 	if (input_->TriggerKey(DIK_N)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			attackbufferX_ = 43.0f;
 			attackbufferY_ = -5.0f;
 
@@ -272,20 +272,7 @@ void PlayerArm::Update()
 		}
 	}
 
-
-	debugText_->SetPos(0, 0);
-	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
-
-	debugText_->SetPos(0, 30);
-	debugText_->Printf("translation:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-
-	debugText_->SetPos(0, 60);
-	debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
-
-	debugText_->SetPos(0, 80);
-	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d", block_, weakAttack_, heavyAttack_, stunAttack_);
-
-	debugText_->SetPos(0, 100);
+	debugText_->SetPos(5, 100);
 	debugText_->Printf("hp=%d", hp);
 
 
@@ -391,6 +378,7 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 void PlayerArm::Motion()
 {
 	Block();
+	GetBlockMotion();
 	WeakAttack();
 	HeavyAttack();
 	StunAttack();
@@ -403,7 +391,58 @@ void PlayerArm::Motion()
 //ブロックを食らったら
 void PlayerArm::GetBlock()
 {
+	if (weakAttack_ == true) {
+		weakStartmotionFrame_ = 3;
+		weakAttackingFrame_ = 10;
+		weakEndmotionFrame_ = 6;
 
+		motionspeedX = 0.0f;
+		motionspeedY = 0.0f;
+
+		bufferpointX = 0.0f;
+		bufferpointY = 0.0f;
+		attackbufferX_ = 0.0f;
+		attackbufferY_ = 0.0f;
+		weakAttack_ = false;
+	}
+
+	if (heavyAttack_ == true) {
+		heavyStartmotionFrame_ = 12;
+		heavyAttackingFrame_ = 10;
+		heavyEndmotionFrame_ = 6;
+
+		motionspeedX = 0.0f;
+		motionspeedY = 0.0f;
+
+		bufferpointX = 0.0f;
+		bufferpointY = 0.0f;
+		attackbufferX_ = 0.0f;
+		attackbufferY_ = 0.0f;
+
+		heavyAttack_ = false;
+	}
+
+	if (stunAttack_ == true) {
+		stunStartmotionFrame_ = 20;
+		stunAttackingFrame_ = 60;
+		stunEndmotionFrame_ = 12;
+
+		stunAttack_ = false;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+		worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+	}
+
+	attackrange_ = false;
+
+	getblockbufferpoint_.x = worldTransform_.translation_.x;
+	getblockbufferpoint_.y = worldTransform_.translation_.y;
+
+	worldTransform_.rotation_ = { 0,0,-0.5f };
+
+	getblock_ = true;
 }
 
 //弱攻撃に当たったら
@@ -477,6 +516,37 @@ void PlayerArm::Block()
 			blockEndmotionFlame_ = 6;
 			block_ = false;
 			movement_ = true;
+		}
+	}
+}
+
+void PlayerArm::GetBlockMotion()
+{
+	if (getblock_) {
+		getblockFrame_ -= 1;
+		if (getblockFrame_ > 10) {
+			//移動
+			if ((worldTransform_.translation_.x - getblockbufferpoint_.x) < 20) {
+				worldTransform_.translation_.x += 4.0f;
+			}
+
+			//回転
+			if (worldTransform_.rotation_.z > -2.0f) {
+				worldTransform_.rotation_.z -= 0.5f;
+			}
+
+		}
+		if (getblockFrame_ <= 10 && getblockFrame_ > 0) {
+			if (worldTransform_.rotation_.z < -0.5) {
+				worldTransform_.rotation_.z += 0.5f;
+			}
+		}
+		if (getblockFrame_ == 0) {
+			getblockbufferpoint_ = { 0,0 };
+			getblockFrame_ = 60;
+			getblock_ = false;
+			movement_ = true;
+
 		}
 	}
 }

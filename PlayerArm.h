@@ -145,6 +145,13 @@ private:
 	int blockChanceFrame_ = 60;
 	int blockEndmotionFlame_ = 6;
 
+	//ÉuÉçÉbÉNÇ≥ÇÍÇΩ
+	void GetBlockMotion();
+	bool getblock_ = false;
+
+	Vector2 getblockbufferpoint_;
+
+	int getblockFrame_ = 60;
 
 	float motionspeedX = 0.0f;
 	float motionspeedY = 0.0f;

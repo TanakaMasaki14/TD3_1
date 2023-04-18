@@ -204,7 +204,7 @@ void GameScene::Update() {
 			}
 		}
 		break;
-	}
+	}a
 }
 void GameScene::Draw() {
 	// コマンドリストの取得
@@ -230,8 +230,6 @@ void GameScene::Draw() {
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
-		debugText_->SetPos(0, 600);
-		debugText_->Printf("fontTimer = %d", fontTimer_);
 		break;
 	case 2:// ステージ2
 		stage2Sprite_->Draw();
@@ -301,9 +299,6 @@ void GameScene::CheckCollision()
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == true && enemy_->GetIsStun() == false) {
 				playerArm_->GetHeavy();
 			}
-
-			//
-			//
 
 			//スタン攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == true) {
