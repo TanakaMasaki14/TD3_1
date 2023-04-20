@@ -52,6 +52,8 @@ private: // メンバ変数
 	uint32_t textureHandleBatin_ = 0;
 	uint32_t textureHandleDon_ = 0;
 	uint32_t textureHandleKo_ = 0;
+	uint32_t textureHandleClear_ = 0;
+
 	uint32_t soundHandleTitle_ = 0;
 	uint32_t soundHandleNext_ = 0;
 	uint32_t soundHandleLoop_ = 0;
@@ -66,6 +68,7 @@ private: // メンバ変数
 	Sprite* batinSprite_ = new Sprite;
 	Sprite* donSprite_ = new Sprite;
 	Sprite* koSprite_ = new Sprite;
+	Sprite* clearSprite_ = new Sprite;
 
 	int scene = 0;
 	int shakeFlag_ = 0;
