@@ -204,7 +204,7 @@ void GameScene::Update() {
 			}
 		}
 		break;
-	}a
+	}
 }
 void GameScene::Draw() {
 	// コマンドリストの取得

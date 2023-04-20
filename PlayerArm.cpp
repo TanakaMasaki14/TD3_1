@@ -53,7 +53,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	soundHandleWeak_ = audio_->LoadWave("weak.mp3");
 	soundHandleHeavy_ = audio_->LoadWave("heavy.mp3");
 	soundHandleStun_ = audio_->LoadWave("stun.mp3");
-	//soundHandleHit_ = audio_->LoadWave("hit.mp3");
+	soundHandleHit_ = audio_->LoadWave("hit.mp3");
 
 	///˜r
 	{
@@ -449,12 +449,14 @@ void PlayerArm::GetBlock()
 void PlayerArm::GetWeak()
 {
 	testhit = true;
+	audio_->PlayWave(soundHandleHit_, false, 3);
 }
 
 //‹­UŒ‚‚É“–‚½‚Á‚½‚ç
 void PlayerArm::GetHeavy()
 {
 	testhit = true;
+	audio_->PlayWave(soundHandleHit_, false, 3);
 }
 
 //ƒXƒ^ƒ“UŒ‚‚É“–‚½‚Á‚½‚ç
