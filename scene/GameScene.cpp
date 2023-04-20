@@ -20,6 +20,8 @@ void GameScene::Initialize() {
 	playerArm_ = new PlayerArm();
 	enemy_ = new Enemy();
 
+	playerArm_->SetEnemy(enemy_);
+	enemy_->SetPlayerArm(playerArm_);
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -38,7 +40,7 @@ void GameScene::Initialize() {
 
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 
-	enemy_->Initialize(modelEnemy_,modelEnemyFace_,textureHandlePlayerArm_);
+	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
 
 	viewProjection_.Initialize();
 }
@@ -54,7 +56,7 @@ void GameScene::Update() {
 	debugText_->SetPos(0, 120);
 	debugText_->Printf("%d", PlayerAttackToEnemy);
 
-	
+
 
 	playerArm_->Update();
 	enemy_->Update();
@@ -120,7 +122,7 @@ void GameScene::CheckCollision()
 	CollisionEnemyAttackToPlayer();
 	///プレイヤーから敵への攻撃
 	{
-		
+
 		//ヒット時
 		if (PlayerAttackToEnemy == 1) {
 
@@ -175,7 +177,7 @@ void GameScene::CheckCollision()
 				playerArm_->GetHeavy();
 			}
 
-			
+
 			//スタン攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == true) {
 				playerArm_->GetStun();

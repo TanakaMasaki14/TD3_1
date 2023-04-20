@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 
+#include "Enemy.h"
 #include "Procession.h"
 #include <corecrt_math_defines.h>
 using namespace MathUtility;
@@ -41,10 +42,30 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	//ÉtÉ@ÉCÉãì«Ç›çûÇ›
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
-		string stringhp;
+		string stringhp, stringweakPower, stringheavyPower;
 
 		getline(playerfile, stringhp);
+		getline(playerfile, stringweakPower);
+		getline(playerfile, stringheavyPower);
+
+		int pos1 = stringhp.find(":");
+		int pos2 = stringweakPower.find(":");
+		int pos3 = stringheavyPower.find(":");
+
+		if (pos1 != string::npos) {
+			stringhp = stringhp.substr(pos1 + 1);
+		}
+		if (pos2 != string::npos) {
+			stringweakPower = stringweakPower.substr(pos2 + 1);
+		}
+		if (pos3 != string::npos) {
+			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+		}
+
+
 		hp = stoi(stringhp);
+		weakAttackPower_ = stoi(stringweakPower);
+		heavyAttackPower_ = stoi(stringheavyPower);
 
 		playerfile.close();
 	}
@@ -165,9 +186,9 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 		//
 		for (int i = 0; i < 10; i++) {
-			worldTransformAttackCollision_[i].scale_ = {0.0f,0.0f,0.0f};
-			worldTransformAttackCollision_[i].rotation_ = {0.0f,0.0f,0.0f};
-			worldTransformAttackCollision_[i].translation_ = {1000.0f,0.0f,0.0f};
+			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
 
 			worldTransformAttackCollision_[i].Initialize();
 
@@ -265,7 +286,7 @@ void PlayerArm::Update()
 
 
 	debugText_->SetPos(0, 0);
-	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y,  worldTransform_.rotation_.z);
+	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
 
 	debugText_->SetPos(0, 30);
 	debugText_->Printf("translation:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
@@ -277,7 +298,7 @@ void PlayerArm::Update()
 	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d,getblock:%d", block_, weakAttack_, heavyAttack_, stunAttack_, getblock_);
 
 	debugText_->SetPos(0, 100);
-	debugText_->Printf("hp=%d", hp);
+	debugText_->Printf("hp=%d weakPower=%d heavyPower=%d", hp, weakAttackPower_, heavyAttackPower_);
 
 
 	///âÒÇ∑ï˚å¸ñYÇÍÇ»Ç¢ÇÊÇ§Ç…
@@ -289,7 +310,7 @@ void PlayerArm::Update()
 		worldTransform_.rotation_.z -= 0.1f;
 	}
 
-	
+
 
 
 	///ÉÇÅ[ÉVÉáÉìÇ‹Ç∆Çﬂ
@@ -303,7 +324,7 @@ void PlayerArm::Update()
 			testTime = 30;
 		}
 	}
-	
+
 
 	///ìñÇΩÇËîªíËÉGÉäÉAçXêV(rÇÕ-1ÇµÇΩÇ‡ÇÃÇ™ê≥ÇµÇ¢)
 	//0
@@ -407,6 +428,7 @@ void PlayerArm::GetBlock()
 		bufferpointY = 0.0f;
 		attackbufferX_ = 0.0f;
 		attackbufferY_ = 0.0f;
+
 		weakAttack_ = false;
 	}
 
@@ -427,9 +449,13 @@ void PlayerArm::GetBlock()
 	}
 
 	if (stunAttack_ == true) {
+		prevstunAttack_ = stunAttack_;
+
 		stunStartmotionFrame_ = 20;
 		stunAttackingFrame_ = 60;
 		stunEndmotionFrame_ = 12;
+
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
 
 		stunAttack_ = false;
 	}
@@ -453,12 +479,14 @@ void PlayerArm::GetBlock()
 void PlayerArm::GetWeak()
 {
 	testhit = true;
+	hp = hp - enemy_->GetWeakPower();
 }
 
 //ã≠çUåÇÇ…ìñÇΩÇ¡ÇΩÇÁ
 void PlayerArm::GetHeavy()
 {
 	testhit = true;
+	hp = hp - enemy_->GetHeavyPower();
 }
 
 //ÉXÉ^ÉìçUåÇÇ…ìñÇΩÇ¡ÇΩÇÁ
@@ -529,15 +557,17 @@ void PlayerArm::GetBlockMotion()
 		getblockFrame_ -= 1;
 		if (getblockFrame_ > 10) {
 			//à⁄ìÆ
-			if ((worldTransform_.translation_.x - getblockbufferpoint_.x) < 20) {
-				worldTransform_.translation_.x += 4.0f;
+			if (prevstunAttack_ == false) {
+				if ((worldTransform_.translation_.x - getblockbufferpoint_.x) < 20) {
+					worldTransform_.translation_.x += 4.0f;
+				}
 			}
 
 			//âÒì]
 			if (worldTransform_.rotation_.z > -2.0f) {
 				worldTransform_.rotation_.z -= 0.5f;
 			}
-			
+
 		}
 		if (getblockFrame_ <= 10 && getblockFrame_ > 0) {
 			if (worldTransform_.rotation_.z < -0.5) {
@@ -545,6 +575,10 @@ void PlayerArm::GetBlockMotion()
 			}
 		}
 		if (getblockFrame_ == 0) {
+			if (prevstunAttack_ == true) {
+				prevstunAttack_ = false;
+			}
+
 			getblockbufferpoint_ = { 0,0 };
 			getblockFrame_ = 60;
 			getblock_ = false;
@@ -560,7 +594,7 @@ void PlayerArm::WeakAttack()
 {
 	if (weakAttack_) {
 		weakStartmotionFrame_ -= 1;
-	
+
 		///é„çUåÇëOÉÇÅ[ÉVÉáÉì
 		if (weakStartmotionFrame_ > 0) {
 			//à⁄ìÆ
@@ -606,7 +640,7 @@ void PlayerArm::WeakAttack()
 				motionspeedY = 0;
 				worldTransform_.translation_.y = bufferpointY - 13.0f;
 			}
-			
+
 			//âÒì]
 			worldTransform_.rotation_.z += 0.4f;
 			if (worldTransform_.rotation_.z > 0.6f) {
@@ -633,23 +667,23 @@ void PlayerArm::WeakAttack()
 
 			worldTransformAttackCollision_[4].translation_.x = worldTransformAttackrange_.translation_.x;
 			worldTransformAttackCollision_[4].translation_.y = worldTransformAttackrange_.translation_.y - 8.0f;
-			
+
 		}
 
-		
+
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ == 0) {
 			bufferpointX = worldTransform_.translation_.x;
 			bufferpointY = worldTransform_.translation_.y;
 
 			for (int i = 0; i < 10; i++) {
-				worldTransformAttackCollision_[i].translation_ = {1000.f,0.0f,0.0f};
-				worldTransformAttackCollision_[i].scale_ = {0.0f,0.0f,0.0f};
+				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			}
 
 			//çUåÇîªíËè¡ñ≈
 			attackrange_ = false;
 		}
-		
+
 
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0) {
 			weakEndmotionFrame_ -= 1;
@@ -703,8 +737,8 @@ void PlayerArm::HeavyAttack()
 
 		///ã≠çUåÇëOÉÇÅ[ÉVÉáÉì
 		if (heavyStartmotionFrame_ > 0) {
-			worldTransform_.translation_.y += motionspeedY; 
-			worldTransform_.translation_.x -= motionspeedX; 
+			worldTransform_.translation_.y += motionspeedY;
+			worldTransform_.translation_.x -= motionspeedX;
 			motionspeedX += 0.1f;
 
 			//âÒì]

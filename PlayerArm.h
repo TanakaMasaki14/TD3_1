@@ -10,12 +10,13 @@
 #include "Audio.h"
 
 
+class Enemy;
 
 class PlayerArm {
 public:
 	~PlayerArm();
 
-	void Initialize(Model* model,Model* modelFace,uint32_t textureHandle);
+	void Initialize(Model* model, Model* modelFace, uint32_t textureHandle);
 
 	void Update();
 
@@ -78,6 +79,15 @@ public:
 
 	void SetSpeed(Vector3 Speed);
 
+	void SetEnemy(Enemy* enemy) {
+		enemy_ = enemy;
+	}
+
+	//攻撃力ゲッター
+	int GetWeakPower() { return weakAttackPower_; }
+
+	int GetHeavyPower() { return heavyAttackPower_; }
+
 private:
 	Model* model_ = nullptr;
 
@@ -91,9 +101,11 @@ private:
 
 	Input* input_ = nullptr;
 
-	DebugText* debugText_=nullptr;
+	DebugText* debugText_ = nullptr;
 
 	Audio* audio_ = nullptr;
+
+	Enemy* enemy_ = nullptr;
 
 private:
 	WorldTransform worldTransform_;
@@ -161,6 +173,8 @@ private:
 	void WeakAttack();
 	bool weakAttack_ = false;
 
+
+
 	int weakStartmotionFrame_ = 3;
 	int weakAttackingFrame_ = 10;
 	int weakEndmotionFrame_ = 6;
@@ -169,6 +183,8 @@ private:
 	void HeavyAttack();
 	bool heavyAttack_ = false;
 
+
+
 	int heavyStartmotionFrame_ = 12;
 	int heavyAttackingFrame_ = 10;
 	int heavyEndmotionFrame_ = 6;
@@ -176,14 +192,18 @@ private:
 	//スタン
 	void StunAttack();
 	bool stunAttack_ = false;
+	bool prevstunAttack_ = false;
 
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
 
 
+	///テキストから変更可能数値
 	//体力
 	int hp = 0;
-
-
+	//弱攻撃威力
+	int weakAttackPower_;
+	//強攻撃威力
+	int heavyAttackPower_;
 };

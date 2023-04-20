@@ -9,6 +9,8 @@
 #include "Input.h"
 #include "Audio.h"
 
+class PlayerArm;
+
 
 class Enemy
 {
@@ -69,6 +71,15 @@ public:
 
 	Vector3 GetScaleEnemyAttackCollision();
 
+	void SetPlayerArm(PlayerArm* playerArm) {
+		playerarm_ = playerArm;
+	}
+
+	//攻撃力ゲッター
+	int GetWeakPower() { return weakAttackPower_; }
+
+	int GetHeavyPower() { return heavyAttackPower_; }
+
 private:
 	Model* model_ = nullptr;
 
@@ -85,6 +96,8 @@ private:
 	DebugText* debugText_ = nullptr;
 
 	Audio* audio_ = nullptr;
+
+	PlayerArm* playerarm_ = nullptr;
 private:
 	WorldTransform worldTransform_;
 
@@ -106,7 +119,7 @@ private:
 
 	//回転角
 	Vector3 radius_{ 0.0f,0.0f,30.0f };
-	
+
 	//距離
 	float r[EnemyCollisionquantity];
 
@@ -146,6 +159,15 @@ private:
 	float bufferpointX = 0.0f;
 	float bufferpointY = 0.0f;
 
+	//ブロックされた
+	void GetBlockMotion();
+	bool getblock_ = false;
+
+	Vector2 getblockbufferpoint_;
+
+	int getblockFrame_ = 60;
+
+
 	//弱攻撃
 	void WeakAttack();
 	bool weakAttack_ = false;
@@ -165,6 +187,7 @@ private:
 	//スタン
 	void StunAttack();
 	bool stunAttack_ = false;
+	bool prevstunAttack_ = false;
 
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
@@ -173,7 +196,10 @@ private:
 
 	//体力
 	int hp = 0;
-
+	//弱攻撃威力
+	int weakAttackPower_;
+	//強攻撃威力
+	int heavyAttackPower_;
 };
 
 //中心座標Bからx座標がX cm、y座標がY cm離れている点AがBを中心に扇状に90°動いた時、1°毎の点Aの移動量を求める式は以下の通りです。
