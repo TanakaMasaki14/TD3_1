@@ -56,6 +56,7 @@ private: // メンバ変数
 	uint32_t soundHandleNext_ = 0;
 	uint32_t soundHandleLoop_ = 0;
 	uint32_t soundHandleKo_ = 0;
+	uint32_t soundHandleClear_ = 0;
 
 	Sprite* titleSprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;

@@ -51,6 +51,7 @@ void GameScene::Initialize() {
 	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 	soundHandleNext_ = audio_->LoadWave("next.mp3");
 	soundHandleKo_ = audio_->LoadWave("ko.mp3");
+	//soundHandleClear_ = audio_->LoadWave("clear.mp3");
 }
 
 void GameScene::Finalize() {
@@ -182,8 +183,7 @@ void GameScene::Update() {
 		}
 		if (input_->TriggerKey(DIK_SPACE)) {
 			audio_->PlayWave(soundHandleNext_, false, 3);
-			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
-			scene = 0;
+			scene = 4;
 		}
 		//k.o
 		if (input_->TriggerKey(DIK_G)) {
@@ -200,10 +200,17 @@ void GameScene::Update() {
 			if (input_->TriggerKey(DIK_SPACE)) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
 				koFlag_ = 0;
-				scene = 0;
+				scene = 4;
 			}
 		}
 		break;
+	case 4://クリア画面
+		//audio_->PlayWave(soundHandleClear_, false, 1);
+		if (input_->TriggerKey(DIK_SPACE)) {
+			audio_->PlayWave(soundHandleNext_, false, 3);
+			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
+			scene = 0;
+		}
 	}
 }
 void GameScene::Draw() {
@@ -242,6 +249,9 @@ void GameScene::Draw() {
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
+		break;
+	case 4:// クリア画面
+		//_->Draw();
 		break;
 	}
 	// デバッグテキストの描画
