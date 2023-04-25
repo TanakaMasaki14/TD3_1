@@ -74,6 +74,8 @@ public:
 
 	const bool& GetIsMovement() const { return movement_; }
 
+	int GetHp() { return hp; }
+
 	//アームスピードのゲッター,セッター
 	Vector3 GetSpeed() { return Armspeed_; }
 

@@ -75,6 +75,8 @@ public:
 		playerarm_ = playerArm;
 	}
 
+	int GetHp() { return hp; }
+
 	//UŒ‚—ÍƒQƒbƒ^[
 	int GetWeakPower() { return weakAttackPower_; }
 
