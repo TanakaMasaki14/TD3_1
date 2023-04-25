@@ -34,7 +34,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	audio_ = Audio::GetInstance();
 
 	modelAttackRange_ = Model::Create();
-
+	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
 	modelPlayerCollision_ = Model::CreateFromOBJ("C");
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
 
@@ -57,9 +57,9 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///òr
 	{
-		worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
+		worldTransform_.scale_ = { 3.0f,4.0f,3.0f };
 		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
-		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
+		worldTransform_.translation_ = { 37.0f,-5.0f,0.0f };
 
 		worldTransform_.Initialize();
 
@@ -71,7 +71,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///äÁ
 	{
-		worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
+		worldTransformFace_.scale_ = { 3.0f,3.0f,3.0f };
 		worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
 		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
 
@@ -346,7 +346,7 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 {
 	if (testhit == false) {
 		if (input_->PushKey(DIK_Q) == 0) {
-			model_->Draw(worldTransform_, viewProjection, textureHandle_);
+			model_->Draw(worldTransform_, viewProjection);
 		}
 	}
 
@@ -355,11 +355,11 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
 	}
 
-	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
+	modelFace_->Draw(worldTransformFace_, viewProjection);
 
-	for (int i = 0; i < PlayerCollisionquantity; i++) {
-		modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
-	}
+	//for (int i = 0; i < PlayerCollisionquantity; i++) {
+	//	modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
+	//}
 
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
@@ -615,7 +615,7 @@ void PlayerArm::WeakAttack()
 			//çUåÇîªíËà íu
 			attackrange_ = true;
 
-			worldTransformAttackrange_.translation_.x = attackbufferX_ - 30.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ - 40.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 
 			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;
@@ -754,7 +754,7 @@ void PlayerArm::HeavyAttack()
 			//çUåÇîªíËà íu
 			attackrange_ = true;
 
-			worldTransformAttackrange_.translation_.x = attackbufferX_ - 35.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ - 45.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 
 			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;

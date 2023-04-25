@@ -80,6 +80,8 @@ private:
 
 	Model* modelAttackCollision_ = nullptr;
 
+	Model* modelPlayerArm_ = nullptr;
+
 	Input* input_ = nullptr;
 
 	DebugText* debugText_ = nullptr;

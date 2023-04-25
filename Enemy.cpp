@@ -34,11 +34,9 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
 	audio_ = Audio::GetInstance();
-
 	modelAttackRange_ = Model::Create();
-
+	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
 	modelEnemyCollision_ = Model::CreateFromOBJ("C");
-
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
 
 
@@ -66,9 +64,9 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 
 	///òr
 	{
-		worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
+		worldTransform_.scale_ = { 3.0f,4.0f,3.0f };
 		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(30.0f) };
-		worldTransform_.translation_ = { -25.0f,-5.0f,0.0f };
+		worldTransform_.translation_ = { -35.0f,-5.0f,0.0f };
 
 		worldTransform_.Initialize();
 
@@ -411,7 +409,7 @@ void Enemy::Draw(ViewProjection& viewProjection)
 {
 	if (testhit == false) {
 		if (input_->PushKey(DIK_Q) == 0) {
-			model_->Draw(worldTransform_, viewProjection, textureHandle_);
+			model_->Draw(worldTransform_, viewProjection);
 		}
 	}
 
@@ -422,18 +420,18 @@ void Enemy::Draw(ViewProjection& viewProjection)
 
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 
-	for (int i = 0; i < EnemyCollisionquantity; i++) {
-		modelEnemyCollision_->Draw(worldTransformEnemyCollision_[i], viewProjection);
-	}
+	//for (int i = 0; i < EnemyCollisionquantity; i++) {
+	//	modelEnemyCollision_->Draw(worldTransformEnemyCollision_[i], viewProjection);
+	//}
 
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
 			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
 		}
 
-		for (int i = 0; i < 10; i++) {
-			modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
-		}
+		//for (int i = 0; i < 10; i++) {
+		//	modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
+		//}
 	}
 }
 
@@ -831,7 +829,7 @@ void Enemy::WeakAttack()
 			//çUåÇîªíËà íu
 			attackrange_ = true;
 
-			worldTransformAttackrange_.translation_.x = attackbufferX_ + 30.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ + 45.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 
 			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;
@@ -975,7 +973,7 @@ void Enemy::HeavyAttack()
 			//çUåÇîªíËà íu
 			attackrange_ = true;
 
-			worldTransformAttackrange_.translation_.x = attackbufferX_ + 35.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ + 45.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 
 			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;

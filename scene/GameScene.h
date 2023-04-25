@@ -48,9 +48,9 @@ private: // メンバ変数
 	uint32_t textureHandleStage1_ = 0;
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
-	uint32_t textureHandleNya_ = 0;
-	uint32_t textureHandleBatin_ = 0;
-	uint32_t textureHandleDon_ = 0;
+	//uint32_t textureHandleNya_ = 0;
+	//uint32_t textureHandleBatin_ = 0;
+	//uint32_t textureHandleDon_ = 0;
 	uint32_t textureHandleKo_ = 0;
 	uint32_t textureHandleClear_ = 0;
 
@@ -64,9 +64,9 @@ private: // メンバ変数
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;
-	Sprite* nyaSprite_ = new Sprite;
-	Sprite* batinSprite_ = new Sprite;
-	Sprite* donSprite_ = new Sprite;
+	//Sprite* nyaSprite_ = new Sprite;
+	//Sprite* batinSprite_ = new Sprite;
+	//Sprite* donSprite_ = new Sprite;
 	Sprite* koSprite_ = new Sprite;
 	Sprite* clearSprite_ = new Sprite;
 

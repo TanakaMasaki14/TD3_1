@@ -20,10 +20,10 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 	playerArm_ = new PlayerArm();
 	enemy_ = new Enemy();
-	modelPlayerArm_ = Model::Create();
+	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
 	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
-	modelPlayerFace_ = Model::Create();
-	modelEnemy_ = Model::Create();
+	modelPlayerFace_ = Model::CreateFromOBJ("catface");
+	modelEnemy_ = Model::CreateFromOBJ("Ecathand");
 	modelEnemyFace_ = Model::Create();
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
@@ -38,12 +38,12 @@ void GameScene::Initialize() {
 	textureHandleStage3_ = TextureManager::Load("stage3.png");
 	stage3Sprite_ = Sprite::Create(textureHandleStage3_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
-	textureHandleNya_ = TextureManager::Load("nya.png");
-	nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
-	textureHandleBatin_ = TextureManager::Load("batin.png");
-	batinSprite_ = Sprite::Create(textureHandleBatin_, { 400,400 });
-	textureHandleDon_ = TextureManager::Load("don.png");
-	donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
+	//textureHandleNya_ = TextureManager::Load("nya.png");
+	//nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
+	//textureHandleBatin_ = TextureManager::Load("batin.png");
+	//batinSprite_ = Sprite::Create(textureHandleBatin_, { 400,400 });
+	//textureHandleDon_ = TextureManager::Load("don.png");
+	//donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
 	textureHandleKo_ = TextureManager::Load("ko.png");
 	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
 	textureHandleClear_ = TextureManager::Load("clear.png");
@@ -61,8 +61,8 @@ void GameScene::Finalize() {
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
-	delete nyaSprite_;
 	delete koSprite_;
+	delete clearSprite_;
 }
 
 void GameScene::Update() {
@@ -227,15 +227,15 @@ void GameScene::Draw() {
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
-		if (fontTimer_ > 0) {
-			nyaSprite_->Draw();
-		}
-		//k.o
-		if (fontTimer_ >= 1) {
-			nyaSprite_->Draw();
-		}
-		batinSprite_->Draw();
-		donSprite_->Draw();
+		//if (fontTimer_ > 0) {
+		//	nyaSprite_->Draw();
+		//}
+		////k.o
+		//if (fontTimer_ >= 1) {
+		//	nyaSprite_->Draw();
+		//}
+		//batinSprite_->Draw();
+		//donSprite_->Draw();
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
