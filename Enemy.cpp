@@ -423,12 +423,12 @@ void Enemy::Draw(ViewProjection& viewProjection)
 		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
 	}
 
-	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
+	modelFace_->Draw(worldTransformFace_, viewProjection);
 
 	for (int i = 0; i < EnemyCollisionquantity; i++) {
 		modelEnemyCollision_->Draw(worldTransformEnemyCollision_[i], viewProjection);
 	}
-
+	
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
 			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);

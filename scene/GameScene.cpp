@@ -24,7 +24,7 @@ void GameScene::Initialize() {
 	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
 	modelPlayerFace_ = Model::CreateFromOBJ("catface");
 	modelEnemy_ = Model::CreateFromOBJ("Ecathand");
-	modelEnemyFace_ = Model::Create();
+	modelEnemyFace_ = Model::CreateFromOBJ("Ecatface");
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
 	viewProjection_.Initialize();
