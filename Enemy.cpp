@@ -1105,10 +1105,24 @@ void Enemy::GetStunMotion()
 		stunTime_ -= 1;
 		if (stunTime_ < 0) {
 			if (checkUpDown == false) {
+				worldTransform_.rotation_.z += 0.5f;
+				if (worldTransform_.rotation_.z > 0.5f) {
+					worldTransform_.rotation_.z = 0.5f;
 
+					stunTime_ = stunSecond_ * 60;
+					movementFase_ = 3;
+					getstun_ = false;
+				}
 			}
 			if (checkUpDown == true) {
+				worldTransform_.rotation_.z -= 0.5f;
+				if (worldTransform_.rotation_.z < 0.5f) {
+					worldTransform_.rotation_.z = 0.5f;
 
+					stunTime_ = stunSecond_ * 60;
+					movementFase_ = 3;
+					getstun_ = false;
+				}
 			}
 		}
 	}
