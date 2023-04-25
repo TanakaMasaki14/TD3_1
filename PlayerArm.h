@@ -200,6 +200,12 @@ private:
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
 
+	void GetStunMotion();
+	bool getstun_ = false;
+	bool checkUpDown = false; //false:上　true:下
+	int stunSecond_ = 1;
+	int stunTime_ = stunSecond_ * 60;
+
 
 	///テキストから変更可能数値
 	//体力

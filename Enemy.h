@@ -195,6 +195,12 @@ private:
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
 
+	void GetStunMotion();
+	bool getstun_ = false;
+	bool checkUpDown = false; //false:‰º@true:ã
+	int stunSecond_ = 1;
+	int stunTime_ = stunSecond_ * 60;
+
 
 	//‘Ì—Í
 	int hp = 0;

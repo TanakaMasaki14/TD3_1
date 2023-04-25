@@ -300,6 +300,9 @@ void PlayerArm::Update()
 	debugText_->SetPos(0, 100);
 	debugText_->Printf("hp=%d weakPower=%d heavyPower=%d", hp, weakAttackPower_, heavyAttackPower_);
 
+	debugText_->SetPos(0, 160);
+	debugText_->Printf("%d", stunTime_);
+
 
 	///âÒÇ∑ï˚å¸ñYÇÍÇ»Ç¢ÇÊÇ§Ç…
 	if (input_->PushKey(DIK_LEFTARROW)) {
@@ -407,6 +410,7 @@ void PlayerArm::Motion()
 	WeakAttack();
 	HeavyAttack();
 	StunAttack();
+	GetStunMotion();
 }
 
 
@@ -492,7 +496,69 @@ void PlayerArm::GetHeavy()
 //ÉXÉ^ÉìçUåÇÇ…ìñÇΩÇ¡ÇΩÇÁ
 void PlayerArm::GetStun()
 {
-	testhit = true;
+	//testhit = true;
+	if (weakAttack_ == true) {
+		weakStartmotionFrame_ = 3;
+		weakAttackingFrame_ = 10;
+		weakEndmotionFrame_ = 6;
+
+		motionspeedX = 0.0f;
+		motionspeedY = 0.0f;
+
+		bufferpointX = 0.0f;
+		bufferpointY = 0.0f;
+		attackbufferX_ = 0.0f;
+		attackbufferY_ = 0.0f;
+
+		weakAttack_ = false;
+	}
+
+	if (heavyAttack_ == true) {
+		heavyStartmotionFrame_ = 12;
+		heavyAttackingFrame_ = 10;
+		heavyEndmotionFrame_ = 6;
+
+		motionspeedX = 0.0f;
+		motionspeedY = 0.0f;
+
+		bufferpointX = 0.0f;
+		bufferpointY = 0.0f;
+		attackbufferX_ = 0.0f;
+		attackbufferY_ = 0.0f;
+
+		heavyAttack_ = false;
+	}
+
+	if (stunAttack_ == true) {
+
+		stunStartmotionFrame_ = 20;
+		stunAttackingFrame_ = 60;
+		stunEndmotionFrame_ = 12;
+
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+
+		stunAttack_ = false;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+		worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+	}
+	attackrange_ = false;
+
+	if (worldTransform_.rotation_.z < -0.5f) {
+		checkUpDown = false;
+	}
+	if (worldTransform_.rotation_.z > -0.5f) {
+		checkUpDown = true;
+	}
+
+
+	if (movement_ == true) {
+		movement_ = false;
+	}
+
+	getstun_ = true;
 }
 
 /// <summary>
@@ -943,6 +1009,42 @@ void PlayerArm::StunAttack()
 
 			stunAttack_ = false;
 			movement_ = true;
+		}
+	}
+}
+
+void PlayerArm::GetStunMotion()
+{
+	if (getstun_ == true) {
+		stunTime_ -= 1;
+		if (stunTime_ < 0) {
+			//â∫
+			if (checkUpDown == true) {
+				worldTransform_.rotation_.z -= 0.5f;
+				if (worldTransform_.rotation_.z < -0.5f) {
+					worldTransform_.rotation_.z = -0.5f;
+					if (movement_ == false) {
+						stunTime_ = stunSecond_ * 60;
+
+						movement_ = true;
+						getstun_ = false;
+					}
+				}
+			}
+
+			//è„
+			if (checkUpDown == false) {
+				worldTransform_.rotation_.z += 0.5f;
+				if (worldTransform_.rotation_.z > -0.5f) {
+					worldTransform_.rotation_.z = -0.5f;
+					if (movement_ == false) {
+						stunTime_ = stunSecond_ * 60;
+
+						movement_ = true;
+						getstun_ = false;
+					}
+				}
+			}
 		}
 	}
 }
