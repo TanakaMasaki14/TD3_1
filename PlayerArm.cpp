@@ -48,9 +48,9 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		getline(playerfile, stringweakPower);
 		getline(playerfile, stringheavyPower);
 
-		int pos1 = stringhp.find(":");
-		int pos2 = stringweakPower.find(":");
-		int pos3 = stringheavyPower.find(":");
+		int pos1 = static_cast<int> (stringhp.find(":"));
+		int pos2 = static_cast<int> (stringweakPower.find(":"));
+		int pos3 = static_cast<int> (stringheavyPower.find(":"));
 
 		if (pos1 != string::npos) {
 			stringhp = stringhp.substr(pos1 + 1);
