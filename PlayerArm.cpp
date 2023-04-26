@@ -59,7 +59,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///˜r
 	{
-		worldTransform_.scale_ = { 2.0f,2.0f,2.0f };
+		worldTransform_.scale_ = { 3.0f,2.0f,2.0f };
 		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
 		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
 
