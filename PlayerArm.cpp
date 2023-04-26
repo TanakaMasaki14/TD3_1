@@ -310,6 +310,8 @@ void PlayerArm::Update()
 	debugText_->Printf("%d", stunTime_);
 
 
+
+
 	///âÒÇ∑ï˚å¸ñYÇÍÇ»Ç¢ÇÊÇ§Ç…
 	if (input_->PushKey(DIK_LEFTARROW)) {
 		worldTransform_.rotation_.z += 0.1f;
@@ -1060,9 +1062,44 @@ void PlayerArm::GetStunMotion()
 
 void PlayerArm::InitializePAD()
 {
-	DWORD dwUserIndex = 0;
+	//DWORD dwUserIndex = 0;
+	ZeroMemory(&state, sizeof(XINPUT_STATE));
 
-	dwResult = XInputGetState(dwUserIndex, &state);
+	dwResult = XInputGetState(0, &state);
+}
+
+void PlayerArm::LoadHp()
+{
+	//ÉtÉ@ÉCÉãì«Ç›çûÇ›
+	ifstream playerfile("Text/Player.txt");
+	if (playerfile.is_open()) {
+		string stringhp, stringweakPower, stringheavyPower;
+
+		getline(playerfile, stringhp);
+		getline(playerfile, stringweakPower);
+		getline(playerfile, stringheavyPower);
+
+		int pos1 = static_cast<int> (stringhp.find(":"));
+		int pos2 = static_cast<int> (stringweakPower.find(":"));
+		int pos3 = static_cast<int> (stringheavyPower.find(":"));
+
+		if (pos1 != string::npos) {
+			stringhp = stringhp.substr(pos1 + 1);
+		}
+		if (pos2 != string::npos) {
+			stringweakPower = stringweakPower.substr(pos2 + 1);
+		}
+		if (pos3 != string::npos) {
+			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+		}
+
+
+		hp = stoi(stringhp);
+		weakAttackPower_ = stoi(stringweakPower);
+		heavyAttackPower_ = stoi(stringheavyPower);
+
+		playerfile.close();
+	}
 }
 
 void PlayerArm::PADUpdate()
@@ -1071,9 +1108,8 @@ void PlayerArm::PADUpdate()
 	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
 		GamePAD_A = true;
 	}
-	else {
-		GamePAD_A = false;
-	}
+	GamePAD_A = state.Gamepad.wButtons & XINPUT_GAMEPAD_A;
+
 
 	//B
 	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) {

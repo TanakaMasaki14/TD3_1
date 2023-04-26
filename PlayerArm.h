@@ -79,6 +79,8 @@ public:
 
 	int GetHp() { return hp; }
 
+	void LoadHp();
+
 	//アームスピードのゲッター,セッター
 	Vector3 GetSpeed() { return Armspeed_; }
 
@@ -213,6 +215,8 @@ private:
 	///テキストから変更可能数値
 	//体力
 	int hp = 0;
+
+
 	//弱攻撃威力
 	int weakAttackPower_;
 	//強攻撃威力

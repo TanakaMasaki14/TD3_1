@@ -618,6 +618,40 @@ void Enemy::GetStun()
 	getstun_ = true;
 }
 
+void Enemy::LoadHp()
+{
+	//ファイル読み込み
+	ifstream playerfile("Text/Player.txt");
+	if (playerfile.is_open()) {
+		string stringhp, stringweakPower, stringheavyPower;
+
+		getline(playerfile, stringhp);
+		getline(playerfile, stringweakPower);
+		getline(playerfile, stringheavyPower);
+
+		int pos1 = static_cast<int> (stringhp.find(":"));
+		int pos2 = static_cast<int> (stringweakPower.find(":"));
+		int pos3 = static_cast<int> (stringheavyPower.find(":"));
+
+		if (pos1 != string::npos) {
+			stringhp = stringhp.substr(pos1 + 1);
+		}
+		if (pos2 != string::npos) {
+			stringweakPower = stringweakPower.substr(pos2 + 1);
+		}
+		if (pos3 != string::npos) {
+			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+		}
+
+
+		hp = stoi(stringhp);
+		weakAttackPower_ = stoi(stringweakPower);
+		heavyAttackPower_ = stoi(stringheavyPower);
+
+		playerfile.close();
+	}
+}
+
 /// <summary>
 /// ブロック
 /// </summary>
