@@ -5,12 +5,15 @@
 #include <fstream>
 #include <string>
 
+
 #include "Enemy.h"
 #include "Procession.h"
 #include <corecrt_math_defines.h>
 using namespace MathUtility;
 using namespace DirectX;
 using namespace std;
+
+
 
 PlayerArm::~PlayerArm()
 {
@@ -199,6 +202,9 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		}
 	}
 
+	//PAD
+	InitializePAD();
+
 }
 
 void PlayerArm::Update()
@@ -219,7 +225,7 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (input_->TriggerKey(DIK_B)) {
+	if (GamePAD_A == true && prevGamePAD_A == false) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			block_ = true;
 			movement_ = false;
@@ -318,6 +324,9 @@ void PlayerArm::Update()
 
 	///モーションまとめ
 	Motion();
+
+	///PAD
+	PADUpdate();
 
 	//当たり判定テスト
 	if (testhit == true) {
@@ -1047,6 +1056,54 @@ void PlayerArm::GetStunMotion()
 			}
 		}
 	}
+}
+
+void PlayerArm::InitializePAD()
+{
+	DWORD dwUserIndex = 0;
+
+	dwResult = XInputGetState(dwUserIndex, &state);
+}
+
+void PlayerArm::PADUpdate()
+{
+	//A
+	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+		GamePAD_A = true;
+	}
+	else {
+		GamePAD_A = false;
+	}
+
+	//B
+	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+		GamePAD_B = true;
+	}
+	else {
+		GamePAD_B = false;
+	}
+
+	//X
+	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
+		GamePAD_X = true;
+	}
+	else {
+		GamePAD_X = false;
+	}
+
+	//Y
+	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
+		GamePAD_Y = true;
+	}
+	else {
+		GamePAD_Y = false;
+	}
+
+	prevGamePAD_A = GamePAD_A;
+	prevGamePAD_B = GamePAD_B;
+	prevGamePAD_X = GamePAD_X;
+	prevGamePAD_Y = GamePAD_Y;
+
 }
 
 

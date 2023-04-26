@@ -9,6 +9,9 @@
 #include "Input.h"
 #include "Audio.h"
 
+#include <Xinput.h>
+#pragma comment(lib,"XInput.lib")
+
 
 class Enemy;
 
@@ -214,4 +217,24 @@ private:
 	int weakAttackPower_;
 	//ã≠çUåÇà–óÕ
 	int heavyAttackPower_;
+
+	//PAD
+	XINPUT_STATE state;
+	DWORD dwResult;
+
+	bool GamePAD_A = false;
+	bool prevGamePAD_A = false;
+
+	bool GamePAD_B = false;
+	bool prevGamePAD_B = false;
+
+	bool GamePAD_X = false;
+	bool prevGamePAD_X = false;
+
+	bool GamePAD_Y = false;
+	bool prevGamePAD_Y = false;
+
+	void InitializePAD();
+
+	void PADUpdate();
 };
