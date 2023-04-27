@@ -694,7 +694,7 @@ void PlayerArm::HeavyAttack()
 			}
 			//çUåÇîªíËà íu
 			attackrange_ = true;
-			worldTransformAttackrange_.translation_.x = attackbufferX_ - 30.0f;
+			worldTransformAttackrange_.translation_.x = attackbufferX_ - 35.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 			worldTransformAttackCollision_[0].translation_.x = worldTransformAttackrange_.translation_.x;
 			worldTransformAttackCollision_[0].translation_.y = worldTransformAttackrange_.translation_.y;

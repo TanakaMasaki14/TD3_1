@@ -95,8 +95,8 @@ void GameScene::Update() {
 			enemy_->Update();
 			CheckCollision();
 
-			debugText_->SetPos(50,100);
-			debugText_->Printf("%d", EnemyAttackToPlayer);
+			//debugText_->SetPos(50,100);
+			//debugText_->Printf("%d", EnemyAttackToPlayer);
 			viewProjection_.UpdateMatrix();
 			//if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
 			//	fontFlag_ = 1;
