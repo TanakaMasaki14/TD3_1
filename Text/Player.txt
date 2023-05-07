@@ -1,3 +1,4 @@
 HP:10
 Weak:1
 Heavy:2
+StunIntervalSec:2

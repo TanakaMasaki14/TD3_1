@@ -77,7 +77,7 @@ public:
 
 	int GetHp() { return hp; }
 
-	void LoadHp();
+	void ReInitialize();
 
 	//UŒ‚—ÍƒQƒbƒ^[
 	int GetWeakPower() { return weakAttackPower_; }

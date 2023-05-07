@@ -79,7 +79,7 @@ public:
 
 	int GetHp() { return hp; }
 
-	void LoadHp();
+	void ReInitialize();
 
 	//アームスピードのゲッター,セッター
 	Vector3 GetSpeed() { return Armspeed_; }
@@ -204,6 +204,8 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
+	int stuninterval_ = 0; 
+	int intervalSec_ = 0;
 
 	void GetStunMotion();
 	bool getstun_ = false;

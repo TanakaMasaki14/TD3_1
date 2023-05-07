@@ -65,13 +65,13 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 		int pos3 = static_cast<int>	(stringheavyPower.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 
 		hp = stoi(stringhp);
@@ -618,8 +618,69 @@ void Enemy::GetStun()
 	getstun_ = true;
 }
 
-void Enemy::LoadHp()
+void Enemy::ReInitialize()
 {
+	///腕
+	{
+
+		worldTransform_.translation_ = { -25.0f,-5.0f,0.0f };
+	}
+
+	///顔
+	{
+		worldTransformFace_.translation_ = { -44.0f,27.0f,0.0f };
+	}
+
+	///腕当たり判定エリア
+	{
+		radian_ = radius_.z * M_PI / 180.0;
+		//0
+		worldTransformEnemyCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
+
+		//1
+		r[0] = 5.0f;
+		worldTransformEnemyCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float>(radian_));
+
+		//2
+		r[1] = -5.0f;
+		worldTransformEnemyCollision_[2].translation_.x = worldTransform_.translation_.x + r[1] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[2].translation_.y = worldTransform_.translation_.y + r[1] * sin(static_cast<float>(radian_));
+
+		//3
+		r[2] = 10.0f;
+		worldTransformEnemyCollision_[3].translation_.x = worldTransform_.translation_.x + r[2] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[3].translation_.y = worldTransform_.translation_.y + r[2] * sin(static_cast<float>(radian_));
+
+		//4
+		r[3] = -10.0f;
+		worldTransformEnemyCollision_[4].translation_.x = worldTransform_.translation_.x + r[3] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[4].translation_.y = worldTransform_.translation_.y + r[3] * sin(static_cast<float>(radian_));
+
+		//5
+		r[4] = 15.0f;
+		worldTransformEnemyCollision_[5].translation_.x = worldTransform_.translation_.x + r[4] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[5].translation_.y = worldTransform_.translation_.y + r[4] * sin(static_cast<float>(radian_));
+
+		//6
+		r[5] = -15.0f;
+		worldTransformEnemyCollision_[6].translation_.x = worldTransform_.translation_.x + r[5] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[6].translation_.y = worldTransform_.translation_.y + r[5] * sin(static_cast<float>(radian_));
+	}
+
+	///攻撃当たり判定エリア
+	{
+		worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+		worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+
+		//
+		for (int i = 0; i < 10; i++) {
+			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
+		}
+	}
+
 	//ファイル読み込み
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
@@ -634,13 +695,13 @@ void Enemy::LoadHp()
 		int pos3 = static_cast<int> (stringheavyPower.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 
 
