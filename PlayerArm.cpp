@@ -58,16 +58,16 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		int pos4 = static_cast<int> (stringstunInterval.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 		if (pos4 != string::npos) {
-			stringstunInterval = stringstunInterval.substr(pos4 + 1);
+			stringstunInterval = stringstunInterval.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
 		}
 
 
@@ -1177,16 +1177,16 @@ void PlayerArm::ReInitialize()
 		int pos4 = static_cast<int> (stringstunInterval.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 		if (pos4 != string::npos) {
-			stringstunInterval = stringstunInterval.substr(pos4 + 1);
+			stringstunInterval = stringstunInterval.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
 		}
 
 
