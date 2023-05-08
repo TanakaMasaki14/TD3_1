@@ -53,7 +53,7 @@ public:
 		playerarm_ = playerArm;
 	}
 	int GetHp() { return enemyHp_; }
-	void LoadHp();
+	void ReInitialize();
 	//UŒ‚—ÍƒQƒbƒ^[
 	int GetWeakPower() { return weakAttackPower_; }
 	int GetHeavyPower() { return heavyAttackPower_; }
@@ -129,6 +129,8 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
+	int stuninterval_ = 0;
+	int intervalSec_ = 0;
 
 	void GetStunMotion();
 	bool getstun_ = false;

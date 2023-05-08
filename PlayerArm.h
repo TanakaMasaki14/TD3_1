@@ -52,7 +52,7 @@ public:
 	const bool& GetIsStun() const { return stunAttack_; }
 	const bool& GetIsMovement() const { return movement_; }
 	int GetHp() { return playerHp_; }
-	void LoadHp();
+	void ReInitialize();
 
 	//アームスピードのゲッター,セッター
 	Vector3 GetSpeed() { return Armspeed_; }
@@ -92,7 +92,7 @@ private:
 	uint32_t soundHandleStun_ = 0;
 	uint32_t soundHandleHit_ = 0;
 
-	Vector3 Armspeed_ = { 0.3f,0.3f,0.0f };
+	Vector3 Armspeed_ = { 0.5f,0.5f,0.0f };
 	//回転角
 	Vector3 radius_ = { 0.0f,0.0f, -30.0f };
 	//距離
@@ -138,6 +138,8 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
+	int stuninterval_ = 0;
+	int intervalSec_ = 0;
 
 	void GetStunMotion();
 	bool getstun_ = false;

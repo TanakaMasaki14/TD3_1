@@ -78,8 +78,8 @@ void GameScene::Update() {
 				audio_->PlayWave(soundHandleNext_, false, 3);
 				audio_->StopWave(soundHandleLoop_);
 				koFlag_ = 0;
-				playerArm_->LoadHp();
-				enemy_->LoadHp();
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
 				scene = 1;
 			}
 		}

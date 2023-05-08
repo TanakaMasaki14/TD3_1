@@ -1,4 +1,4 @@
-#include "Enemy.h"
+ï»¿#include "Enemy.h"
 #include <cmath>
 #include <cassert>
 #include <iostream>
@@ -36,7 +36,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	srand((unsigned)time(NULL));
 	waitrandomTime_ = rand() % 61;
 	waitTime_ = waitbaseTime_ + waitrandomTime_;
-	//ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+	//ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
 	ifstream enemyfile("Text/Enemy.txt");
 	if (enemyfile.is_open()) {
 		string stringhp, stringweakPower, stringheavyPower;
@@ -49,20 +49,20 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 		int pos3 = static_cast<int>	(stringheavyPower.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 		enemyHp_ = stoi(stringhp);
 		weakAttackPower_ = stoi(stringweakPower);
 		heavyAttackPower_ = stoi(stringheavyPower);
 		enemyfile.close();
 	}
-	///˜r
+	///è…•
 	{
 		worldTransform_.scale_ = { 3.0f,4.0f,3.0f };
 		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(30.0f) };
@@ -72,7 +72,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 		worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 		worldTransform_.TransferMatrix();
 	}
-	///Šç
+	///é¡”
 	{
 		worldTransformFace_.scale_ = { 3.0f,3.0f,3.0f };
 		worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
@@ -82,7 +82,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 		worldTransformFace_.matWorld_ = MatWorld(worldTransformFace_.scale_, worldTransformFace_.rotation_, worldTransformFace_.translation_);
 		worldTransformFace_.TransferMatrix();
 	}
-	///˜r“–‚½‚è”»’èƒGƒŠƒA
+	///è…•å½“ãŸã‚Šåˆ¤å®šã‚¨ãƒªã‚¢
 	{
 		radian_ = radius_.z * M_PI / 180.0;
 		//0
@@ -132,7 +132,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 			worldTransformEnemyCollision_[i].TransferMatrix();
 		}
 	}
-	///UŒ‚“–‚½‚è”»’èƒGƒŠƒA
+	///æ”»æ’ƒå½“ãŸã‚Šåˆ¤å®šã‚¨ãƒªã‚¢
 	{
 		worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
 		worldTransformAttackrange_.rotation_ = { 0.0f,0.0f,0.0f };
@@ -155,7 +155,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 }
 void Enemy::Update()
 {
-	///è“®“®ì—p
+	///æ‰‹å‹•å‹•ä½œç”¨
 	{
 		if (input_->TriggerKey(DIK_U)) {
 			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
@@ -211,16 +211,16 @@ void Enemy::Update()
 			movementFase_ = 1;
 		}
 	}
-	//s“®Œˆ’è
+	//è¡Œå‹•æ±ºå®š
 	if (movementFase_ == 1) {
-		///ƒuƒƒbƒN
+		///ãƒ–ãƒ­ãƒƒã‚¯
 		if (attackPattern_ == 1) {
 			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 				block_ = true;
 			}
 			movementFase_ = 2;
 		}
-		///ãUŒ‚
+		///å¼±æ”»æ’ƒ
 		if (attackPattern_ == 2) {
 			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 				motionspeedX = 2.0f;
@@ -235,7 +235,7 @@ void Enemy::Update()
 			}
 			movementFase_ = 2;
 		}
-		///‹­UŒ‚
+		///å¼·æ”»æ’ƒ
 		if (attackPattern_ == 3) {
 			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 				motionspeedX = 0.5f;
@@ -250,7 +250,7 @@ void Enemy::Update()
 			}
 			movementFase_ = 2;
 		}
-		///ƒXƒ^ƒ“
+		///ã‚¹ã‚¿ãƒ³
 		if (attackPattern_ == 4) {
 			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
 				attackbufferX_ = -43.0f;
@@ -266,10 +266,10 @@ void Enemy::Update()
 			movementFase_ = 2;
 		}
 	}
-	//s“®’†
+	//è¡Œå‹•ä¸­
 	if (movementFase_ == 2) {
 	}
-	//s“®I—¹ŒãA‰Šú‰»
+	//è¡Œå‹•çµ‚äº†å¾Œã€åˆæœŸåŒ–
 	if (movementFase_ == 3) {
 		waitrandomTime_ = rand() % 61;
 		waitTime_ = waitbaseTime_ + waitrandomTime_;
@@ -279,9 +279,9 @@ void Enemy::Update()
 	//debugText_->Printf("rotationZ:%f", worldTransform_.rotation_.z);
 	debugText_->SetPos(220, 50);
 	debugText_->Printf("EnemyHP:%d", enemyHp_);
-	///ƒ‚[ƒVƒ‡ƒ“‚Ü‚Æ‚ß
+	///ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã¾ã¨ã‚
 	Motion();
-	//“–‚½‚è”»’èƒeƒXƒg
+	//å½“ãŸã‚Šåˆ¤å®šãƒ†ã‚¹ãƒˆ
 	if (testhit == true) {
 		testTime -= 1;
 		if (testTime < 0) {
@@ -289,15 +289,15 @@ void Enemy::Update()
 			testTime = 30;
 		}
 	}
-	///“–‚½‚è”»’èƒGƒŠƒAXV
+	///å½“ãŸã‚Šåˆ¤å®šã‚¨ãƒªã‚¢æ›´æ–°
 	//0
 	worldTransformEnemyCollision_[0].translation_ = worldTransform_.translation_;
-	//1ˆÈ~
+	//1ä»¥é™
 	for (int i = 1; i < EnemyCollisionquantity; i++) {
 		worldTransformEnemyCollision_[i].translation_.x = worldTransform_.translation_.x + r[i - 1] * cos(worldTransform_.rotation_.z);
 		worldTransformEnemyCollision_[i].translation_.y = worldTransform_.translation_.y + r[i - 1] * sin(worldTransform_.rotation_.z);
 	}
-	///À•WXV
+	///åº§æ¨™æ›´æ–°
 	//
 	worldTransform_.matWorld_ = Mat_Identity();
 	worldTransform_.matWorld_ = MatWorld(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -329,7 +329,7 @@ void Enemy::Draw(ViewProjection& viewProjection)
 			model_->Draw(worldTransform_, viewProjection);
 		}
 	}
-	//ƒeƒXƒg—p
+	//ãƒ†ã‚¹ãƒˆç”¨
 	if (testhit == true) {
 		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
 	}
@@ -448,11 +448,11 @@ void Enemy::GetStun()
 		worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 	}
 	attackrange_ = false;
-	//‰º
+	//ä¸‹
 	if (worldTransform_.rotation_.z < 0.5f) {
 		checkUpDown = false;
 	}
-	//ã
+	//ä¸Š
 	if (worldTransform_.rotation_.z > 0.5f) {
 		checkUpDown = true;
 	}
@@ -462,9 +462,69 @@ void Enemy::GetStun()
 	getstun_ = true;
 }
 
-void Enemy::LoadHp()
+void Enemy::ReInitialize()
 {
-	//ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+	///è…•
+	{
+
+		worldTransform_.translation_ = { -25.0f,-5.0f,0.0f };
+	}
+
+	///é¡”
+	{
+		worldTransformFace_.translation_ = { -44.0f,27.0f,0.0f };
+	}
+
+	///è…•å½“ãŸã‚Šåˆ¤å®šã‚¨ãƒªã‚¢
+	{
+		radian_ = radius_.z * M_PI / 180.0;
+		//0
+		worldTransformEnemyCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
+
+		//1
+		r[0] = 5.0f;
+		worldTransformEnemyCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float>(radian_));
+
+		//2
+		r[1] = -5.0f;
+		worldTransformEnemyCollision_[2].translation_.x = worldTransform_.translation_.x + r[1] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[2].translation_.y = worldTransform_.translation_.y + r[1] * sin(static_cast<float>(radian_));
+
+		//3
+		r[2] = 10.0f;
+		worldTransformEnemyCollision_[3].translation_.x = worldTransform_.translation_.x + r[2] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[3].translation_.y = worldTransform_.translation_.y + r[2] * sin(static_cast<float>(radian_));
+
+		//4
+		r[3] = -10.0f;
+		worldTransformEnemyCollision_[4].translation_.x = worldTransform_.translation_.x + r[3] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[4].translation_.y = worldTransform_.translation_.y + r[3] * sin(static_cast<float>(radian_));
+
+		//5
+		r[4] = 15.0f;
+		worldTransformEnemyCollision_[5].translation_.x = worldTransform_.translation_.x + r[4] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[5].translation_.y = worldTransform_.translation_.y + r[4] * sin(static_cast<float>(radian_));
+
+		//6
+		r[5] = -15.0f;
+		worldTransformEnemyCollision_[6].translation_.x = worldTransform_.translation_.x + r[5] * cos(static_cast<float>(radian_));
+		worldTransformEnemyCollision_[6].translation_.y = worldTransform_.translation_.y + r[5] * sin(static_cast<float>(radian_));
+	}
+
+	///æ”»æ’ƒå½“ãŸã‚Šåˆ¤å®šã‚¨ãƒªã‚¢
+	{
+		worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+		worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+
+		//
+		for (int i = 0; i < 10; i++) {
+			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
+		}
+	}
+	//ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
 		string stringhp, stringweakPower, stringheavyPower;
@@ -478,13 +538,13 @@ void Enemy::LoadHp()
 		int pos3 = static_cast<int> (stringheavyPower.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 
 
@@ -497,18 +557,18 @@ void Enemy::LoadHp()
 }
 
 /// <summary>
-/// ƒuƒƒbƒN
+/// ãƒ–ãƒ­ãƒƒã‚¯
 /// </summary>
 void Enemy::Block()
 {
 	if (block_) {
 		blockStartmotionFrame_ -= 1;
-		///ƒuƒƒbƒN‘Oƒ‚[ƒVƒ‡ƒ“
+		///ãƒ–ãƒ­ãƒƒã‚¯å‰ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (blockStartmotionFrame_ > 0) {
-			//ˆÚ“®
+			//ç§»å‹•
 			worldTransform_.translation_.x += 3.0f;
 			worldTransform_.translation_.y += 1.0f;
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z += 0.3f;
 			if (worldTransform_.rotation_.z > 1.55f) {
 				worldTransform_.rotation_.z = 1.55f;
@@ -517,18 +577,18 @@ void Enemy::Block()
 		if (blockStartmotionFrame_ < 0) {
 			blockChanceFrame_ -= 1;
 		}
-		//ƒuƒƒbƒN’†ƒ‚[ƒVƒ‡ƒ“
+		//ãƒ–ãƒ­ãƒƒã‚¯ä¸­ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ > 0) {
 		}
 		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ < 0) {
 			blockEndmotionFlame_ -= 1;
 		}
-		///ƒuƒƒbƒNŒãƒ‚[ƒVƒ‡ƒ“
+		///ãƒ–ãƒ­ãƒƒã‚¯å¾Œãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (blockStartmotionFrame_ < 0 && blockChanceFrame_ < 0 && blockEndmotionFlame_ > 0) {
-			//ˆÚ“®
+			//ç§»å‹•
 			worldTransform_.translation_.x -= 3.0f;
 			worldTransform_.translation_.y -= 1.0f;
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z -= 0.3f;
 			if (worldTransform_.rotation_.z < 0.5f) {
 				worldTransform_.rotation_.z = 0.5f;
@@ -546,20 +606,20 @@ void Enemy::Block()
 	}
 }
 /// <summary>
-/// ƒuƒƒbƒN‚³‚ê‚½
+/// ãƒ–ãƒ­ãƒƒã‚¯ã•ã‚ŒãŸ
 /// </summary>
 void Enemy::GetBlockMotion()
 {
 	if (getblock_ == true) {
 		getblockFrame_ -= 1;
 		if (getblockFrame_ > 10) {
-			//ˆÚ“®
+			//ç§»å‹•
 			if (prevstunAttack_ == false) {
 				if (abs(worldTransform_.translation_.x - getblockbufferpoint_.x) < 20) {
 					worldTransform_.translation_.x -= 4.0f;
 				}
 			}
-			//‰ñ“]
+			//å›è»¢
 			if (worldTransform_.rotation_.z < 2.0f) {
 				worldTransform_.rotation_.z += 0.5f;
 			}
@@ -583,19 +643,19 @@ void Enemy::GetBlockMotion()
 	}
 }
 /// <summary>
-/// ãUŒ‚
+/// å¼±æ”»æ’ƒ
 /// </summary>
 void Enemy::WeakAttack()
 {
 	if (weakAttack_) {
 		weakStartmotionFrame_ -= 1;
-		///ãUŒ‚‘Oƒ‚[ƒVƒ‡ƒ“
+		///å¼±æ”»æ’ƒå‰ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (weakStartmotionFrame_ > 0) {
-			//ˆÚ“®
-			worldTransform_.translation_.y += motionspeedY; //‰Šú’l4.0f
-			worldTransform_.translation_.x += motionspeedX; //‰Šú’l2.0f
+			//ç§»å‹•
+			worldTransform_.translation_.y += motionspeedY; //åˆæœŸå€¤4.0f
+			worldTransform_.translation_.x += motionspeedX; //åˆæœŸå€¤2.0f
 			motionspeedX += 1.0f;
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z += 0.3f;
 			if (worldTransform_.rotation_.z > 1.4f) {
 				worldTransform_.rotation_.z = 1.4f;
@@ -609,12 +669,12 @@ void Enemy::WeakAttack()
 		if (weakStartmotionFrame_ < 0) {
 			weakAttackingFrame_ -= 1;
 		}
-		///ãUŒ‚’†ƒ‚[ƒVƒ‡ƒ“
+		///å¼±æ”»æ’ƒä¸­ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ > 0) {
-			///ˆÚ“®
-			//c
+			///ç§»å‹•
+			//ç¸¦
 			worldTransform_.translation_.y += motionspeedY;
-			//‰¡
+			//æ¨ª
 			if (weakAttackingFrame_ >= 9) {
 				worldTransform_.translation_.x += 9.8f;
 			}
@@ -623,17 +683,17 @@ void Enemy::WeakAttack()
 			if (weakAttackingFrame_ <= 7 && weakAttackingFrame_ > 0) {
 				worldTransform_.translation_.x -= 1.4f;
 			}
-			//ˆÚ“®§ŒÀ(-13)
+			//ç§»å‹•åˆ¶é™(-13)
 			if ((worldTransform_.translation_.y - bufferpointY) < -13) {
 				motionspeedY = 0;
 				worldTransform_.translation_.y = bufferpointY - 13.0f;
 			}
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z -= 0.4f;
 			if (worldTransform_.rotation_.z < -0.6f) {
 				worldTransform_.rotation_.z = -0.6f;
 			}
-			//UŒ‚”»’èˆÊ’u
+			//æ”»æ’ƒåˆ¤å®šä½ç½®
 			attackrange_ = true;
 			worldTransformAttackrange_.translation_.x = attackbufferX_ + 30.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
@@ -655,15 +715,15 @@ void Enemy::WeakAttack()
 				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
 				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			}
-			//UŒ‚”»’èÁ–Å
+			//æ”»æ’ƒåˆ¤å®šæ¶ˆæ»…
 			attackrange_ = false;
 		}
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0) {
 			weakEndmotionFrame_ -= 1;
 		}
-		///ãUŒ‚Œãƒ‚[ƒVƒ‡ƒ“
+		///å¼±æ”»æ’ƒå¾Œãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (weakStartmotionFrame_ < 0 && weakAttackingFrame_ < 0 && weakEndmotionFrame_ > 0) {
-			//ˆÚ“®
+			//ç§»å‹•
 			worldTransform_.translation_.x -= 2.0f;
 			worldTransform_.translation_.y += 2.0f;
 			if ((worldTransform_.translation_.x - bufferpointX) < 5) {
@@ -672,7 +732,7 @@ void Enemy::WeakAttack()
 			if ((worldTransform_.translation_.y - bufferpointY) > 5) {
 				worldTransform_.translation_.y = bufferpointY + 5;
 			}
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z += 0.5f;
 			if (worldTransform_.rotation_.z > 0.5f) {
 				worldTransform_.rotation_.z = 0.5f;
@@ -696,18 +756,18 @@ void Enemy::WeakAttack()
 	}
 }
 /// <summary>
-/// ‹­UŒ‚
+/// å¼·æ”»æ’ƒ
 /// </summary>
 void Enemy::HeavyAttack()
 {
 	if (heavyAttack_) {
 		heavyStartmotionFrame_ -= 1;
-		///‹­UŒ‚‘Oƒ‚[ƒVƒ‡ƒ“
+		///å¼·æ”»æ’ƒå‰ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (heavyStartmotionFrame_ > 0) {
 			worldTransform_.translation_.y += motionspeedY;
 			worldTransform_.translation_.x += motionspeedX;
 			motionspeedX += 0.1f;
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z += 0.07f;
 			if (worldTransform_.rotation_.z > 1.4f) {
 				worldTransform_.rotation_.z = 1.4f;
@@ -721,12 +781,12 @@ void Enemy::HeavyAttack()
 		if (heavyStartmotionFrame_ < 0) {
 			heavyAttackingFrame_ -= 1;
 		}
-		//‹­UŒ‚’†ƒ‚[ƒVƒ‡ƒ“
+		//å¼·æ”»æ’ƒä¸­ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ > 0) {
-			///ˆÚ“®
-			//c
+			///ç§»å‹•
+			//ç¸¦
 			worldTransform_.translation_.y += motionspeedY;
-			//‰¡
+			//æ¨ª
 			if (heavyAttackingFrame_ >= 9) {
 				worldTransform_.translation_.x += 9.8f;
 			}
@@ -735,17 +795,17 @@ void Enemy::HeavyAttack()
 			if (heavyAttackingFrame_ <= 7 && heavyAttackingFrame_ > 0) {
 				worldTransform_.translation_.x -= 1.4f;
 			}
-			//ˆÚ“®§ŒÀ(-13)
+			//ç§»å‹•åˆ¶é™(-13)
 			if ((worldTransform_.translation_.y - bufferpointY) < -13) {
 				motionspeedY = 0;
 				worldTransform_.translation_.y = bufferpointY - 13.0f;
 			}
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z -= 0.4f;
 			if (worldTransform_.rotation_.z < -0.6f) {
 				worldTransform_.rotation_.z = -0.6f;
 			}
-			//UŒ‚”»’èˆÊ’u
+			//æ”»æ’ƒåˆ¤å®šä½ç½®
 			attackrange_ = true;
 			worldTransformAttackrange_.translation_.x = attackbufferX_ + 35.0f;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
@@ -767,15 +827,15 @@ void Enemy::HeavyAttack()
 				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
 				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			}
-			//UŒ‚”»’èÁ–Å
+			//æ”»æ’ƒåˆ¤å®šæ¶ˆæ»…
 			attackrange_ = false;
 		}
 		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ < 0) {
 			heavyEndmotionFrame_ -= 1;
 		}
-		///‹­UŒ‚Œãƒ‚[ƒVƒ‡ƒ“
+		///å¼·æ”»æ’ƒå¾Œãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (heavyStartmotionFrame_ < 0 && heavyAttackingFrame_ < 0 && heavyEndmotionFrame_ > 0) {
-			//ˆÚ“®
+			//ç§»å‹•
 			worldTransform_.translation_.x -= 2.5f;
 			worldTransform_.translation_.y += 2.0f;
 			if ((worldTransform_.translation_.x - bufferpointX) < 11) {
@@ -784,7 +844,7 @@ void Enemy::HeavyAttack()
 			if ((worldTransform_.translation_.y - bufferpointY) > 2) {
 				worldTransform_.translation_.y = bufferpointY + 2;
 			}
-			//‰ñ“]
+			//å›è»¢
 			worldTransform_.rotation_.z += 0.5f;
 			if (worldTransform_.rotation_.z > 0.5f) {
 				worldTransform_.rotation_.z = 0.5f;
@@ -808,19 +868,19 @@ void Enemy::HeavyAttack()
 	}
 }
 /// <summary>
-/// ƒXƒ^ƒ“UŒ‚
+/// ã‚¹ã‚¿ãƒ³æ”»æ’ƒ
 /// </summary>
 void Enemy::StunAttack()
 {
 	if (stunAttack_) {
 		stunStartmotionFrame_ -= 1;
-		//UŒ‚‘Oƒ‚[ƒVƒ‡ƒ“
+		//æ”»æ’ƒå‰ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (stunStartmotionFrame_ > 0) {
 		}
 		if (stunStartmotionFrame_ < 0) {
 			stunAttackingFrame_ -= 1;
 		}
-		//UŒ‚’†
+		//æ”»æ’ƒä¸­
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
 			//37.0f, 20.0f, 0.0f x:7 y:7
 			if (stunAttackingFrame_ > 55) {
@@ -856,7 +916,7 @@ void Enemy::StunAttack()
 			attackrange_ = false;
 			stunEndmotionFrame_ -= 1;
 		}
-		//UŒ‚Œãƒ‚[ƒVƒ‡ƒ“
+		//æ”»æ’ƒå¾Œãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0 && stunEndmotionFrame_ > 0) {
 			if (stunEndmotionFrame_ > 7) {
 				worldTransformFace_.translation_.x -= 1.4f;
@@ -901,7 +961,7 @@ void Enemy::GetStunMotion()
 	}
 }
 /// <summary>
-/// ƒJƒX
+/// ã‚«ã‚¹
 /// </summary>
 /// <returns></returns>
 Vector3 Enemy::GetWorldTransformEnemyCollision0()
@@ -964,7 +1024,7 @@ Vector3 Enemy::GetWorldTransformEnemyCollision6()
 /// ////////////////////////////////////////////////////////////////////////////////////
 ///
 /// <summary>
-/// ƒJƒX
+/// ã‚«ã‚¹
 /// </summary>
 /// <returns></returns>
 Vector3 Enemy::GetWorldTransformEnemyAttackCollision0()

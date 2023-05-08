@@ -34,27 +34,35 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	//ファイル読み込み
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
-		string stringhp, stringweakPower, stringheavyPower;
+		string stringhp, stringweakPower, stringheavyPower, stringstunInterval;
 		getline(playerfile, stringhp);
 		getline(playerfile, stringweakPower);
 		getline(playerfile, stringheavyPower);
+		getline(playerfile, stringstunInterval);
 
 		int pos1 = static_cast<int> (stringhp.find(":"));
 		int pos2 = static_cast<int> (stringweakPower.find(":"));
 		int pos3 = static_cast<int> (stringheavyPower.find(":"));
+		int pos4 = static_cast<int> (stringstunInterval.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
+		if (pos4 != string::npos) {
+			stringstunInterval = stringstunInterval.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
+		}
+
 		playerHp_ = stoi(stringhp);
 		weakAttackPower_ = stoi(stringweakPower);
 		heavyAttackPower_ = stoi(stringheavyPower);
+		intervalSec_ = stoi(stringstunInterval);
+
 		playerfile.close();
 	}
 
@@ -175,7 +183,7 @@ void PlayerArm::Update()
 	if (movement_ == true) {
 		///移動
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP){
 				worldTransform_.translation_.y += Armspeed_.y;
 			}
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
@@ -195,7 +203,7 @@ void PlayerArm::Update()
 				}
 			}
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B){
-				if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+				if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && stuninterval_ <= 0) {
 					motionspeedX = 2.0f;
 					motionspeedY = 4.0f;
 					attackbufferX_ = worldTransform_.translation_.x;
@@ -273,6 +281,9 @@ void PlayerArm::Update()
 			testhit = false;
 			testTime = 30;
 		}
+	}
+	if (stuninterval_ > 0) {
+		stuninterval_ -= 1;
 	}
 	///当たり判定エリア更新(rは-1したものが正しい)
 	//0
@@ -389,6 +400,7 @@ void PlayerArm::GetBlock()
 	worldTransform_.rotation_ = { 0,0,-0.5f };
 	getblock_ = true;
 }
+
 //弱攻撃に当たったら
 void PlayerArm::GetWeak()
 {
@@ -808,6 +820,8 @@ void PlayerArm::StunAttack()
 			stunStartmotionFrame_ = 20;
 			stunAttackingFrame_ = 60;
 			stunEndmotionFrame_ = 12;
+			stuninterval_ = intervalSec_ * 60;
+
 			stunAttack_ = false;
 			movement_ = true;
 		}
@@ -854,35 +868,121 @@ void PlayerArm::InitializePAD()
 	dwResult = XInputGetState(0, &state);
 }
 
-void PlayerArm::LoadHp()
+void PlayerArm::ReInitialize()
 {
+	///腕
+	{
+
+		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
+
+	}
+
+	///顔
+	{
+
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+
+	}
+
+	///腕当たり判定エリア
+	{
+		radian = radius_.z * M_PI / 180.0;
+		//0
+		worldTransformPlayerCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
+
+
+
+		//1
+		r[0] = 5.0f; //距離
+		worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float> (radian));
+		worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float> (radian));
+		worldTransformPlayerCollision_[1].translation_.z = 0.0f;
+
+
+		//2
+		r[1] = -5.0f;
+		worldTransformPlayerCollision_[2].translation_.x = worldTransform_.translation_.x + r[1] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[2].translation_.y = worldTransform_.translation_.y + r[1] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[2].translation_.z = 0.0f;
+
+		//3
+		r[2] = 10.0f;
+		worldTransformPlayerCollision_[3].translation_.x = worldTransform_.translation_.x + r[2] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[3].translation_.y = worldTransform_.translation_.y + r[2] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[3].translation_.z = 0.0f;
+
+		//4
+		r[3] = -10.0f;
+		worldTransformPlayerCollision_[4].translation_.x = worldTransform_.translation_.x + r[3] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[4].translation_.y = worldTransform_.translation_.y + r[3] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[4].translation_.z = 0.0f;
+
+		//5
+		r[4] = 15.0f;
+		worldTransformPlayerCollision_[5].translation_.x = worldTransform_.translation_.x + r[4] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[5].translation_.y = worldTransform_.translation_.y + r[4] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[5].translation_.z = 0.0f;
+
+		//6
+
+		r[5] = -15.0f;
+		worldTransformPlayerCollision_[6].translation_.x = worldTransform_.translation_.x + r[5] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[6].translation_.y = worldTransform_.translation_.y + r[5] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[6].translation_.z = 0.0f;
+
+
+
+	}
+
+
+	///攻撃当たり判定エリア
+	{
+		//
+		worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+		worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+
+		//
+		for (int i = 0; i < 10; i++) {
+			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
+		}
+	}
 	//ファイル読み込み
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
-		string stringhp, stringweakPower, stringheavyPower;
+		string stringhp, stringweakPower, stringheavyPower, stringstunInterval;
 
 		getline(playerfile, stringhp);
 		getline(playerfile, stringweakPower);
 		getline(playerfile, stringheavyPower);
+		getline(playerfile, stringstunInterval);
 
 		int pos1 = static_cast<int> (stringhp.find(":"));
 		int pos2 = static_cast<int> (stringweakPower.find(":"));
 		int pos3 = static_cast<int> (stringheavyPower.find(":"));
+		int pos4 = static_cast<int> (stringstunInterval.find(":"));
 
 		if (pos1 != string::npos) {
-			stringhp = stringhp.substr(pos1 + 1);
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
 		}
 		if (pos2 != string::npos) {
-			stringweakPower = stringweakPower.substr(pos2 + 1);
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
 		}
 		if (pos3 != string::npos) {
-			stringheavyPower = stringheavyPower.substr(pos3 + 1);
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
+		if (pos4 != string::npos) {
+			stringstunInterval = stringstunInterval.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
+		}
+
 		playerHp_ = stoi(stringhp);
 		weakAttackPower_ = stoi(stringweakPower);
 		heavyAttackPower_ = stoi(stringheavyPower);
+		intervalSec_ = stoi(stringstunInterval);
 
 		playerfile.close();
+
 	}
 }
 
