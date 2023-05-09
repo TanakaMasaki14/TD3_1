@@ -45,7 +45,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	//ファイル読み込み
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
-		string stringhp, stringweakPower, stringheavyPower,stringstunInterval;
+		string stringhp, stringweakPower, stringheavyPower, stringstunInterval;
 
 		getline(playerfile, stringhp);
 		getline(playerfile, stringweakPower);
@@ -208,25 +208,28 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		}
 	}
 
-	//PAD
-	InitializePAD();
+
 
 }
 
 void PlayerArm::Update()
 {
+	///PAD
+	PADUpdate();
+
+
 	if (movement_ == true) {
 		///移動
-		if (input_->PushKey(DIK_W)) {
+		if (GamePAD_UPARROW) {
 			worldTransform_.translation_.y += Armspeed_.y;
 		}
-		if (input_->PushKey(DIK_S)) {
+		if (GamePAD_DOWNARROW) {
 			worldTransform_.translation_.y -= Armspeed_.y;
 		}
-		if (input_->PushKey(DIK_A)) {
+		if (GamePAD_LEFTARROW) {
 			worldTransform_.translation_.x -= Armspeed_.x;
 		}
-		if (input_->PushKey(DIK_D)) {
+		if (GamePAD_RIGHTARROW) {
 			worldTransform_.translation_.x += Armspeed_.x;
 		}
 	}
@@ -238,7 +241,7 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (input_->TriggerKey(DIK_K)) {
+	if (GamePAD_B == true && prevGamePAD_B == false) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
@@ -258,7 +261,7 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (input_->TriggerKey(DIK_L)) {
+	if (GamePAD_X == true && prevGamePAD_X == false) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
@@ -277,7 +280,7 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (input_->TriggerKey(DIK_N)) {
+	if (GamePAD_Y == true && prevGamePAD_Y == false) {
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && stuninterval_ <= 0) {
 			attackbufferX_ = 43.0f;
 			attackbufferY_ = -5.0f;
@@ -307,7 +310,7 @@ void PlayerArm::Update()
 	debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
 
 	debugText_->SetPos(0, 80);
-	debugText_->Printf("block:%d,weak:%d,heavy:%d,stun:%d,getblock:%d", block_, weakAttack_, heavyAttack_, stunAttack_, getblock_);
+	debugText_->Printf("A:%d,prevA:%d,B:%d,prevB:%d,X:%d,prev:X:%d,Y:%d,prevY:%d", GamePAD_A, prevGamePAD_A, GamePAD_B, prevGamePAD_B, GamePAD_X, prevGamePAD_X, GamePAD_Y, prevGamePAD_Y);
 
 	debugText_->SetPos(0, 100);
 	debugText_->Printf("hp=%d weakPower=%d heavyPower=%d", hp, weakAttackPower_, heavyAttackPower_);
@@ -333,8 +336,15 @@ void PlayerArm::Update()
 	///モーションまとめ
 	Motion();
 
-	///PAD
-	PADUpdate();
+	///1フレーム前のPADの状態を保存
+	prevGamePAD_UPARROW = GamePAD_UPARROW;
+	prevGamePAD_DOWNARROW = GamePAD_DOWNARROW;
+	prevGamePAD_RIGHTARROW = GamePAD_RIGHTARROW;
+	prevGamePAD_LEFTARROW = GamePAD_LEFTARROW;
+	prevGamePAD_A = GamePAD_A;
+	prevGamePAD_B = GamePAD_B;
+	prevGamePAD_X = GamePAD_X;
+	prevGamePAD_Y = GamePAD_Y;
 
 	//当たり判定テスト
 	if (testhit == true) {
@@ -345,7 +355,7 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (stuninterval_ > 0){
+	if (stuninterval_ > 0) {
 		stuninterval_ -= 1;
 	}
 
@@ -433,9 +443,6 @@ void PlayerArm::Motion()
 	StunAttack();
 	GetStunMotion();
 }
-
-
-
 
 
 //ブロックを食らったら
@@ -1071,13 +1078,6 @@ void PlayerArm::GetStunMotion()
 	}
 }
 
-void PlayerArm::InitializePAD()
-{
-	//DWORD dwUserIndex = 0;
-	ZeroMemory(&state, sizeof(XINPUT_STATE));
-
-	dwResult = XInputGetState(0, &state);
-}
 
 void PlayerArm::ReInitialize()
 {
@@ -1201,42 +1201,66 @@ void PlayerArm::ReInitialize()
 
 void PlayerArm::PADUpdate()
 {
-	//A
-	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
-		GamePAD_A = true;
-	}
-	GamePAD_A = state.Gamepad.wButtons & XINPUT_GAMEPAD_A;
 
 
-	//B
-	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
-		GamePAD_B = true;
-	}
-	else {
-		GamePAD_B = false;
-	}
+	///移動
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) {
+			GamePAD_UPARROW = true;
+		}
+		else {
+			GamePAD_UPARROW = false;
+		}
 
-	//X
-	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
-		GamePAD_X = true;
-	}
-	else {
-		GamePAD_X = false;
-	}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+			GamePAD_DOWNARROW = true;
+		}
+		else {
+			GamePAD_DOWNARROW = false;
+		}
 
-	//Y
-	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
-		GamePAD_Y = true;
-	}
-	else {
-		GamePAD_Y = false;
-	}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
+			GamePAD_LEFTARROW = true;
+		}
+		else {
+			GamePAD_LEFTARROW = false;
+		}
 
-	prevGamePAD_A = GamePAD_A;
-	prevGamePAD_B = GamePAD_B;
-	prevGamePAD_X = GamePAD_X;
-	prevGamePAD_Y = GamePAD_Y;
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
+			GamePAD_RIGHTARROW = true;
+		}
+		else {
+			GamePAD_RIGHTARROW = false;
+		}
 
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
+			GamePAD_X = true;
+		}
+		else {
+			GamePAD_X = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+			GamePAD_B = true;
+		}
+		else {
+			GamePAD_B = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+			GamePAD_A = true;
+		}
+		else {
+			GamePAD_A = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
+			GamePAD_Y = true;
+		}
+		else {
+			GamePAD_Y = false;
+		}
+	}
 }
 
 

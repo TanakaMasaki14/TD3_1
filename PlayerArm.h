@@ -204,7 +204,7 @@ private:
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
-	int stuninterval_ = 0; 
+	int stuninterval_ = 0;
 	int intervalSec_ = 0;
 
 	void GetStunMotion();
@@ -225,8 +225,19 @@ private:
 	int heavyAttackPower_;
 
 	//PAD
-	XINPUT_STATE state;
-	DWORD dwResult;
+	XINPUT_STATE joyState{};
+
+	bool GamePAD_UPARROW = false;
+	bool prevGamePAD_UPARROW = false;
+
+	bool GamePAD_DOWNARROW = false;
+	bool prevGamePAD_DOWNARROW = false;
+
+	bool GamePAD_RIGHTARROW = false;
+	bool prevGamePAD_RIGHTARROW = false;
+
+	bool GamePAD_LEFTARROW = false;
+	bool prevGamePAD_LEFTARROW = false;
 
 	bool GamePAD_A = false;
 	bool prevGamePAD_A = false;
@@ -240,7 +251,6 @@ private:
 	bool GamePAD_Y = false;
 	bool prevGamePAD_Y = false;
 
-	void InitializePAD();
 
 	void PADUpdate();
 };
