@@ -86,33 +86,16 @@ void GameScene::Update() {
 		break;
 	case 1://ステージ１
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			/*if (input_->TriggerKey(DIK_T)) {
-				SpeedBuffer = playerArm_->GetSpeed();
-				stop = true;
-			}*/
+			//if (input_->TriggerKey(DIK_T)) {
+			//	SpeedBuffer = playerArm_->GetSpeed();
+			//	stop = true;
+			//}
 			//Stop();
 			playerArm_->Update();
 			enemy_->Update();
+		
 			CheckCollision();
-
-			//debugText_->SetPos(50,100);
-			//debugText_->Printf("%d", EnemyAttackToPlayer);
 			viewProjection_.UpdateMatrix();
-			//if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			//	fontFlag_ = 1;
-			//}
-			//if (fontFlag_ == 1) {
-			//	fontTimer_++;
-			//}
-			//if (input_->PushKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			//	if (fontTimer_ <= 13) {
-			//		fontTimer_++;
-			//	}
-			//}
-			//if (fontTimer_ == 13) {
-			//	fontFlag_ = 0;
-			//	fontTimer_ = 0;
-			//}
 
 			if (playerArm_->GetHp() <= 0) {
 				koFlag_ = 1;
@@ -130,47 +113,31 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER){
 					audio_->PlayWave(soundHandleNext_, false, 3);
 					koFlag_ = 0;
-					scene = 0;
+					scene = 2;
 				}
 			}
 		}
 		break;
 	case 2://ステージ２
-		if (input_->TriggerKey(DIK_T)) {
-			SpeedBuffer = playerArm_->GetSpeed();
-			stop = true;
-		}
-		Stop();
 		playerArm_->Update();
 		enemy_->Update();
+		CheckCollision();
 		viewProjection_.UpdateMatrix();
-		//if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-		//	fontFlag_ = 1;
-		//}
-		//if (fontFlag_ == 1) {
-		//	fontTimer_++;
-		//}
-		//if (fontTimer_ == 13) {
-		//	fontFlag_ = 0;
-		//	fontTimer_ = 0;
-		//}
-		if (input_->TriggerKey(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-			audio_->PlayWave(soundHandleNext_, false, 3);
-			scene = 3;
-		}
-		//k.o
-		if (input_->TriggerKey(DIK_G)) {
+
+		if (playerArm_->GetHp() <= 0) {
 			koFlag_ = 1;
 			if (koFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (input_->TriggerKey(DIK_G)) {
+		if (enemy_->GetHp() <= 0) {
 			koFlag_ = 1;
-			audio_->PlayWave(soundHandleKo_, false, 3);
+			if (koFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
 		}
 		if (koFlag_ == 1) {
-			if (input_->TriggerKey(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
 				koFlag_ = 0;
 				scene = 3;
@@ -178,41 +145,25 @@ void GameScene::Update() {
 		}
 		break;
 	case 3://ステージ３
-		if (input_->TriggerKey(DIK_T)) {
-			SpeedBuffer = playerArm_->GetSpeed();
-			stop = true;
-		}
-		Stop();
 		playerArm_->Update();
 		enemy_->Update();
+		CheckCollision();
 		viewProjection_.UpdateMatrix();
-		//if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-		//	fontFlag_ = 1;
-		//}
-		//if (fontFlag_ == 1) {
-		//	fontTimer_++;
-		//}
-		//if (fontTimer_ == 13) {
-		//	fontFlag_ = 0;
-		//	fontTimer_ = 0;
-		//}
-		if (input_->TriggerKey(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-			audio_->PlayWave(soundHandleNext_, false, 3);
-			scene = 4;
-		}
-		//k.o
-		if (input_->TriggerKey(DIK_G)) {
+
+		if (playerArm_->GetHp() <= 0) {
 			koFlag_ = 1;
 			if (koFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (input_->TriggerKey(DIK_G)) {
+		if (enemy_->GetHp() <= 0) {
 			koFlag_ = 1;
-			audio_->PlayWave(soundHandleKo_, false, 3);
+			if (koFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
 		}
 		if (koFlag_ == 1) {
-			if (input_->TriggerKey(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
 				koFlag_ = 0;
 				scene = 4;
@@ -221,7 +172,7 @@ void GameScene::Update() {
 		break;
 	case 4://クリア画面
 		//audio_->PlayWave(soundHandleClear_, false, 1);
-		if (input_->TriggerKey(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 			audio_->PlayWave(soundHandleNext_, false, 3);
 			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 			scene = 0;
@@ -241,15 +192,6 @@ void GameScene::Draw() {
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
-		//if (fontTimer_ > 0) {
-		//	nyaSprite_->Draw();
-		//}
-		////k.o
-		//if (fontTimer_ >= 1) {
-		//	nyaSprite_->Draw();
-		//}
-		//batinSprite_->Draw();
-		//donSprite_->Draw();
 		if (koFlag_ == 1) {
 			koSprite_->Draw();
 		}
