@@ -93,7 +93,6 @@ void GameScene::Update() {
 			//Stop();
 			playerArm_->Update();
 			enemy_->Update();
-		
 			CheckCollision();
 			viewProjection_.UpdateMatrix();
 
@@ -113,7 +112,7 @@ void GameScene::Update() {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER){
 					audio_->PlayWave(soundHandleNext_, false, 3);
 					koFlag_ = 0;
-					scene = 2;
+					scene = 0;
 				}
 			}
 		}
