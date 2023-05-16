@@ -46,7 +46,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	//
 	srand((unsigned)time(NULL));
 
-	waitrandomTime_ = rand() % 61;
+	waitrandomTime_ = static_cast<float> (rand() % 61);
 
 	waitTime_ = waitbaseTime_ + waitrandomTime_;
 
@@ -54,15 +54,17 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	ifstream enemyfile("Text/Enemy.txt");
 
 	if (enemyfile.is_open()) {
-		string stringhp, stringweakPower, stringheavyPower;
+		string stringhp, stringweakPower, stringheavyPower, stringbasewaitTime;
 
 		getline(enemyfile, stringhp);
 		getline(enemyfile, stringweakPower);
 		getline(enemyfile, stringheavyPower);
+		getline(enemyfile, stringbasewaitTime);
 
 		int pos1 = static_cast<int> (stringhp.find(":"));
 		int pos2 = static_cast<int>	(stringweakPower.find(":"));
 		int pos3 = static_cast<int>	(stringheavyPower.find(":"));
+		int pos4 = static_cast<int> (stringbasewaitTime.find(":"));
 
 		if (pos1 != string::npos) {
 			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
@@ -73,10 +75,14 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 		if (pos3 != string::npos) {
 			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
+		if (pos4 != string::npos) {
+			stringbasewaitTime = stringbasewaitTime.substr(pos4 + 1);
+		}
 
 		hp = stoi(stringhp);
 		weakAttackPower_ = stoi(stringweakPower);
 		heavyAttackPower_ = stoi(stringheavyPower);
+		waitbaseTime_ = stof(stringbasewaitTime) * 60;
 
 		enemyfile.close();
 	}
@@ -270,114 +276,117 @@ void Enemy::Update()
 	}
 
 
-
-	if (movementFase_ == 0) {
-		waitTime_ -= 1;
-		if (waitTime_ == 0) {
-			attackPattern_ = rand() % 4 + 1;
-		}
-		if (waitTime_ < 0) {
-			movementFase_ = 1;
-		}
-	}
-
-	//行動決定
-	if (movementFase_ == 1) {
-
-		///ブロック
-		if (attackPattern_ == 1) {
-			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
-				block_ = true;
+	///A
+	{
+		if (movementFase_ == 0) {
+			waitTime_ -= 1;
+			if (waitTime_ == 0) {
+				attackPattern_ = rand() % 4 + 1;
 			}
-
-			movementFase_ = 2;
+			if (waitTime_ < 0) {
+				movementFase_ = 1;
+			}
 		}
 
-		///弱攻撃
-		if (attackPattern_ == 2) {
-			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
-				motionspeedX = 2.0f;
-				motionspeedY = 4.0f;
+		//行動決定
+		if (movementFase_ == 1) {
 
-
-				attackbufferX_ = worldTransform_.translation_.x;
-				attackbufferY_ = worldTransform_.translation_.y;
-
-				worldTransformAttackrange_.scale_ = { 2.0f,10.0f,2.0f };
-
-				for (int i = 0; i < 10; i++) {
-					worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
+			///ブロック
+			if (attackPattern_ == 1) {
+				if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+					block_ = true;
 				}
 
-				weakAttack_ = true;
+				movementFase_ = 2;
 			}
 
-			movementFase_ = 2;
-		}
+			///弱攻撃
+			if (attackPattern_ == 2) {
+				if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+					motionspeedX = 2.0f;
+					motionspeedY = 4.0f;
 
-		///強攻撃
-		if (attackPattern_ == 3) {
-			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
-				motionspeedX = 0.5f;
-				motionspeedY = 1.0f;
 
-				attackbufferX_ = worldTransform_.translation_.x;
-				attackbufferY_ = worldTransform_.translation_.y;
+					attackbufferX_ = worldTransform_.translation_.x;
+					attackbufferY_ = worldTransform_.translation_.y;
 
-				worldTransformAttackrange_.scale_ = { 3.0f,10.0f,3.0f };
-				for (int i = 0; i < 10; i++) {
-					worldTransformAttackCollision_[i].scale_ = { 3.0f,3.0f,3.0f };
+					worldTransformAttackrange_.scale_ = { 2.0f,10.0f,2.0f };
+
+					for (int i = 0; i < 10; i++) {
+						worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
+					}
+
+					weakAttack_ = true;
 				}
 
-				heavyAttack_ = true;
-
+				movementFase_ = 2;
 			}
 
-			movementFase_ = 2;
-		}
+			///強攻撃
+			if (attackPattern_ == 3) {
+				if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+					motionspeedX = 0.5f;
+					motionspeedY = 1.0f;
 
-		///スタン
-		if (attackPattern_ == 4) {
-			if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
-				attackbufferX_ = -43.0f;
-				attackbufferY_ = -5.0f;
+					attackbufferX_ = worldTransform_.translation_.x;
+					attackbufferY_ = worldTransform_.translation_.y;
 
-				worldTransformAttackrange_.translation_.x = attackbufferX_;
-				worldTransformAttackrange_.translation_.y = attackbufferY_;
+					worldTransformAttackrange_.scale_ = { 3.0f,10.0f,3.0f };
+					for (int i = 0; i < 10; i++) {
+						worldTransformAttackCollision_[i].scale_ = { 3.0f,3.0f,3.0f };
+					}
 
-				worldTransformAttackrange_.scale_ = { 2.0f,20.0f,2.0f };
+					heavyAttack_ = true;
 
-				for (int i = 0; i < 10; i++) {
-					worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
 				}
 
-				stunAttack_ = true;
+				movementFase_ = 2;
 			}
 
-			movementFase_ = 2;
+			///スタン
+			if (attackPattern_ == 4) {
+				if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false) {
+					attackbufferX_ = -43.0f;
+					attackbufferY_ = -5.0f;
+
+					worldTransformAttackrange_.translation_.x = attackbufferX_;
+					worldTransformAttackrange_.translation_.y = attackbufferY_;
+
+					worldTransformAttackrange_.scale_ = { 2.0f,20.0f,2.0f };
+
+					for (int i = 0; i < 10; i++) {
+						worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
+					}
+
+					stunAttack_ = true;
+				}
+
+				movementFase_ = 2;
+			}
+
 		}
 
-	}
+		//行動中
+		if (movementFase_ == 2) {
 
-	//行動中
-	if (movementFase_ == 2) {
+		}
 
-	}
+		//行動終了後、初期化
+		if (movementFase_ == 3) {
+			waitrandomTime_ = static_cast<float> (rand() % 61);
 
-	//行動終了後、初期化
-	if (movementFase_ == 3) {
-		waitrandomTime_ = rand() % 61;
+			waitTime_ = waitbaseTime_ + waitrandomTime_;
+			MoveCalculation();
 
-		waitTime_ = waitbaseTime_ + waitrandomTime_;
-
-		movementFase_ = 0;
+			movementFase_ = 0;
+		}
 	}
 
 	debugText_->SetPos(0, 120);
 	debugText_->Printf("rotationZ:%f", worldTransform_.rotation_.z);
 
 	debugText_->SetPos(0, 140);
-	debugText_->Printf("hp:%d", hp);
+	debugText_->Printf("wait:%f", waitbaseTime_);
 
 
 
@@ -472,6 +481,12 @@ void Enemy::Motion()
 	HeavyAttack();
 	StunAttack();
 	GetStunMotion();
+}
+
+void Enemy::MoveCalculation()
+{
+	amountMovementX_.x = (rand() % 101) / 100.0f;
+	amountMovementX_.y = (rand() % 101) / 100.0f;
 }
 
 

@@ -25,6 +25,8 @@ public:
 
 	void Motion();
 
+	void MoveCalculation();
+
 	//当たり判定
 
 	void GetBlock();
@@ -84,6 +86,13 @@ public:
 
 	int GetHeavyPower() { return heavyAttackPower_; }
 
+	/// <summary>
+	/// ベースタイマー再設定(引数は秒数(小数点可))
+	/// </summary>
+	void SetWaitBaseTimer(float waitBaseTime) {
+		waitbaseTime_ = waitBaseTime * 60;
+	}
+
 private:
 	Model* model_ = nullptr;
 
@@ -135,12 +144,24 @@ private:
 	int movementFase_ = 0; //0:待機中 1:行動決定　2:行動中 3:待機移行
 
 
-	int waitbaseTime_ = 120;
-	int waitrandomTime_ = 0;
+	//待機基礎時間
+	float waitbaseTime_ = 0;
+	float waitrandomTime_ = 0;
 
-	int waitTime_ = 0;
+	float waitTime_ = 0;
 
 	int attackPattern_ = 0; //1:ブロック 2:弱攻撃 3:強攻撃 4:スタン
+
+	//移動
+	Vector2 velocity_ = { 0.0f,0.0f };
+
+	Vector2 amountMovementX_ = { 0.0f,0.0f };
+
+	Vector2 amountMovementY_ = { 0.0f,0.0f };
+
+	Vector2 movementscaleX_ = { 0.0f,0.0f };
+
+	Vector2 movementscaleY_ = { 0.0f,0.0f };
 
 
 	//攻撃範囲
@@ -212,13 +233,7 @@ private:
 	int heavyAttackPower_;
 };
 
-//中心座標Bからx座標がX cm、y座標がY cm離れている点AがBを中心に扇状に90°動いた時、1°毎の点Aの移動量を求める式は以下の通りです。
 
-//まず、点Aの初期位置から中心座標Bまでの距離rを求めます。 r = √(X ^ 2 + Y ^ 2)
-
-//次に、点Aが1度動いた時の移動量ΔxとΔyを求めます。 Δx = r * sin(1°) Δy = r * cos(1°)
-
-//以上の式で求められます。1
 
 
 

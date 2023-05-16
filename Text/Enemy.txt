@@ -1,3 +1,4 @@
 Hp:5
 Weak:1
 Heavy:2
+WaitbaseTime:2
