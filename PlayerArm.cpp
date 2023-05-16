@@ -37,6 +37,8 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
 
+	textureHandleikaku_ = TextureManager::Load("ikaku.png");
+
 	modelPlayerCollision_ = Model::CreateFromOBJ("C");
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
 
@@ -59,7 +61,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///òr
 	{
-		worldTransform_.scale_ = { 3.0f,2.0f,2.0f };
+		worldTransform_.scale_ = { 3.0f,3.0f,3.0f };
 		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
 		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
 
@@ -262,7 +264,7 @@ void PlayerArm::Update()
 			worldTransformAttackrange_.translation_.x = attackbufferX_;
 			worldTransformAttackrange_.translation_.y = attackbufferY_;
 
-			worldTransformAttackrange_.scale_ = { 2.0f,20.0f,2.0f };
+			worldTransformAttackrange_.scale_ = { 2.0f,10.0f,2.0f };// Ç±Ç±Ç≈ÉXÉ^ÉìçUåÇÇÃìñÇΩÇËîªíËÇÃëÂÇ´Ç≥ÇåàÇﬂÇƒÇ¢ÇÈ
 
 			for (int i = 0; i < 10; i++) {
 				worldTransformAttackCollision_[i].scale_ = { 2.0f,2.0f,2.0f };
@@ -360,13 +362,15 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 
 	modelFace_->Draw(worldTransformFace_, viewProjection);
 
-	for (int i = 0; i < PlayerCollisionquantity; i++) {
+	/*for (int i = 0; i < PlayerCollisionquantity; i++) {
 		modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
-	}
+	}*/
+
+	/*textureHandleikaku__*/
 
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
-			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
+			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandleikaku_);
 		}
 
 		for (int i = 0; i < 10; i++) {
@@ -886,7 +890,7 @@ void PlayerArm::StunAttack()
 
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ < 0) {
 			for (int i = 0; i < 10; i++) {
-				worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+				worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
 				worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			}
 

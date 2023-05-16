@@ -46,6 +46,9 @@ void GameScene::Initialize() {
 	donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
 	textureHandleKo_ = TextureManager::Load("ko.png");
 	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
+	textureHandleikaku_ = TextureManager::Load("ikaku.png");
+	ikakuSprite_ = Sprite::Create(textureHandleikaku_, { 0, 600 });
+
 
 	soundHandleTitle_ = audio_->LoadWave("neownch.mp3");
 	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);

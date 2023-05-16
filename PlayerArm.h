@@ -78,6 +78,8 @@ public:
 	void SetSpeed(Vector3 Speed);
 
 private:
+	Sprite* ikakuSprite_ = new Sprite;
+
 	Model* model_ = nullptr;
 
 	Model* modelFace_ = nullptr;
@@ -110,6 +112,7 @@ private:
 	WorldTransform worldTransformAttackCollision_[10];
 
 	uint32_t textureHandle_ = 0;
+	uint32_t textureHandleikaku_ = 0;
 
 	uint32_t TesttextureHandle_ = 0;
 	bool testhit = false;
