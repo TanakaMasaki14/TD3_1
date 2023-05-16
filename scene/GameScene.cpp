@@ -74,7 +74,7 @@ void GameScene::Update() {
 	{
 	case 0://タイトル
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
 				audio_->StopWave(soundHandleLoop_);
 				playerKoFlag_ = 0;
@@ -125,85 +125,90 @@ void GameScene::Update() {
 		}
 		break;
 	case 2://ステージ２
-		playerArm_->Update();
-		enemy_->Update();
-		CheckCollision();
-		viewProjection_.UpdateMatrix();
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			playerArm_->Update();
+			enemy_->Update();
+			CheckCollision();
+			viewProjection_.UpdateMatrix();
 
-		if (playerArm_->GetHp() <= 0) {
-			playerKoFlag_ = 1;
+			if (playerArm_->GetHp() <= 0) {
+				playerKoFlag_ = 1;
+				if (playerKoFlag_ == 1) {
+					audio_->PlayWave(soundHandleKo_, false, 3);
+				}
+			}
+			if (enemy_->GetHp() <= 0) {
+				enemyKoFlag_ = 1;
+				if (enemyKoFlag_ == 1) {
+					audio_->PlayWave(soundHandleKo_, false, 3);
+				}
+			}
 			if (playerKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					audio_->PlayWave(soundHandleNext_, false, 3);
+					playerKoFlag_ = 0;
+					playerArm_->ReInitialize();
+					enemy_->ReInitialize();
+					scene = 0;
+				}
 			}
-		}
-		if (enemy_->GetHp() <= 0) {
-			enemyKoFlag_ = 1;
 			if (enemyKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
-		}
-		if (playerKoFlag_ == 1) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-				audio_->PlayWave(soundHandleNext_, false, 3);
-				playerKoFlag_ = 0;
-				playerArm_->ReInitialize();
-				enemy_->ReInitialize();
-				scene = 0;
-			}
-		}
-		if (enemyKoFlag_ == 1) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-				audio_->PlayWave(soundHandleNext_, false, 3);
-				enemyKoFlag_ = 0;
-				playerArm_->ReInitialize();
-				enemy_->ReInitialize();
-				scene = 3;
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					audio_->PlayWave(soundHandleNext_, false, 3);
+					enemyKoFlag_ = 0;
+					playerArm_->ReInitialize();
+					enemy_->ReInitialize();
+					scene = 3;
+				}
 			}
 		}
 		break;
 	case 3://ステージ３
-		playerArm_->Update();
-		enemy_->Update();
-		CheckCollision();
-		viewProjection_.UpdateMatrix();
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			playerArm_->Update();
+			enemy_->Update();
+			CheckCollision();
+			viewProjection_.UpdateMatrix();
 
-		if (playerArm_->GetHp() <= 0) {
-			playerKoFlag_ = 1;
+			if (playerArm_->GetHp() <= 0) {
+				playerKoFlag_ = 1;
+				if (playerKoFlag_ == 1) {
+					audio_->PlayWave(soundHandleKo_, false, 3);
+				}
+			}
+			if (enemy_->GetHp() <= 0) {
+				enemyKoFlag_ = 1;
+				if (enemyKoFlag_ == 1) {
+					audio_->PlayWave(soundHandleKo_, false, 3);
+				}
+			}
 			if (playerKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					audio_->PlayWave(soundHandleNext_, false, 3);
+					playerKoFlag_ = 0;
+					playerArm_->ReInitialize();
+					enemy_->ReInitialize();
+					scene = 0;
+				}
 			}
-		}
-		if (enemy_->GetHp() <= 0) {
-			enemyKoFlag_ = 1;
 			if (enemyKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
-		}
-		if (playerKoFlag_ == 1) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-				audio_->PlayWave(soundHandleNext_, false, 3);
-				playerKoFlag_ = 0;
-				playerArm_->ReInitialize();
-				enemy_->ReInitialize();
-				scene = 0;
-			}
-		}
-		if (enemyKoFlag_ == 1) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-				audio_->PlayWave(soundHandleNext_, false, 3);
-				enemyKoFlag_ = 0;
-				playerArm_->ReInitialize();
-				enemy_->ReInitialize();
-				scene = 4;
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					audio_->PlayWave(soundHandleNext_, false, 3);
+					enemyKoFlag_ = 0;
+					playerArm_->ReInitialize();
+					enemy_->ReInitialize();
+					scene = 4;
+				}
 			}
 		}
 		break;
 	case 4://クリア画面
-		//audio_->PlayWave(soundHandleClear_, false, 1);
-		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-			audio_->PlayWave(soundHandleNext_, false, 3);
-			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
-			scene = 0;
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
+				scene = 0;
+			}
 		}
 		break;
 	}
