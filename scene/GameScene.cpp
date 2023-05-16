@@ -77,7 +77,8 @@ void GameScene::Update() {
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
 				audio_->StopWave(soundHandleLoop_);
-				koFlag_ = 0;
+				playerKoFlag_ = 0;
+				enemyKoFlag_ = 0;
 				playerArm_->ReInitialize();
 				enemy_->ReInitialize();
 				scene = 1;
@@ -86,33 +87,39 @@ void GameScene::Update() {
 		break;
 	case 1://ステージ１
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			//if (input_->TriggerKey(DIK_T)) {
-			//	SpeedBuffer = playerArm_->GetSpeed();
-			//	stop = true;
-			//}
-			//Stop();
 			playerArm_->Update();
 			enemy_->Update();
 			CheckCollision();
 			viewProjection_.UpdateMatrix();
 
 			if (playerArm_->GetHp() <= 0) {
-				koFlag_ = 1;
-				if (koFlag_ == 1) {
+				playerKoFlag_ = 1;
+				if (playerKoFlag_ == 1) {
 					audio_->PlayWave(soundHandleKo_, false, 3);
 				}
 			}
 			if (enemy_->GetHp() <= 0) {
-				koFlag_ = 1;
-				if (koFlag_ == 1) {
+				enemyKoFlag_ = 1;
+				if (enemyKoFlag_ == 1) {
 					audio_->PlayWave(soundHandleKo_, false, 3);
 				}
 			}
-			if (koFlag_ == 1) {
+			if (playerKoFlag_ == 1) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					audio_->PlayWave(soundHandleNext_, false, 3);
+					playerKoFlag_ = 0;
+					playerArm_->ReInitialize();
+					enemy_->ReInitialize();
+					scene = 0;
+				}
+			}
+			if (enemyKoFlag_ == 1) {
 				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER){
 					audio_->PlayWave(soundHandleNext_, false, 3);
-					koFlag_ = 0;
-					scene = 0;
+					enemyKoFlag_ = 0;
+					playerArm_->ReInitialize();
+					enemy_->ReInitialize();
+					scene = 2;
 				}
 			}
 		}
@@ -124,21 +131,32 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 
 		if (playerArm_->GetHp() <= 0) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+			playerKoFlag_ = 1;
+			if (playerKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
 		if (enemy_->GetHp() <= 0) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+			enemyKoFlag_ = 1;
+			if (enemyKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
-				koFlag_ = 0;
+				playerKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
+				scene = 0;
+			}
+		}
+		if (enemyKoFlag_ == 1) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				enemyKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
 				scene = 3;
 			}
 		}
@@ -150,21 +168,32 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 
 		if (playerArm_->GetHp() <= 0) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+			playerKoFlag_ = 1;
+			if (playerKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
 		if (enemy_->GetHp() <= 0) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+			enemyKoFlag_ = 1;
+			if (enemyKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
-				koFlag_ = 0;
+				playerKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
+				scene = 0;
+			}
+		}
+		if (enemyKoFlag_ == 1) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				enemyKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
 				scene = 4;
 			}
 		}
@@ -191,19 +220,28 @@ void GameScene::Draw() {
 		break;
 	case 1:// ステージ1
 		stage1Sprite_->Draw();
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
+			koSprite_->Draw();
+		}
+		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;
 	case 2:// ステージ2
 		stage2Sprite_->Draw();
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
+			koSprite_->Draw();
+		}
+		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;
 	case 3:// ステージ3
 		stage3Sprite_->Draw();
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
+			koSprite_->Draw();
+		}
+		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;

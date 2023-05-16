@@ -75,7 +75,8 @@ private: // メンバ変数
 	int shakeTimer_ = 30;
 	int fontFlag_ = 0;
 	int fontTimer_ = 0;
-	int koFlag_ = 0;
+	int playerKoFlag_ = 0;
+	int enemyKoFlag_ = 0;
 	bool soundloop = false;
 	bool stop = false;
 	int stopSecond_ = 1;
