@@ -258,6 +258,8 @@ private:
 	bool GamePAD_Y = false;
 	bool prevGamePAD_Y = false;
 
+	bool GamePAD_RIGHT_SHOULDER = false;
+	bool prevGamePAD_RIGHT_SHOULDER = false;
 
 	void PADUpdate();
 };

@@ -84,4 +84,12 @@ private: // メンバ変数
 	Vector3 SpeedBuffer = { 0,0,0 };
 	int PlayerAttackToEnemy = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
 	int EnemyAttackToPlayer = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
+
+	XINPUT_STATE joyState{};
+
+	bool GamePAD_B = false;
+	bool prevGamePAD_B = false;
+	bool GamePAD_RIGHT_SHOULDER = false;
+	bool prevGamePAD_RIGHT_SHOULDER = false;
+	void PADUpdate();
 };

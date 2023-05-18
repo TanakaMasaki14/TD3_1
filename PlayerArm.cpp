@@ -198,7 +198,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 		worldTransformAttackrange_.TransferMatrix();
 
-		//
+		//PADUpdate
 		for (int i = 0; i < 10; i++) {
 			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
@@ -1203,6 +1203,12 @@ void PlayerArm::ReInitialize()
 
 		playerfile.close();
 	}
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+		GamePAD_DOWNARROW = true;
+	}
+	else {
+		GamePAD_DOWNARROW = false;
+	}
 }
 
 void PlayerArm::PADUpdate()
@@ -1265,6 +1271,12 @@ void PlayerArm::PADUpdate()
 		}
 		else {
 			GamePAD_Y = false;
+		}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+			GamePAD_RIGHT_SHOULDER = true;
+		}
+		else {
+			GamePAD_RIGHT_SHOULDER = false;
 		}
 	}
 }
