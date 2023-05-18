@@ -145,7 +145,7 @@ private:
 
 
 	//待機基礎時間
-	float waitbaseTime_ = 0;
+	float waitbaseTime_ = 1;
 	float waitrandomTime_ = 0;
 
 	float waitTime_ = 0;
@@ -153,15 +153,15 @@ private:
 	int attackPattern_ = 0; //1:ブロック 2:弱攻撃 3:強攻撃 4:スタン
 
 	//移動
-	Vector2 velocity_ = { 0.0f,0.0f };
+	Vector2 velocity_ = { 0.0f,0.0f }; //x:左右 y:上下
 
-	Vector2 amountMovementX_ = { 0.0f,0.0f };
+	Vector2 amountMovementX_ = { 0.0f,0.0f }; //x:左 y:右
 
-	Vector2 amountMovementY_ = { 0.0f,0.0f };
+	Vector2 amountMovementY_ = { 0.0f,0.0f }; //x:上 y:下
 
-	Vector2 movementscaleX_ = { 0.0f,0.0f };
+	Vector2 movementscaleX_ = { 1.0f,1.0f }; //x:左 y:右
 
-	Vector2 movementscaleY_ = { 0.0f,0.0f };
+	Vector2 movementscaleY_ = { 1.0f,1.0f }; //x:上 y:下
 
 
 	//攻撃範囲

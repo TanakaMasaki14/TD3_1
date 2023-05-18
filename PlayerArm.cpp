@@ -300,17 +300,8 @@ void PlayerArm::Update()
 	}
 
 
-	debugText_->SetPos(0, 0);
-	debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
 
-	debugText_->SetPos(0, 30);
-	debugText_->Printf("translation:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 
-	debugText_->SetPos(0, 60);
-	debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
-
-	debugText_->SetPos(0, 80);
-	debugText_->Printf("A:%d,prevA:%d,B:%d,prevB:%d,X:%d,prev:X:%d,Y:%d,prevY:%d", GamePAD_A, prevGamePAD_A, GamePAD_B, prevGamePAD_B, GamePAD_X, prevGamePAD_X, GamePAD_Y, prevGamePAD_Y);
 
 	debugText_->SetPos(0, 100);
 	debugText_->Printf("hp=%d weakPower=%d heavyPower=%d", hp, weakAttackPower_, heavyAttackPower_);

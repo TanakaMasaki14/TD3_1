@@ -43,12 +43,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
 
 
-	//
-	srand((unsigned)time(NULL));
 
-	waitrandomTime_ = static_cast<float> (rand() % 61);
-
-	waitTime_ = waitbaseTime_ + waitrandomTime_;
 
 	//ファイル読み込み
 	ifstream enemyfile("Text/Enemy.txt");
@@ -76,7 +71,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
 		}
 		if (pos4 != string::npos) {
-			stringbasewaitTime = stringbasewaitTime.substr(pos4 + 1);
+			stringbasewaitTime = stringbasewaitTime.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
 		}
 
 		hp = stoi(stringhp);
@@ -87,7 +82,12 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 		enemyfile.close();
 	}
 
+	//
+	srand((unsigned)time(NULL));
 
+	waitrandomTime_ = static_cast<float> (rand() % 61);
+
+	waitTime_ = waitbaseTime_ + waitrandomTime_;
 
 
 	///腕
@@ -278,8 +278,35 @@ void Enemy::Update()
 
 	///A
 	{
+		///攻撃待機、移動
 		if (movementFase_ == 0) {
 			waitTime_ -= 1;
+			///移動
+			worldTransform_.translation_.x += velocity_.x;
+			worldTransform_.translation_.y += velocity_.y;
+
+			///移動制限
+			//x
+			//左
+			if (worldTransform_.translation_.x < -30) {
+				worldTransform_.translation_.x = -30;
+			}
+			//右
+			if (worldTransform_.translation_.x > -8) {
+				worldTransform_.translation_.x = -8;
+			}
+
+			//y
+			//下
+			if (worldTransform_.translation_.y < -10) {
+				worldTransform_.translation_.y = -10;
+			}
+			//上
+			if (worldTransform_.translation_.y > 0) {
+				worldTransform_.translation_.y = 0;
+			}
+
+
 			if (waitTime_ == 0) {
 				attackPattern_ = rand() % 4 + 1;
 			}
@@ -381,6 +408,9 @@ void Enemy::Update()
 			movementFase_ = 0;
 		}
 	}
+
+	debugText_->SetPos(0, 0);
+	debugText_->Printf("X:%f Y:%f", worldTransform_.translation_.x, worldTransform_.translation_.y);
 
 	debugText_->SetPos(0, 120);
 	debugText_->Printf("rotationZ:%f", worldTransform_.rotation_.z);
@@ -485,8 +515,51 @@ void Enemy::Motion()
 
 void Enemy::MoveCalculation()
 {
-	amountMovementX_.x = (rand() % 101) / 100.0f;
-	amountMovementX_.y = (rand() % 101) / 100.0f;
+	///移動量基礎値計算
+	amountMovementX_.x = -((rand() % 51) / 100.0f); //左
+	amountMovementX_.y = (rand() % 51) / 100.0f; //右
+
+	amountMovementY_.x = (rand() % 21) / 100.0f; //上
+	amountMovementY_.y = -((rand() % 21) / 100.0f); //下
+
+	///移動倍率変化
+	//左下げ
+	if ((playerarm_->GetWorldTransform().x - worldTransform_.translation_.x) > 60) {
+		movementscaleX_.x = 0.6f;
+	}
+	else {
+		movementscaleX_.x = 1.0f;
+	}
+
+	//右下げ
+	if ((playerarm_->GetWorldTransform().x - worldTransform_.translation_.x) < 40) {
+		movementscaleX_.y = 0.6f;
+	}
+	else {
+		movementscaleX_.y = 1.0f;
+	}
+
+
+	//上下げ
+	if ((playerarm_->GetWorldTransform().y - worldTransform_.translation_.y) > 10) {
+		movementscaleY_.x = 0.6f;
+	}
+	else {
+		movementscaleY_.x = 1.0f;
+	}
+
+	//下下げ
+	if ((playerarm_->GetWorldTransform().y - worldTransform_.translation_.y) < -10) {
+		movementscaleY_.y = 0.6f;
+	}
+	else {
+		movementscaleY_.y = 1.0f;
+	}
+
+	///移動速度、方向決定
+	velocity_.x = amountMovementX_.x * movementscaleX_.x + amountMovementX_.y * movementscaleX_.y;
+	velocity_.y = amountMovementY_.x * movementscaleY_.x + amountMovementY_.y * movementscaleY_.y;
+
 }
 
 
