@@ -412,6 +412,9 @@ void Enemy::Update()
 	debugText_->SetPos(0, 0);
 	debugText_->Printf("X:%f Y:%f", worldTransform_.translation_.x, worldTransform_.translation_.y);
 
+	debugText_->SetPos(0, 10);
+	debugText_->Printf("Hp:%d", hp);
+
 	debugText_->SetPos(0, 120);
 	debugText_->Printf("rotationZ:%f", worldTransform_.rotation_.z);
 

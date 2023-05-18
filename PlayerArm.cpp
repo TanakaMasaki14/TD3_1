@@ -242,7 +242,7 @@ void PlayerArm::Update()
 	}
 
 	if (GamePAD_B == true && prevGamePAD_B == false) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
