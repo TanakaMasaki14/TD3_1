@@ -240,7 +240,7 @@ void PlayerArm::Update()
 	}
 
 	if (GamePAD_A == true && prevGamePAD_A == false) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			block_ = true;
 			audio_->PlayWave(soundHandleBlock_, false, 3);
 			movement_ = false;
@@ -248,7 +248,7 @@ void PlayerArm::Update()
 	}
 
 	if (GamePAD_B == true && prevGamePAD_B == false) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
@@ -269,7 +269,7 @@ void PlayerArm::Update()
 	}
 
 	if (GamePAD_X == true && prevGamePAD_X == false) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
 
@@ -289,7 +289,7 @@ void PlayerArm::Update()
 	}
 
 	if (GamePAD_Y == true && prevGamePAD_Y == false) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && stuninterval_ <= 0) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && stuninterval_ <= 0 && getstun_ == false) {
 			attackbufferX_ = 43.0f;
 			attackbufferY_ = -5.0f;
 
@@ -307,25 +307,6 @@ void PlayerArm::Update()
 			movement_ = false;
 		}
 	}
-
-
-	//debugText_->SetPos(0, 0);
-	//debugText_->Printf("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
-
-	//debugText_->SetPos(0, 30);
-	//debugText_->Printf("translation:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-
-	//debugText_->SetPos(0, 60);
-	//debugText_->Printf("translation:(%f,%f,%f)", worldTransformFace_.translation_.x, worldTransformFace_.translation_.y, worldTransformFace_.translation_.z);
-
-	//debugText_->SetPos(0, 80);
-	//debugText_->Printf("A:%d,prevA:%d,B:%d,prevB:%d,X:%d,prev:X:%d,Y:%d,prevY:%d", GamePAD_A, prevGamePAD_A, GamePAD_B, prevGamePAD_B, GamePAD_X, prevGamePAD_X, GamePAD_Y, prevGamePAD_Y);
-
-	//debugText_->SetPos(0, 100);
-	//debugText_->Printf("hp=%d weakPower=%d heavyPower=%d", playerHp_, weakAttackPower_, heavyAttackPower_);
-
-	//debugText_->SetPos(0, 160);
-	//debugText_->Printf("%d", stuninterval_);
 
 	debugText_->SetPos(900, 50);
 	debugText_->Printf("PlayerHP:%d", playerHp_);
