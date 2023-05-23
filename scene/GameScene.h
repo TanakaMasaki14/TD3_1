@@ -45,14 +45,16 @@ private: // メンバ変数
 	Model* modelEnemyFace_ = nullptr;
 
 	uint32_t textureHandleTitle_ = 0;
+	uint32_t textureHandleSetumei_ = 0;
 	uint32_t textureHandleStage1_ = 0;
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
-	uint32_t textureHandleNya_ = 0;
-	uint32_t textureHandleBatin_ = 0;
-	uint32_t textureHandleDon_ = 0;
+	//uint32_t textureHandleNya_ = 0;
+	//uint32_t textureHandleBatin_ = 0;
+	//uint32_t textureHandleDon_ = 0;
 	uint32_t textureHandleKo_ = 0;
 	uint32_t textureHandleClear_ = 0;
+
 	uint32_t soundHandleTitle_ = 0;
 	uint32_t soundHandleNext_ = 0;
 	uint32_t soundHandleLoop_ = 0;
@@ -60,12 +62,13 @@ private: // メンバ変数
 	uint32_t soundHandleClear_ = 0;
 
 	Sprite* titleSprite_ = new Sprite;
+	Sprite* setumeiSprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;
-	Sprite* nyaSprite_ = new Sprite;
-	Sprite* batinSprite_ = new Sprite;
-	Sprite* donSprite_ = new Sprite;
+	//Sprite* nyaSprite_ = new Sprite;
+	//Sprite* batinSprite_ = new Sprite;
+	//Sprite* donSprite_ = new Sprite;
 	Sprite* koSprite_ = new Sprite;
 	Sprite* clearSprite_ = new Sprite;
 
@@ -74,7 +77,8 @@ private: // メンバ変数
 	int shakeTimer_ = 30;
 	int fontFlag_ = 0;
 	int fontTimer_ = 0;
-	int koFlag_ = 0;
+	int playerKoFlag_ = 0;
+	int enemyKoFlag_ = 0;
 	bool soundloop = false;
 	bool stop = false;
 	int stopSecond_ = 1;
@@ -82,4 +86,12 @@ private: // メンバ変数
 	Vector3 SpeedBuffer = { 0,0,0 };
 	int PlayerAttackToEnemy = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
 	int EnemyAttackToPlayer = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
+
+	XINPUT_STATE joyState{};
+
+	bool GamePAD_B = false;
+	bool prevGamePAD_B = false;
+	bool GamePAD_RIGHT_SHOULDER = false;
+	bool prevGamePAD_RIGHT_SHOULDER = false;
+	void PADUpdate();
 };

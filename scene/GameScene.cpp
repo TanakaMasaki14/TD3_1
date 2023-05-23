@@ -20,17 +20,21 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 	playerArm_ = new PlayerArm();
 	enemy_ = new Enemy();
-	modelPlayerArm_ = Model::Create();
+	playerArm_->SetEnemy(enemy_);
+	enemy_->SetPlayerArm(playerArm_);
+	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
 	textureHandlePlayerArm_ = TextureManager::Load("Nort8.png");
-	modelPlayerFace_ = Model::Create();
-	modelEnemy_ = Model::Create();
-	modelEnemyFace_ = Model::Create();
+	modelPlayerFace_ = Model::CreateFromOBJ("catface");
+	modelEnemy_ = Model::CreateFromOBJ("Ecathand");
+	modelEnemyFace_ = Model::CreateFromOBJ("Ecatface");
 	playerArm_->Initialize(modelPlayerArm_, modelPlayerFace_, textureHandlePlayerArm_);
 	enemy_->Initialize(modelEnemy_, modelEnemyFace_, textureHandlePlayerArm_);
 	viewProjection_.Initialize();
 
 	textureHandleTitle_ = TextureManager::Load("neownch.png");
 	titleSprite_ = Sprite::Create(textureHandleTitle_, { 0, 0 });
+	textureHandleSetumei_ = TextureManager::Load("setumei2.png");
+	setumeiSprite_ = Sprite::Create(textureHandleSetumei_, { 0, 0 });
 	textureHandleStage1_ = TextureManager::Load("stage1.png");
 	stage1Sprite_ = Sprite::Create(textureHandleStage1_, { 0, 0 });
 	textureHandleStage2_ = TextureManager::Load("stage2.png");
@@ -38,15 +42,15 @@ void GameScene::Initialize() {
 	textureHandleStage3_ = TextureManager::Load("stage3.png");
 	stage3Sprite_ = Sprite::Create(textureHandleStage3_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
-	textureHandleNya_ = TextureManager::Load("nya.png");
-	nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
-	textureHandleBatin_ = TextureManager::Load("batin.png");
-	batinSprite_ = Sprite::Create(textureHandleBatin_, { 400,400 });
-	textureHandleDon_ = TextureManager::Load("don.png");
-	donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
+	//textureHandleNya_ = TextureManager::Load("nya.png");
+	//nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
+	//textureHandleBatin_ = TextureManager::Load("batin.png");
+	//batinSprite_ = Sprite::Create(textureHandleBatin_, { 400,400 });
+	//textureHandleDon_ = TextureManager::Load("don.png");
+	//donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
 	textureHandleKo_ = TextureManager::Load("ko.png");
 	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
-	textureHandleClear_ = TextureManager::Load("clear3.png");
+	textureHandleClear_ = TextureManager::Load("clear.png");
 	clearSprite_ = Sprite::Create(textureHandleClear_, { 0, 0 });
 
 	soundHandleTitle_ = audio_->LoadWave("neownch.mp3");
@@ -61,159 +65,165 @@ void GameScene::Finalize() {
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
-	delete nyaSprite_;
 	delete koSprite_;
+	delete clearSprite_;
 }
 
 void GameScene::Update() {
 
+	///PAD
+	PADUpdate();
 	switch (scene)
 	{
 	case 0://タイトル
-		if (input_->TriggerKey(DIK_SPACE)) {
+		//debugText_->SetPos(0, 0);
+		//debugText_->Printf("B:%d,前B:%d,RB:%d,前RB:%d", GamePAD_B, prevGamePAD_B, GamePAD_RIGHT_SHOULDER, prevGamePAD_RIGHT_SHOULDER);
+		if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
 			audio_->PlayWave(soundHandleNext_, false, 3);
 			audio_->StopWave(soundHandleLoop_);
+			playerKoFlag_ = 0;
+			enemyKoFlag_ = 0;
+			playerArm_->ReInitialize();
+			enemy_->ReInitialize();
+			scene = 1;
+		}
+		if (input_->PushKey(DIK_SPACE))
+		{
 			scene = 1;
 		}
 		break;
-	case 1://ステージ１
-		if (input_->TriggerKey(DIK_T)) {
-			SpeedBuffer = playerArm_->GetSpeed();
-			stop = true;
+	case 1:
+		if (input_->PushKey(DIK_B))
+		{
+			scene = 2;
 		}
-		Stop();
+		break;
+	case 2:
+		//ステージ１
 		playerArm_->Update();
 		enemy_->Update();
 		CheckCollision();
 		viewProjection_.UpdateMatrix();
-		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			fontFlag_ = 1;
-		}
-		if (fontFlag_ == 1) {
-			fontTimer_++;
-		}
 
-		if (input_->PushKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			if (fontTimer_ <= 13) {
-				fontTimer_++;
-			}
-		}
-		if (fontTimer_ == 13) {
-			fontFlag_ = 0;
-			fontTimer_ = 0;
-		}
-		//k.o
-		if (input_->TriggerKey(DIK_G)) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+		if (playerArm_->GetHp() <= 0) {
+			playerKoFlag_ = 1;
+			if (playerKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (input_->TriggerKey(DIK_SPACE)) {
-			audio_->PlayWave(soundHandleNext_, false, 3);
-			koFlag_ = 0;
-			scene = 2;
-		}
-		if (koFlag_ == 1) {
-			if (input_->TriggerKey(DIK_SPACE)) {
-				audio_->PlayWave(soundHandleNext_, false, 3);
-				koFlag_ = 0;
-				scene = 2;
-			}
-		}
-		break;
-	case 2://ステージ２
-		if (input_->TriggerKey(DIK_T)) {
-			SpeedBuffer = playerArm_->GetSpeed();
-			stop = true;
-		}
-		Stop();
-		playerArm_->Update();
-		enemy_->Update();
-		viewProjection_.UpdateMatrix();
-		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			fontFlag_ = 1;
-		}
-		if (fontFlag_ == 1) {
-			fontTimer_++;
-		}
-		if (fontTimer_ == 13) {
-			fontFlag_ = 0;
-			fontTimer_ = 0;
-		}
-		if (input_->TriggerKey(DIK_SPACE)) {
-			audio_->PlayWave(soundHandleNext_, false, 3);
-			scene = 3;
-		}
-		//k.o
-		if (input_->TriggerKey(DIK_G)) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+		if (enemy_->GetHp() <= 0) {
+			enemyKoFlag_ = 1;
+			if (enemyKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (input_->TriggerKey(DIK_G)) {
-			koFlag_ = 1;
-			audio_->PlayWave(soundHandleKo_, false, 3);
-		}
-		if (koFlag_ == 1) {
-			if (input_->TriggerKey(DIK_SPACE)) {
+		if (playerKoFlag_ == 1) {
+			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
-				koFlag_ = 0;
+				playerKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
+				scene = 0;
+			}
+		}
+		if (enemyKoFlag_ == 1) {
+			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				enemyKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
 				scene = 3;
 			}
 		}
 		break;
-	case 3://ステージ３
-		if (input_->TriggerKey(DIK_T)) {
-			SpeedBuffer = playerArm_->GetSpeed();
-			stop = true;
-		}
-		Stop();
+	case 3:
+		//ステージ２
 		playerArm_->Update();
 		enemy_->Update();
+		CheckCollision();
 		viewProjection_.UpdateMatrix();
-		if (input_->TriggerKey(DIK_K) || input_->TriggerKey(DIK_L)) {
-			fontFlag_ = 1;
-		}
-		if (fontFlag_ == 1) {
-			fontTimer_++;
-		}
-		if (fontTimer_ == 13) {
-			fontFlag_ = 0;
-			fontTimer_ = 0;
-		}
-		if (input_->TriggerKey(DIK_SPACE)) {
-			audio_->PlayWave(soundHandleNext_, false, 3);
-			scene = 4;
-		}
-		//k.o
-		if (input_->TriggerKey(DIK_G)) {
-			koFlag_ = 1;
-			if (koFlag_ == 1) {
+
+		if (playerArm_->GetHp() <= 0) {
+			playerKoFlag_ = 1;
+			if (playerKoFlag_ == 1) {
 				audio_->PlayWave(soundHandleKo_, false, 3);
 			}
 		}
-		if (input_->TriggerKey(DIK_G)) {
-			koFlag_ = 1;
-			audio_->PlayWave(soundHandleKo_, false, 3);
+		if (enemy_->GetHp() <= 0) {
+			enemyKoFlag_ = 1;
+			if (enemyKoFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
 		}
-		if (koFlag_ == 1) {
-			if (input_->TriggerKey(DIK_SPACE)) {
+		if (playerKoFlag_ == 1) {
+			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
 				audio_->PlayWave(soundHandleNext_, false, 3);
-				koFlag_ = 0;
+				playerKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
+				scene = 0;
+			}
+		}
+		if (enemyKoFlag_ == 1) {
+			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				enemyKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
 				scene = 4;
 			}
 		}
 		break;
-	case 4://クリア画面
-		//audio_->PlayWave(soundHandleClear_, false, 1);
-		if (input_->TriggerKey(DIK_SPACE)) {
+	case 4:
+		//ステージ３
+		playerArm_->Update();
+		enemy_->Update();
+		CheckCollision();
+		viewProjection_.UpdateMatrix();
+
+		if (playerArm_->GetHp() <= 0) {
+			playerKoFlag_ = 1;
+			if (playerKoFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
+		}
+		if (enemy_->GetHp() <= 0) {
+			enemyKoFlag_ = 1;
+			if (enemyKoFlag_ == 1) {
+				audio_->PlayWave(soundHandleKo_, false, 3);
+			}
+		}
+		if (playerKoFlag_ == 1) {
+			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				playerKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
+				scene = 0;
+			}
+		}
+		if (enemyKoFlag_ == 1) {
+			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
+				audio_->PlayWave(soundHandleNext_, false, 3);
+				enemyKoFlag_ = 0;
+				playerArm_->ReInitialize();
+				enemy_->ReInitialize();
+				scene = 5;
+			}
+		}
+		break;
+	case 5:
+		//クリア画面
+		if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
 			audio_->PlayWave(soundHandleNext_, false, 3);
 			soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 			scene = 0;
 		}
+		break;
 	}
+	///1フレーム前のPADの状態を保存
+	prevGamePAD_B = GamePAD_B;
+	prevGamePAD_RIGHT_SHOULDER = GamePAD_RIGHT_SHOULDER;
 }
 void GameScene::Draw() {
 	// コマンドリストの取得
@@ -225,34 +235,41 @@ void GameScene::Draw() {
 	case 0:// タイトル
 		titleSprite_->Draw();
 		break;
-	case 1:// ステージ1
+	case 1:
+		setumeiSprite_->Draw();
+		break;
+	case 2:
+		// ステージ1
 		stage1Sprite_->Draw();
-		if (fontTimer_ > 0) {
-			nyaSprite_->Draw();
+		if (playerKoFlag_ == 1) {
+			koSprite_->Draw();
 		}
-		//k.o
-		if (fontTimer_ >= 1) {
-			nyaSprite_->Draw();
-		}
-		batinSprite_->Draw();
-		donSprite_->Draw();
-		if (koFlag_ == 1) {
+		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;
-	case 2:// ステージ2
+	case 3:
+		// ステージ2
 		stage2Sprite_->Draw();
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
+			koSprite_->Draw();
+		}
+		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;
-	case 3:// ステージ3
+	case 4:
+		// ステージ3
 		stage3Sprite_->Draw();
-		if (koFlag_ == 1) {
+		if (playerKoFlag_ == 1) {
+			koSprite_->Draw();
+		}
+		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		break;
-	case 4:// クリア画面
+	case 5:
+		// クリア画面
 		clearSprite_->Draw();
 		break;
 	}
@@ -268,20 +285,43 @@ void GameScene::Draw() {
 	{
 	case 0:// タイトル
 		break;
-	case 1:// ステージ1
+	case 1:
+		break;
+	case 2:
+		// ステージ1
 		playerArm_->Draw(viewProjection_);
 		enemy_->Draw(viewProjection_);
 		break;
-	case 2:// ステージ2
+	case 3:
+		// ステージ2
 		playerArm_->Draw(viewProjection_);
 		enemy_->Draw(viewProjection_);
 		break;
-	case 3:// ステージ3
+	case 4:
+		// ステージ3
 		playerArm_->Draw(viewProjection_);
 		enemy_->Draw(viewProjection_);
 		break;
 	}
 	Model::PostDraw();
+}
+
+void GameScene::PADUpdate()
+{
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+			GamePAD_B = true;
+		}
+		else {
+			GamePAD_B = false;
+		}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+			GamePAD_RIGHT_SHOULDER = true;
+		}
+		else {
+			GamePAD_RIGHT_SHOULDER = false;
+		}
+	}
 }
 
 void GameScene::CheckCollision()
@@ -295,7 +335,42 @@ void GameScene::CheckCollision()
 		//ヒット時
 		if (PlayerAttackToEnemy == 1) {
 
-			//
+			//ブロックされた
+			if (enemy_->GetIsBlock() == true) {
+				playerArm_->GetBlock();
+			}
+
+			//弱攻撃を敵にあてた
+			if (playerArm_->GetIsBlock() == false && playerArm_->GetIsWeak() == true && playerArm_->GetIsHeavy() == false && playerArm_->GetIsStun() == false) {
+				enemy_->GetWeak();
+			}
+
+			//強攻撃を当てた
+			if (playerArm_->GetIsBlock() == false && playerArm_->GetIsWeak() == false && playerArm_->GetIsHeavy() == true && playerArm_->GetIsStun() == false) {
+				enemy_->GetHeavy();
+			}
+
+			//スタン攻撃を当てた
+			if (playerArm_->GetIsBlock() == false && playerArm_->GetIsWeak() == false && playerArm_->GetIsHeavy() == false && playerArm_->GetIsStun() == true) {
+				enemy_->GetStun();
+			}
+
+			PlayerAttackToEnemy = 2;
+		}
+
+		//ヒット待機移行待ち
+		if (PlayerAttackToEnemy == 2) {
+			if (playerArm_->GetIsMovement() == true) {
+				PlayerAttackToEnemy = 0;
+			}
+		}
+	}
+
+	///敵からプレイヤーへの攻撃
+	{
+		//ヒット時
+		if (EnemyAttackToPlayer == 1) {
+
 			//ブロックされた
 			if (playerArm_->GetIsBlock() == true) {
 				enemy_->GetBlock();
@@ -306,16 +381,17 @@ void GameScene::CheckCollision()
 				playerArm_->GetWeak();
 			}
 
-			//
 			//強攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == true && enemy_->GetIsStun() == false) {
 				playerArm_->GetHeavy();
 			}
 
+
 			//スタン攻撃を当てた
 			if (enemy_->GetIsBlock() == false && enemy_->GetIsWeak() == false && enemy_->GetIsHeavy() == false && enemy_->GetIsStun() == true) {
 				playerArm_->GetStun();
 			}
+
 			EnemyAttackToPlayer = 2;
 		}
 

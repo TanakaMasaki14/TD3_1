@@ -9,7 +9,11 @@
 #include "Input.h"
 #include "Audio.h"
 
+#include <Xinput.h>
+#pragma comment(lib,"XInput.lib")
 
+
+class Enemy;
 
 class PlayerArm {
 public:
@@ -22,6 +26,7 @@ public:
 	void Draw(ViewProjection& viewProjection);
 
 	void Motion();
+
 
 
 	void GetBlock();
@@ -72,15 +77,30 @@ public:
 
 	const bool& GetIsMovement() const { return movement_; }
 
+	int GetHp() { return playerHp_; }
+
+	void ReInitialize();
+
 	//アームスピードのゲッター,セッター
 	Vector3 GetSpeed() { return Armspeed_; }
 
 	void SetSpeed(Vector3 Speed);
 
+	void SetEnemy(Enemy* enemy) {
+		enemy_ = enemy;
+	}
+
+	//攻撃力ゲッター
+	int GetWeakPower() { return weakAttackPower_; }
+
+	int GetHeavyPower() { return heavyAttackPower_; }
+
 private:
 	Model* model_ = nullptr;
 
 	Model* modelFace_ = nullptr;
+
+	Model* modelPlayerArm_ = nullptr;
 
 	Model* modelPlayerCollision_ = nullptr;
 
@@ -93,6 +113,8 @@ private:
 	DebugText* debugText_ = nullptr;
 
 	Audio* audio_ = nullptr;
+
+	Enemy* enemy_ = nullptr;
 
 private:
 	WorldTransform worldTransform_;
@@ -154,6 +176,7 @@ private:
 
 	int getblockFrame_ = 60;
 
+
 	float motionspeedX = 0.0f;
 	float motionspeedY = 0.0f;
 
@@ -164,6 +187,8 @@ private:
 	void WeakAttack();
 	bool weakAttack_ = false;
 
+
+
 	int weakStartmotionFrame_ = 3;
 	int weakAttackingFrame_ = 10;
 	int weakEndmotionFrame_ = 6;
@@ -172,6 +197,8 @@ private:
 	void HeavyAttack();
 	bool heavyAttack_ = false;
 
+
+
 	int heavyStartmotionFrame_ = 12;
 	int heavyAttackingFrame_ = 10;
 	int heavyEndmotionFrame_ = 6;
@@ -179,11 +206,60 @@ private:
 	//スタン
 	void StunAttack();
 	bool stunAttack_ = false;
+	bool prevstunAttack_ = false;
 
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
+	int stuninterval_ = 0;
+	int intervalSec_ = 0;
 
+	void GetStunMotion();
+	bool getstun_ = false;
+	bool checkUpDown = false; //false:上　true:下
+	int stunSecond_ = 1;
+	int stunTime_ = stunSecond_ * 60;
+
+
+	///テキストから変更可能数値
 	//体力
-	int hp = 0;
+	int playerHp_ = 0;
+
+
+	//弱攻撃威力
+	int weakAttackPower_;
+	//強攻撃威力
+	int heavyAttackPower_;
+
+	//PAD
+	XINPUT_STATE joyState{};
+
+	bool GamePAD_UPARROW = false;
+	bool prevGamePAD_UPARROW = false;
+
+	bool GamePAD_DOWNARROW = false;
+	bool prevGamePAD_DOWNARROW = false;
+
+	bool GamePAD_RIGHTARROW = false;
+	bool prevGamePAD_RIGHTARROW = false;
+
+	bool GamePAD_LEFTARROW = false;
+	bool prevGamePAD_LEFTARROW = false;
+
+	bool GamePAD_A = false;
+	bool prevGamePAD_A = false;
+
+	bool GamePAD_B = false;
+	bool prevGamePAD_B = false;
+
+	bool GamePAD_X = false;
+	bool prevGamePAD_X = false;
+
+	bool GamePAD_Y = false;
+	bool prevGamePAD_Y = false;
+
+	bool GamePAD_RIGHT_SHOULDER = false;
+	bool prevGamePAD_RIGHT_SHOULDER = false;
+
+	void PADUpdate();
 };

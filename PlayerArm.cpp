@@ -5,11 +5,15 @@
 #include <fstream>
 #include <string>
 
+
+#include "Enemy.h"
 #include "Procession.h"
 #include <corecrt_math_defines.h>
 using namespace MathUtility;
 using namespace DirectX;
 using namespace std;
+
+
 
 PlayerArm::~PlayerArm()
 {
@@ -34,17 +38,43 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 	audio_ = Audio::GetInstance();
 
 	modelAttackRange_ = Model::Create();
-
-	modelPlayerCollision_ = Model::CreateFromOBJ("hand");
-	modelAttackCollision_ = Model::CreateFromOBJ("hand");
+	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
+	modelPlayerCollision_ = Model::CreateFromOBJ("C");
+	modelAttackCollision_ = Model::CreateFromOBJ("C");
 
 	//ファイル読み込み
 	ifstream playerfile("Text/Player.txt");
 	if (playerfile.is_open()) {
-		string stringhp;
+		string stringhp, stringweakPower, stringheavyPower, stringstunInterval;
 
 		getline(playerfile, stringhp);
-		hp = stoi(stringhp);
+		getline(playerfile, stringweakPower);
+		getline(playerfile, stringheavyPower);
+		getline(playerfile, stringstunInterval);
+
+		int pos1 = static_cast<int> (stringhp.find(":"));
+		int pos2 = static_cast<int> (stringweakPower.find(":"));
+		int pos3 = static_cast<int> (stringheavyPower.find(":"));
+		int pos4 = static_cast<int> (stringstunInterval.find(":"));
+
+		if (pos1 != string::npos) {
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
+		}
+		if (pos2 != string::npos) {
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
+		}
+		if (pos3 != string::npos) {
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
+		}
+		if (pos4 != string::npos) {
+			stringstunInterval = stringstunInterval.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
+		}
+
+
+		playerHp_ = stoi(stringhp);
+		weakAttackPower_ = stoi(stringweakPower);
+		heavyAttackPower_ = stoi(stringheavyPower);
+		intervalSec_ = stoi(stringstunInterval);
 
 		playerfile.close();
 	}
@@ -57,9 +87,9 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///腕
 	{
-		worldTransform_.scale_ = { 20.0f,2.5f,2.5f };
+		worldTransform_.scale_ = { 3.0f,4.0f,3.0f };
 		worldTransform_.rotation_ = { 0.0f,0.0f, XMConvertToRadians(radius_.z) };
-		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
+		worldTransform_.translation_ = { 33.0f,-5.0f,0.0f };
 
 		worldTransform_.Initialize();
 
@@ -71,7 +101,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 	///顔
 	{
-		worldTransformFace_.scale_ = { 4.0f,4.0f,4.0f };
+		worldTransformFace_.scale_ = { 3.0f,3.0f,3.0f };
 		worldTransformFace_.rotation_ = { 0.0f,0.0f,0.0f };
 		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
 
@@ -168,7 +198,7 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 
 		worldTransformAttackrange_.TransferMatrix();
 
-		//
+		//PADUpdate
 		for (int i = 0; i < 10; i++) {
 			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
 			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
@@ -183,36 +213,42 @@ void PlayerArm::Initialize(Model* model, Model* modelFace, uint32_t textureHandl
 		}
 	}
 
+
+
 }
 
 void PlayerArm::Update()
 {
+	///PAD
+	PADUpdate();
+
+
 	if (movement_ == true) {
 		///移動
-		if (input_->PushKey(DIK_W)) {
+		if (GamePAD_UPARROW) {
 			worldTransform_.translation_.y += Armspeed_.y;
 		}
-		if (input_->PushKey(DIK_S)) {
+		if (GamePAD_DOWNARROW) {
 			worldTransform_.translation_.y -= Armspeed_.y;
 		}
-		if (input_->PushKey(DIK_A)) {
+		if (GamePAD_LEFTARROW) {
 			worldTransform_.translation_.x -= Armspeed_.x;
 		}
-		if (input_->PushKey(DIK_D)) {
+		if (GamePAD_RIGHTARROW) {
 			worldTransform_.translation_.x += Armspeed_.x;
 		}
 	}
 
-	if (input_->TriggerKey(DIK_B)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+	if (GamePAD_A == true && prevGamePAD_A == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			block_ = true;
 			audio_->PlayWave(soundHandleBlock_, false, 3);
 			movement_ = false;
 		}
 	}
 
-	if (input_->TriggerKey(DIK_K)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+	if (GamePAD_B == true && prevGamePAD_B == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
 
@@ -232,8 +268,8 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (input_->TriggerKey(DIK_L)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+	if (GamePAD_X == true && prevGamePAD_X == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			motionspeedX = 0.5f;
 			motionspeedY = 1.0f;
 
@@ -252,8 +288,8 @@ void PlayerArm::Update()
 		}
 	}
 
-	if (input_->TriggerKey(DIK_N)) {
-		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false) {
+	if (GamePAD_Y == true && prevGamePAD_Y == false) {
+		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && stuninterval_ <= 0 && getstun_ == false) {
 			attackbufferX_ = 43.0f;
 			attackbufferY_ = -5.0f;
 
@@ -272,8 +308,9 @@ void PlayerArm::Update()
 		}
 	}
 
-	debugText_->SetPos(5, 100);
-	debugText_->Printf("hp=%d", hp);
+	debugText_->SetPos(900, 50);
+	debugText_->Printf("PlayerHP:%d", playerHp_);
+
 
 
 	///回す方向忘れないように
@@ -291,6 +328,16 @@ void PlayerArm::Update()
 	///モーションまとめ
 	Motion();
 
+	///1フレーム前のPADの状態を保存
+	prevGamePAD_UPARROW = GamePAD_UPARROW;
+	prevGamePAD_DOWNARROW = GamePAD_DOWNARROW;
+	prevGamePAD_RIGHTARROW = GamePAD_RIGHTARROW;
+	prevGamePAD_LEFTARROW = GamePAD_LEFTARROW;
+	prevGamePAD_A = GamePAD_A;
+	prevGamePAD_B = GamePAD_B;
+	prevGamePAD_X = GamePAD_X;
+	prevGamePAD_Y = GamePAD_Y;
+
 	//当たり判定テスト
 	if (testhit == true) {
 		testTime -= 1;
@@ -298,6 +345,10 @@ void PlayerArm::Update()
 			testhit = false;
 			testTime = 30;
 		}
+	}
+
+	if (stuninterval_ > 0) {
+		stuninterval_ -= 1;
 	}
 
 
@@ -346,29 +397,24 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 {
 	if (testhit == false) {
 		if (input_->PushKey(DIK_Q) == 0) {
-			model_->Draw(worldTransform_, viewProjection, textureHandle_);
+			model_->Draw(worldTransform_, viewProjection);
 		}
 	}
-
 	//テスト用
 	if (testhit == true) {
 		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
 	}
-
-	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
-
-	for (int i = 0; i < PlayerCollisionquantity; i++) {
-		modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
-	}
-
+	modelFace_->Draw(worldTransformFace_, viewProjection);
+	//for (int i = 0; i < PlayerCollisionquantity; i++) {
+	//	modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
+	//}
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
 			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
 		}
-
-		for (int i = 0; i < 10; i++) {
-			modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
-		}
+		//for (int i = 0; i < 10; i++) {
+		//		modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
+		//	}
 	}
 }
 
@@ -382,10 +428,8 @@ void PlayerArm::Motion()
 	WeakAttack();
 	HeavyAttack();
 	StunAttack();
+	GetStunMotion();
 }
-
-
-
 
 
 //ブロックを食らったら
@@ -403,6 +447,7 @@ void PlayerArm::GetBlock()
 		bufferpointY = 0.0f;
 		attackbufferX_ = 0.0f;
 		attackbufferY_ = 0.0f;
+
 		weakAttack_ = false;
 	}
 
@@ -423,9 +468,13 @@ void PlayerArm::GetBlock()
 	}
 
 	if (stunAttack_ == true) {
+		prevstunAttack_ = stunAttack_;
+
 		stunStartmotionFrame_ = 20;
 		stunAttackingFrame_ = 60;
 		stunEndmotionFrame_ = 12;
+
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
 
 		stunAttack_ = false;
 	}
@@ -449,20 +498,82 @@ void PlayerArm::GetBlock()
 void PlayerArm::GetWeak()
 {
 	testhit = true;
-	audio_->PlayWave(soundHandleHit_, false, 3);
+	playerHp_ = playerHp_ - enemy_->GetWeakPower();
 }
 
 //強攻撃に当たったら
 void PlayerArm::GetHeavy()
 {
 	testhit = true;
-	audio_->PlayWave(soundHandleHit_, false, 3);
+	playerHp_ = playerHp_ - enemy_->GetHeavyPower();
 }
 
 //スタン攻撃に当たったら
 void PlayerArm::GetStun()
 {
-	testhit = true;
+	//testhit = true;
+	if (weakAttack_ == true) {
+		weakStartmotionFrame_ = 3;
+		weakAttackingFrame_ = 10;
+		weakEndmotionFrame_ = 6;
+
+		motionspeedX = 0.0f;
+		motionspeedY = 0.0f;
+
+		bufferpointX = 0.0f;
+		bufferpointY = 0.0f;
+		attackbufferX_ = 0.0f;
+		attackbufferY_ = 0.0f;
+
+		weakAttack_ = false;
+	}
+
+	if (heavyAttack_ == true) {
+		heavyStartmotionFrame_ = 12;
+		heavyAttackingFrame_ = 10;
+		heavyEndmotionFrame_ = 6;
+
+		motionspeedX = 0.0f;
+		motionspeedY = 0.0f;
+
+		bufferpointX = 0.0f;
+		bufferpointY = 0.0f;
+		attackbufferX_ = 0.0f;
+		attackbufferY_ = 0.0f;
+
+		heavyAttack_ = false;
+	}
+
+	if (stunAttack_ == true) {
+
+		stunStartmotionFrame_ = 20;
+		stunAttackingFrame_ = 60;
+		stunEndmotionFrame_ = 12;
+
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+
+		stunAttack_ = false;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		worldTransformAttackCollision_[i].translation_ = { 1000.f,0.0f,0.0f };
+		worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+	}
+	attackrange_ = false;
+
+	if (worldTransform_.rotation_.z < -0.5f) {
+		checkUpDown = false;
+	}
+	if (worldTransform_.rotation_.z > -0.5f) {
+		checkUpDown = true;
+	}
+
+
+	if (movement_ == true) {
+		movement_ = false;
+	}
+
+	getstun_ = true;
 }
 
 /// <summary>
@@ -521,15 +632,16 @@ void PlayerArm::Block()
 		}
 	}
 }
-
 void PlayerArm::GetBlockMotion()
 {
 	if (getblock_) {
 		getblockFrame_ -= 1;
 		if (getblockFrame_ > 10) {
 			//移動
-			if ((worldTransform_.translation_.x - getblockbufferpoint_.x) < 20) {
-				worldTransform_.translation_.x += 4.0f;
+			if (prevstunAttack_ == false) {
+				if ((worldTransform_.translation_.x - getblockbufferpoint_.x) < 20) {
+					worldTransform_.translation_.x += 4.0f;
+				}
 			}
 
 			//回転
@@ -544,6 +656,10 @@ void PlayerArm::GetBlockMotion()
 			}
 		}
 		if (getblockFrame_ == 0) {
+			if (prevstunAttack_ == true) {
+				prevstunAttack_ = false;
+			}
+
 			getblockbufferpoint_ = { 0,0 };
 			getblockFrame_ = 60;
 			getblock_ = false;
@@ -905,9 +1021,243 @@ void PlayerArm::StunAttack()
 			stunStartmotionFrame_ = 20;
 			stunAttackingFrame_ = 60;
 			stunEndmotionFrame_ = 12;
+			stuninterval_ = intervalSec_ * 60;
 
 			stunAttack_ = false;
 			movement_ = true;
+		}
+	}
+}
+
+void PlayerArm::GetStunMotion()
+{
+	if (getstun_ == true) {
+		stunTime_ -= 1;
+		if (stunTime_ < 0) {
+			//下
+			if (checkUpDown == true) {
+				worldTransform_.rotation_.z -= 0.5f;
+				if (worldTransform_.rotation_.z < -0.5f) {
+					worldTransform_.rotation_.z = -0.5f;
+					if (movement_ == false) {
+						stunTime_ = stunSecond_ * 60;
+
+						movement_ = true;
+						getstun_ = false;
+					}
+				}
+			}
+
+			//上
+			if (checkUpDown == false) {
+				worldTransform_.rotation_.z += 0.5f;
+				if (worldTransform_.rotation_.z > -0.5f) {
+					worldTransform_.rotation_.z = -0.5f;
+					if (movement_ == false) {
+						stunTime_ = stunSecond_ * 60;
+
+						movement_ = true;
+						getstun_ = false;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+void PlayerArm::ReInitialize()
+{
+	///腕
+	{
+
+		worldTransform_.translation_ = { 25.0f,-5.0f,0.0f };
+
+	}
+
+	///顔
+	{
+
+		worldTransformFace_.translation_ = { 44.0f,27.0f,0.0f };
+
+	}
+
+	///腕当たり判定エリア
+	{
+		radian = radius_.z * M_PI / 180.0;
+		//0
+		worldTransformPlayerCollision_[0].translation_ = { worldTransform_.translation_.x,worldTransform_.translation_.y,worldTransform_.translation_.z };
+
+
+
+		//1
+		r[0] = 5.0f; //距離
+		worldTransformPlayerCollision_[1].translation_.x = worldTransform_.translation_.x + r[0] * cos(static_cast<float> (radian));
+		worldTransformPlayerCollision_[1].translation_.y = worldTransform_.translation_.y + r[0] * sin(static_cast<float> (radian));
+		worldTransformPlayerCollision_[1].translation_.z = 0.0f;
+
+
+		//2
+		r[1] = -5.0f;
+		worldTransformPlayerCollision_[2].translation_.x = worldTransform_.translation_.x + r[1] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[2].translation_.y = worldTransform_.translation_.y + r[1] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[2].translation_.z = 0.0f;
+
+		//3
+		r[2] = 10.0f;
+		worldTransformPlayerCollision_[3].translation_.x = worldTransform_.translation_.x + r[2] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[3].translation_.y = worldTransform_.translation_.y + r[2] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[3].translation_.z = 0.0f;
+
+		//4
+		r[3] = -10.0f;
+		worldTransformPlayerCollision_[4].translation_.x = worldTransform_.translation_.x + r[3] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[4].translation_.y = worldTransform_.translation_.y + r[3] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[4].translation_.z = 0.0f;
+
+		//5
+		r[4] = 15.0f;
+		worldTransformPlayerCollision_[5].translation_.x = worldTransform_.translation_.x + r[4] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[5].translation_.y = worldTransform_.translation_.y + r[4] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[5].translation_.z = 0.0f;
+
+		//6
+
+		r[5] = -15.0f;
+		worldTransformPlayerCollision_[6].translation_.x = worldTransform_.translation_.x + r[5] * cos(static_cast<float>(radian));
+		worldTransformPlayerCollision_[6].translation_.y = worldTransform_.translation_.y + r[5] * sin(static_cast<float>(radian));
+		worldTransformPlayerCollision_[6].translation_.z = 0.0f;
+
+
+
+	}
+
+
+	///攻撃当たり判定エリア
+	{
+		//
+		worldTransformAttackrange_.scale_ = { 0.0f,0.0f,0.0f };
+		worldTransformAttackrange_.translation_ = { 0.0f,0.0f,0.0f };
+
+		//
+		for (int i = 0; i < 10; i++) {
+			worldTransformAttackCollision_[i].scale_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].rotation_ = { 0.0f,0.0f,0.0f };
+			worldTransformAttackCollision_[i].translation_ = { 1000.0f,0.0f,0.0f };
+		}
+	}
+
+
+	//ファイル読み込み
+	ifstream playerfile("Text/Player.txt");
+	if (playerfile.is_open()) {
+		string stringhp, stringweakPower, stringheavyPower, stringstunInterval;
+
+		getline(playerfile, stringhp);
+		getline(playerfile, stringweakPower);
+		getline(playerfile, stringheavyPower);
+		getline(playerfile, stringstunInterval);
+
+		int pos1 = static_cast<int> (stringhp.find(":"));
+		int pos2 = static_cast<int> (stringweakPower.find(":"));
+		int pos3 = static_cast<int> (stringheavyPower.find(":"));
+		int pos4 = static_cast<int> (stringstunInterval.find(":"));
+
+		if (pos1 != string::npos) {
+			stringhp = stringhp.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos1) + 1);
+		}
+		if (pos2 != string::npos) {
+			stringweakPower = stringweakPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos2) + 1);
+		}
+		if (pos3 != string::npos) {
+			stringheavyPower = stringheavyPower.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos3) + 1);
+		}
+		if (pos4 != string::npos) {
+			stringstunInterval = stringstunInterval.substr(static_cast<std::basic_string<char, std::char_traits<char>, std::allocator<char>>::size_type>(pos4) + 1);
+		}
+
+
+		playerHp_ = stoi(stringhp);
+		weakAttackPower_ = stoi(stringweakPower);
+		heavyAttackPower_ = stoi(stringheavyPower);
+		intervalSec_ = stoi(stringstunInterval);
+
+		playerfile.close();
+	}
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+		GamePAD_DOWNARROW = true;
+	}
+	else {
+		GamePAD_DOWNARROW = false;
+	}
+}
+
+void PlayerArm::PADUpdate()
+{
+
+
+	///移動
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) {
+			GamePAD_UPARROW = true;
+		}
+		else {
+			GamePAD_UPARROW = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+			GamePAD_DOWNARROW = true;
+		}
+		else {
+			GamePAD_DOWNARROW = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
+			GamePAD_LEFTARROW = true;
+		}
+		else {
+			GamePAD_LEFTARROW = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
+			GamePAD_RIGHTARROW = true;
+		}
+		else {
+			GamePAD_RIGHTARROW = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
+			GamePAD_X = true;
+		}
+		else {
+			GamePAD_X = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+			GamePAD_B = true;
+		}
+		else {
+			GamePAD_B = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+			GamePAD_A = true;
+		}
+		else {
+			GamePAD_A = false;
+		}
+
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
+			GamePAD_Y = true;
+		}
+		else {
+			GamePAD_Y = false;
+		}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+			GamePAD_RIGHT_SHOULDER = true;
+		}
+		else {
+			GamePAD_RIGHT_SHOULDER = false;
 		}
 	}
 }

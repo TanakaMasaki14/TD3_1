@@ -9,6 +9,8 @@
 #include "Input.h"
 #include "Audio.h"
 
+class PlayerArm;
+
 
 class Enemy
 {
@@ -22,6 +24,8 @@ public:
 	void Draw(ViewProjection& viewProjection);
 
 	void Motion();
+
+	void MoveCalculation();
 
 	//当たり判定
 
@@ -69,6 +73,26 @@ public:
 
 	Vector3 GetScaleEnemyAttackCollision();
 
+	void SetPlayerArm(PlayerArm* playerArm) {
+		playerarm_ = playerArm;
+	}
+
+	int GetHp() { return enemyHp_; }
+
+	void ReInitialize();
+
+	//攻撃力ゲッター
+	int GetWeakPower() { return weakAttackPower_; }
+
+	int GetHeavyPower() { return heavyAttackPower_; }
+
+	/// <summary>
+	/// ベースタイマー再設定(引数は秒数(小数点可))
+	/// </summary>
+	void SetWaitBaseTimer(float waitBaseTime) {
+		waitbaseTime_ = waitBaseTime * 60;
+	}
+
 private:
 	Model* model_ = nullptr;
 
@@ -80,11 +104,15 @@ private:
 
 	Model* modelAttackCollision_ = nullptr;
 
+	Model* modelPlayerArm_ = nullptr;
+
 	Input* input_ = nullptr;
 
 	DebugText* debugText_ = nullptr;
 
 	Audio* audio_ = nullptr;
+
+	PlayerArm* playerarm_ = nullptr;
 private:
 	WorldTransform worldTransform_;
 
@@ -118,12 +146,24 @@ private:
 	int movementFase_ = 0; //0:待機中 1:行動決定　2:行動中 3:待機移行
 
 
-	int waitbaseTime_ = 120;
-	int waitrandomTime_ = 0;
+	//待機基礎時間
+	float waitbaseTime_ = 0;
+	float waitrandomTime_ = 0;
 
-	int waitTime_ = 0;
+	float waitTime_ = 1;
 
 	int attackPattern_ = 0; //1:ブロック 2:弱攻撃 3:強攻撃 4:スタン
+
+	//移動
+	Vector2 velocity_ = { 0.0f,0.0f }; //x:左右 y:上下
+
+	Vector2 amountMovementX_ = { 0.0f,0.0f }; //x:左 y:右
+
+	Vector2 amountMovementY_ = { 0.0f,0.0f }; //x:上 y:下
+
+	Vector2 movementscaleX_ = { 1.0f,1.0f }; //x:左 y:右
+
+	Vector2 movementscaleY_ = { 1.0f,1.0f }; //x:上 y:下
 
 
 	//攻撃範囲
@@ -146,6 +186,15 @@ private:
 	float bufferpointX = 0.0f;
 	float bufferpointY = 0.0f;
 
+	//ブロックされた
+	void GetBlockMotion();
+	bool getblock_ = false;
+
+	Vector2 getblockbufferpoint_;
+
+	int getblockFrame_ = 60;
+
+
 	//弱攻撃
 	void WeakAttack();
 	bool weakAttack_ = false;
@@ -165,13 +214,23 @@ private:
 	//スタン
 	void StunAttack();
 	bool stunAttack_ = false;
+	bool prevstunAttack_ = false;
 
 	int stunStartmotionFrame_ = 20;
 	int stunAttackingFrame_ = 60;
 	int stunEndmotionFrame_ = 12;
 
+	void GetStunMotion();
+	bool getstun_ = false;
+	bool checkUpDown = false; //false:下　true:上
+	int stunSecond_ = 1;
+	int stunTime_ = stunSecond_ * 60;
+
 
 	//体力
-	int hp = 0;
-
+	int enemyHp_ = 0;
+	//弱攻撃威力
+	int weakAttackPower_;
+	//強攻撃威力
+	int heavyAttackPower_;
 };
