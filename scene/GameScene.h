@@ -18,7 +18,7 @@
 /// </summary>
 class GameScene {
 
-  public: // メンバ関数
+public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
@@ -55,7 +55,7 @@ class GameScene {
 
 
 
-  private: // メンバ変数
+private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -67,7 +67,7 @@ class GameScene {
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	
+
 	ViewProjection viewProjection_;
 
 	Model* modelPlayerArm_ = nullptr;
@@ -88,4 +88,6 @@ class GameScene {
 	int PlayerAttackToEnemy = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
 
 	int EnemyAttackToPlayer = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
+
+	int invincibleSecond_ = 1;
 };

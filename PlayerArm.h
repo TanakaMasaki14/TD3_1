@@ -95,6 +95,12 @@ public:
 
 	int GetHeavyPower() { return heavyAttackPower_; }
 
+	int GetInvincibleTime_() { return invincibleTime_; }
+
+	void SetInvincibleTime_(int invincibleTime) {
+		invincibleTime_ = invincibleTime;
+	}
+
 private:
 	Model* model_ = nullptr;
 
@@ -223,6 +229,8 @@ private:
 	int weakAttackPower_;
 	//ã≠çUåÇà–óÕ
 	int heavyAttackPower_;
+
+	int invincibleTime_ = 0;
 
 	//PAD
 	XINPUT_STATE joyState{};

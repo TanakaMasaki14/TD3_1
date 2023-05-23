@@ -414,6 +414,8 @@ void Enemy::Update()
 
 	debugText_->SetPos(0, 10);
 	debugText_->Printf("Hp:%d", hp);
+	debugText_->SetPos(0, 20);
+	debugText_->Printf("inv:%d", invincibleTime_);
 
 	debugText_->SetPos(0, 120);
 	debugText_->Printf("rotationZ:%f", worldTransform_.rotation_.z);
@@ -433,6 +435,12 @@ void Enemy::Update()
 			testhit = false;
 			testTime = 30;
 		}
+	}
+
+
+
+	if (invincibleTime_ > 0) {
+		invincibleTime_ -= 1;
 	}
 
 
@@ -478,16 +486,18 @@ void Enemy::Update()
 
 void Enemy::Draw(ViewProjection& viewProjection)
 {
-	if (testhit == false) {
-		if (input_->PushKey(DIK_Q) == 0) {
-			model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	if (invincibleTime_ % 5 < 1) {
+		if (testhit == false) {
+			if (input_->PushKey(DIK_Q) == 0) {
+				model_->Draw(worldTransform_, viewProjection, textureHandle_);
+			}
 		}
 	}
 
-	//テスト用
-	if (testhit == true) {
-		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
-	}
+	////テスト用
+	//if (testhit == true) {
+	//	model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
+	//}
 
 	modelFace_->Draw(worldTransformFace_, viewProjection, textureHandle_);
 

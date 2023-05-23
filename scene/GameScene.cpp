@@ -232,8 +232,16 @@ void GameScene::CollisionPlayerAttackToEnemy()
 				(PlayerAttackPos[i].z - EnemyCollisionPos[k].z) * (PlayerAttackPos[i].z - EnemyCollisionPos[k].z)
 				<= (enemy_->GetScaleEnemyCollision().x + playerArm_->GetScalePlayerAttackCollision().x) * (enemy_->GetScaleEnemyCollision().x + playerArm_->GetScalePlayerAttackCollision().x)
 				) {
-				if (PlayerAttackToEnemy == 0) {
-					PlayerAttackToEnemy = 1;
+
+				if (enemy_->GetInvincibleTime_() > 0) {
+
+				}
+
+				if (enemy_->GetInvincibleTime_() == 0) {
+					if (PlayerAttackToEnemy == 0) {
+						enemy_->SetInvincibleTime_(invincibleSecond_ * 60);
+						PlayerAttackToEnemy = 1;
+					}
 				}
 
 			}
@@ -278,8 +286,16 @@ void GameScene::CollisionEnemyAttackToPlayer()
 				(EnemyAttackPos[i].z - PlayerCollisionPos[k].z) * (EnemyAttackPos[i].z - PlayerCollisionPos[k].z)
 				<= (playerArm_->GetScalePlayerCollision().x + enemy_->GetScaleEnemyAttackCollision().x) * (playerArm_->GetScalePlayerCollision().x + enemy_->GetScaleEnemyAttackCollision().x)
 				) {
-				if (EnemyAttackToPlayer == 0) {
-					EnemyAttackToPlayer = 1;
+
+				if (playerArm_->GetInvincibleTime_() > 0) {
+
+				}
+
+				if (playerArm_->GetInvincibleTime_() == 0) {
+					if (EnemyAttackToPlayer == 0) {
+						playerArm_->SetInvincibleTime_(invincibleSecond_ * 60);
+						EnemyAttackToPlayer = 1;
+					}
 				}
 			}
 		}
