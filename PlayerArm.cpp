@@ -350,7 +350,9 @@ void PlayerArm::Update()
 	if (stuninterval_ > 0) {
 		stuninterval_ -= 1;
 	}
-
+	if (invincibleTime_ > 0) {
+		invincibleTime_ -= 1;
+	}
 
 	///当たり判定エリア更新(rは-1したものが正しい)
 	//0
@@ -395,15 +397,17 @@ void PlayerArm::Update()
 
 void PlayerArm::Draw(ViewProjection& viewProjection)
 {
-	if (testhit == false) {
-		if (input_->PushKey(DIK_Q) == 0) {
-			model_->Draw(worldTransform_, viewProjection);
+	if (invincibleTime_ % 5 < 1) {
+		if (testhit == false) {
+			if (input_->PushKey(DIK_Q) == 0) {
+				model_->Draw(worldTransform_, viewProjection, textureHandle_);
+			}
 		}
 	}
 	//テスト用
-	if (testhit == true) {
-		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
-	}
+	//if (testhit == true) {
+	//	model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
+	//}
 	modelFace_->Draw(worldTransformFace_, viewProjection);
 	//for (int i = 0; i < PlayerCollisionquantity; i++) {
 	//	modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);

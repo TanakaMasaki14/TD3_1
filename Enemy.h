@@ -93,6 +93,11 @@ public:
 		waitbaseTime_ = waitBaseTime * 60;
 	}
 
+	int GetInvincibleTime_() { return invincibleTime_; }
+
+	void SetInvincibleTime_(int invincibleTime) {
+		invincibleTime_ = invincibleTime;
+	}
 private:
 	Model* model_ = nullptr;
 
@@ -233,4 +238,6 @@ private:
 	int weakAttackPower_;
 	//ã≠çUåÇà–óÕ
 	int heavyAttackPower_;
+	//
+	int invincibleTime_ = 0;
 };

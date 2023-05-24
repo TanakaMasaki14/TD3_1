@@ -327,6 +327,11 @@ void Enemy::Update()
 			testTime = 30;
 		}
 	}
+
+	if (invincibleTime_ > 0) {
+		invincibleTime_ -= 1;
+	}
+
 	///当たり判定エリア更新
 	//0
 	worldTransformEnemyCollision_[0].translation_ = worldTransform_.translation_;
@@ -362,15 +367,17 @@ void Enemy::Update()
 }
 void Enemy::Draw(ViewProjection& viewProjection)
 {
-	if (testhit == false) {
-		if (input_->PushKey(DIK_Q) == 0) {
-			model_->Draw(worldTransform_, viewProjection);
+	if (invincibleTime_ % 5 < 1) {
+		if (testhit == false) {
+			if (input_->PushKey(DIK_Q) == 0) {
+				model_->Draw(worldTransform_, viewProjection, textureHandle_);
+			}
 		}
 	}
 	//テスト用
-	if (testhit == true) {
-		model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
-	}
+	//if (testhit == true) {
+	//	model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
+	//}
 	modelFace_->Draw(worldTransformFace_, viewProjection);
 	//for (int i = 0; i < EnemyCollisionquantity; i++) {
 	//	modelEnemyCollision_->Draw(worldTransformEnemyCollision_[i], viewProjection);
@@ -562,6 +569,7 @@ void Enemy::ReInitialize()
 	{
 		worldTransformFace_.translation_ = { -44.0f,27.0f,0.0f };
 	}
+
 
 	///腕当たり判定エリア
 	{

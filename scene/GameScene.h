@@ -45,6 +45,7 @@ private: // メンバ変数
 	Model* modelEnemyFace_ = nullptr;
 
 	uint32_t textureHandleTitle_ = 0;
+	uint32_t textureHandleSetumei_ = 0;
 	uint32_t textureHandleStage1_ = 0;
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
@@ -61,6 +62,7 @@ private: // メンバ変数
 	uint32_t soundHandleClear_ = 0;
 
 	Sprite* titleSprite_ = new Sprite;
+	Sprite* setumeiSprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;
@@ -84,6 +86,7 @@ private: // メンバ変数
 	Vector3 SpeedBuffer = { 0,0,0 };
 	int PlayerAttackToEnemy = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
 	int EnemyAttackToPlayer = 0; //0:ヒット待機 1:ヒット 2:ヒット待機移行待ち
+	int invincibleSecond_ = 1;
 
 	XINPUT_STATE joyState{};
 
