@@ -438,6 +438,9 @@ void Enemy::Update()
 	}
 
 
+	if (input_->TriggerKey(DIK_E)) {
+		invincibleTime_ = 60;
+	}
 
 	if (invincibleTime_ > 0) {
 		invincibleTime_ -= 1;
@@ -487,11 +490,11 @@ void Enemy::Update()
 void Enemy::Draw(ViewProjection& viewProjection)
 {
 	if (invincibleTime_ % 5 < 1) {
-		if (testhit == false) {
-			if (input_->PushKey(DIK_Q) == 0) {
-				model_->Draw(worldTransform_, viewProjection, textureHandle_);
-			}
+
+		if (input_->PushKey(DIK_Q) == 0) {
+			model_->Draw(worldTransform_, viewProjection, textureHandle_);
 		}
+
 	}
 
 	////テスト用

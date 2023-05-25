@@ -218,6 +218,8 @@ void PlayerArm::Update()
 	PADUpdate();
 
 
+
+
 	if (movement_ == true) {
 		///移動
 		if (GamePAD_UPARROW) {
@@ -245,6 +247,7 @@ void PlayerArm::Update()
 		if (block_ == false && weakAttack_ == false && heavyAttack_ == false && stunAttack_ == false && getblock_ == false && getstun_ == false) {
 			motionspeedX = 2.0f;
 			motionspeedY = 4.0f;
+
 
 
 			attackbufferX_ = worldTransform_.translation_.x;
@@ -398,11 +401,11 @@ void PlayerArm::Update()
 void PlayerArm::Draw(ViewProjection& viewProjection)
 {
 	if (invincibleTime_ % 5 < 1) {
-		if (testhit == false) {
-			if (input_->PushKey(DIK_Q) == 0) {
-				model_->Draw(worldTransform_, viewProjection, textureHandle_);
-			}
+
+		if (input_->PushKey(DIK_Q) == 0) {
+			model_->Draw(worldTransform_, viewProjection, textureHandle_);
 		}
+
 	}
 
 	//テスト用
@@ -425,7 +428,10 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 			modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
 		}
 	}
+
 }
+
+
 
 /// <summary>
 /// モーションぶち込み場
