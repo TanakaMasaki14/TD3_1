@@ -398,11 +398,11 @@ void PlayerArm::Update()
 void PlayerArm::Draw(ViewProjection& viewProjection)
 {
 	if (invincibleTime_ % 5 < 1) {
-		if (testhit == false) {
+	
 			if (input_->PushKey(DIK_Q) == 0) {
-				model_->Draw(worldTransform_, viewProjection, textureHandle_);
+				model_->Draw(worldTransform_, viewProjection);
 			}
-		}
+		
 	}
 	//テスト用
 	//if (testhit == true) {
@@ -503,6 +503,7 @@ void PlayerArm::GetWeak()
 {
 	testhit = true;
 	playerHp_ = playerHp_ - enemy_->GetWeakPower();
+	audio_->PlayWave(soundHandleHit_, false, 3);
 }
 
 //強攻撃に当たったら
@@ -510,6 +511,7 @@ void PlayerArm::GetHeavy()
 {
 	testhit = true;
 	playerHp_ = playerHp_ - enemy_->GetHeavyPower();
+	audio_->PlayWave(soundHandleHit_, false, 3);
 }
 
 //スタン攻撃に当たったら

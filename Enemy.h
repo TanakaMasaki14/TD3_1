@@ -137,6 +137,8 @@ private:
 	bool testhit = false;
 	int testTime = 30;
 
+	uint32_t soundHandleHit_ = 0;
+
 	//‰ñ“]Šp
 	Vector3 radius_{ 0.0f,0.0f,30.0f };
 

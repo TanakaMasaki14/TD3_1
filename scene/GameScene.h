@@ -49,28 +49,23 @@ private: // メンバ変数
 	uint32_t textureHandleStage1_ = 0;
 	uint32_t textureHandleStage2_ = 0;
 	uint32_t textureHandleStage3_ = 0;
-	//uint32_t textureHandleNya_ = 0;
-	//uint32_t textureHandleBatin_ = 0;
-	//uint32_t textureHandleDon_ = 0;
+	/*uint32_t textureHandleStun_ = 0;*/
 	uint32_t textureHandleKo_ = 0;
 	uint32_t textureHandleClear_ = 0;
-
-	uint32_t soundHandleTitle_ = 0;
-	uint32_t soundHandleNext_ = 0;
-	uint32_t soundHandleLoop_ = 0;
-	uint32_t soundHandleKo_ = 0;
-	uint32_t soundHandleClear_ = 0;
 
 	Sprite* titleSprite_ = new Sprite;
 	Sprite* setumeiSprite_ = new Sprite;
 	Sprite* stage1Sprite_ = new Sprite;
 	Sprite* stage2Sprite_ = new Sprite;
 	Sprite* stage3Sprite_ = new Sprite;
-	//Sprite* nyaSprite_ = new Sprite;
-	//Sprite* batinSprite_ = new Sprite;
-	//Sprite* donSprite_ = new Sprite;
+	/*Sprite* stunSprite_ = new Sprite;*/
 	Sprite* koSprite_ = new Sprite;
 	Sprite* clearSprite_ = new Sprite;
+
+	uint32_t soundHandleTitle_ = 0;
+	uint32_t soundHandleNext_ = 0;
+	uint32_t soundHandleLoop_ = 0;
+	uint32_t soundHandleClear_ = 0;
 
 	int scene = 0;
 	int shakeFlag_ = 0;
@@ -92,7 +87,10 @@ private: // メンバ変数
 
 	bool GamePAD_B = false;
 	bool prevGamePAD_B = false;
+	bool GamePAD_Y = false;
+	bool prevGamePAD_Y = false;
 	bool GamePAD_RIGHT_SHOULDER = false;
 	bool prevGamePAD_RIGHT_SHOULDER = false;
+
 	void PADUpdate();
 };

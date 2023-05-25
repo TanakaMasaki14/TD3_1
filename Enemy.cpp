@@ -70,6 +70,9 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	waitrandomTime_ = static_cast<float> (rand() % 61);
 
 	waitTime_ = waitbaseTime_ + waitrandomTime_;
+
+	soundHandleHit_ = audio_->LoadWave("hit.mp3");
+
 	///腕
 	{
 		worldTransform_.scale_ = { 3.0f,4.0f,3.0f };
@@ -245,8 +248,7 @@ void Enemy::Update()
 			movementFase_ = 1;
 		}
 	}
-	debugText_->SetPos(0, 0);
-	debugText_->Printf("X:%f Y:%f", worldTransform_.translation_.x, worldTransform_.translation_.y);
+
 	//行動決定
 	if (movementFase_ == 1) {
 		///ブロック
@@ -367,12 +369,12 @@ void Enemy::Update()
 }
 void Enemy::Draw(ViewProjection& viewProjection)
 {
-	if (invincibleTime_ % 5 < 1) {
-		if (testhit == false) {
+	if (invincibleTime_ % 4 < 2) {
+	
 			if (input_->PushKey(DIK_Q) == 0) {
-				model_->Draw(worldTransform_, viewProjection, textureHandle_);
+				model_->Draw(worldTransform_, viewProjection);
 			}
-		}
+		
 	}
 	//テスト用
 	//if (testhit == true) {
@@ -498,11 +500,13 @@ void Enemy::GetWeak()
 {
 	testhit = true;
 	enemyHp_ = enemyHp_ - playerarm_->GetWeakPower();
+	audio_->PlayWave(soundHandleHit_, false, 3);
 }
 void Enemy::GetHeavy()
 {
 	testhit = true;
 	enemyHp_ = enemyHp_ - playerarm_->GetHeavyPower();
+	audio_->PlayWave(soundHandleHit_, false, 3);
 }
 void Enemy::GetStun()
 {

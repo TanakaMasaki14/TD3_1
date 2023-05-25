@@ -42,12 +42,8 @@ void GameScene::Initialize() {
 	textureHandleStage3_ = TextureManager::Load("stage3.png");
 	stage3Sprite_ = Sprite::Create(textureHandleStage3_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
-	//textureHandleNya_ = TextureManager::Load("nya.png");
-	//nyaSprite_ = Sprite::Create(textureHandleNya_, { 1100,100 });
-	//textureHandleBatin_ = TextureManager::Load("batin.png");
-	//batinSprite_ = Sprite::Create(textureHandleBatin_, { 400,400 });
-	//textureHandleDon_ = TextureManager::Load("don.png");
-	//donSprite_ = Sprite::Create(textureHandleDon_, { 800,400 });
+	/*stunSprite_ = Sprite::Create(textureHandleStun_, { 800, 80 });
+	textureHandleStun_ = TextureManager::Load("ikaku.png");*/
 	textureHandleKo_ = TextureManager::Load("ko.png");
 	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
 	textureHandleClear_ = TextureManager::Load("clear.png");
@@ -56,8 +52,6 @@ void GameScene::Initialize() {
 	soundHandleTitle_ = audio_->LoadWave("neownch.mp3");
 	soundHandleLoop_ = audio_->PlayWave(soundHandleTitle_, true, 1);
 	soundHandleNext_ = audio_->LoadWave("next.mp3");
-	soundHandleKo_ = audio_->LoadWave("ko.mp3");
-	//soundHandleClear_ = audio_->LoadWave("clear.mp3");
 }
 
 void GameScene::Finalize() {
@@ -65,13 +59,13 @@ void GameScene::Finalize() {
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
+	//delete stunSprite_;
 	delete koSprite_;
 	delete clearSprite_;
 }
 
 void GameScene::Update() {
 
-	///PAD
 	PADUpdate();
 	switch (scene)
 	{
@@ -102,15 +96,9 @@ void GameScene::Update() {
 
 		if (playerArm_->GetHp() <= 0) {
 			playerKoFlag_ = 1;
-			if (playerKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
 		}
 		if (enemy_->GetHp() <= 0) {
 			enemyKoFlag_ = 1;
-			if (enemyKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
 		}
 		if (playerKoFlag_ == 1) {
 			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
@@ -139,15 +127,9 @@ void GameScene::Update() {
 
 		if (playerArm_->GetHp() <= 0) {
 			playerKoFlag_ = 1;
-			if (playerKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
 		}
 		if (enemy_->GetHp() <= 0) {
 			enemyKoFlag_ = 1;
-			if (enemyKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
 		}
 		if (playerKoFlag_ == 1) {
 			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
@@ -176,15 +158,9 @@ void GameScene::Update() {
 
 		if (playerArm_->GetHp() <= 0) {
 			playerKoFlag_ = 1;
-			if (playerKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
 		}
 		if (enemy_->GetHp() <= 0) {
 			enemyKoFlag_ = 1;
-			if (enemyKoFlag_ == 1) {
-				audio_->PlayWave(soundHandleKo_, false, 3);
-			}
 		}
 		if (playerKoFlag_ == 1) {
 			if (GamePAD_RIGHT_SHOULDER == true && prevGamePAD_RIGHT_SHOULDER == false) {
@@ -215,6 +191,7 @@ void GameScene::Update() {
 	}
 	///1フレーム前のPADの状態を保存
 	prevGamePAD_B = GamePAD_B;
+	prevGamePAD_Y = GamePAD_Y;
 	prevGamePAD_RIGHT_SHOULDER = GamePAD_RIGHT_SHOULDER;
 }
 void GameScene::Draw() {
@@ -224,32 +201,44 @@ void GameScene::Draw() {
 	Sprite::PreDraw(commandList);
 	switch (scene)
 	{
-	case 0:// タイトル
+	PADUpdate();
+	case 0://タイトル
 		titleSprite_->Draw();
 		break;
 	case 1://操作説明
 		setumeiSprite_->Draw();
 		break;
-	case 2:// ステージ1
+	case 2://ステージ1
 		stage1Sprite_->Draw();
+		/*if (GamePAD_Y == true && prevGamePAD_Y == false) {
+			stunSprite_->Draw();
+		}*/
 		if (playerKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
+		
 		break;
 	case 3:// ステージ2
 		stage2Sprite_->Draw();
+		/*if (GamePAD_Y == true && prevGamePAD_Y == false) {
+			stunSprite_->Draw();
+		}*/
 		if (playerKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
 		if (enemyKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
+
 		break;
-	case 4:// ステージ3
+	case 4://ステージ3
 		stage3Sprite_->Draw();
+		/*if (GamePAD_Y == true && prevGamePAD_Y == false) {
+			stunSprite_->Draw();
+		}*/
 		if (playerKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
@@ -257,7 +246,7 @@ void GameScene::Draw() {
 			koSprite_->Draw();
 		}
 		break;
-	case 5:// クリア画面
+	case 5://クリア画面
 		clearSprite_->Draw();
 		break;
 	}
@@ -271,19 +260,23 @@ void GameScene::Draw() {
 
 	switch (scene)
 	{
-	case 0:// タイトル
+	case 0://タイトル
 		break;
-	case 1:// ステージ1
+	case 1://操作説明
+		break;
+	case 2://ステージ1
 		playerArm_->Draw(viewProjection_);
 		enemy_->Draw(viewProjection_);
 		break;
-	case 2:// ステージ2
+	case 3://ステージ2
 		playerArm_->Draw(viewProjection_);
 		enemy_->Draw(viewProjection_);
 		break;
-	case 3:// ステージ3
+	case 4://ステージ3
 		playerArm_->Draw(viewProjection_);
 		enemy_->Draw(viewProjection_);
+		break;
+	case 5://クリア画面
 		break;
 	}
 	Model::PostDraw();
@@ -297,6 +290,12 @@ void GameScene::PADUpdate()
 		}
 		else {
 			GamePAD_B = false;
+		}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
+			GamePAD_Y = true;
+		}
+		else {
+			GamePAD_Y = false;
 		}
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 			GamePAD_RIGHT_SHOULDER = true;
@@ -427,7 +426,7 @@ void GameScene::CollisionPlayerAttackToEnemy()
 				if (enemy_->GetInvincibleTime_() > 0) {
 
 				}
-				if (enemy_->GetInvincibleTime_() == 0) {
+				else if (enemy_->GetInvincibleTime_() <= 0) {
 					if (PlayerAttackToEnemy == 0) {
 						enemy_->SetInvincibleTime_(invincibleSecond_ * 60);
 						PlayerAttackToEnemy = 1;

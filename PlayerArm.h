@@ -136,7 +136,6 @@ private:
 	WorldTransform worldTransformAttackCollision_[10];
 
 	uint32_t textureHandle_ = 0;
-
 	uint32_t TesttextureHandle_ = 0;
 	bool testhit = false;
 	int testTime = 30;
