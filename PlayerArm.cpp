@@ -404,21 +404,11 @@ void PlayerArm::Draw(ViewProjection& viewProjection)
 			}
 		
 	}
-	//テスト用
-	//if (testhit == true) {
-	//	model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
-	//}
 	modelFace_->Draw(worldTransformFace_, viewProjection);
-	//for (int i = 0; i < PlayerCollisionquantity; i++) {
-	//	modelPlayerCollision_->Draw(worldTransformPlayerCollision_[i], viewProjection);
-	//}
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
 			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
 		}
-		//for (int i = 0; i < 10; i++) {
-		//		modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
-		//	}
 	}
 }
 
@@ -964,8 +954,6 @@ void PlayerArm::StunAttack()
 
 		//攻撃中
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
-
-			//37.0f, 20.0f, 0.0f x:7 y:7
 			if (stunAttackingFrame_ > 55) {
 				worldTransformFace_.translation_.x -= 1.4f;
 				worldTransformFace_.translation_.y -= 1.4f;
@@ -1498,36 +1486,6 @@ Vector3 PlayerArm::GetScalePlayerAttackCollision()
 
 	return PlayerAttackCollisiionScale;
 }
-
-//Vector3 PlayerArm::GetWorldTransformPlayerCollision()
-//{
-//	Vector3 PlayerCollisionWorldPos[PlayerCollisionquantity];
-//
-//	for (int i = 0; i < PlayerCollisionquantity; i++) {
-//		PlayerCollisionWorldPos[i].x = worldTransformPlayerCollision_[i].translation_.x;
-//		PlayerCollisionWorldPos[i].y = worldTransformPlayerCollision_[i].translation_.y;
-//		PlayerCollisionWorldPos[i].z = worldTransformPlayerCollision_[i].translation_.z;
-//	}
-//
-//	for (int i = 0; i < PlayerCollisionquantity; i++) {
-//		return PlayerCollisionWorldPos[i];
-//	}
-//}
-
-//Vector3 PlayerArm::GetWorldTransformPlayerAttackCollision()
-//{
-//	Vector3 PlayerAttackCollisionWorldPos[10];
-//
-//	for (int i = 0; i < 10; i++) {
-//		PlayerAttackCollisionWorldPos[i].x = worldTransformAttackCollision_[i].translation_.x;
-//		PlayerAttackCollisionWorldPos[i].y = worldTransformAttackCollision_[i].translation_.y;
-//		PlayerAttackCollisionWorldPos[i].z = worldTransformAttackCollision_[i].translation_.z;
-//	}
-//
-//	for (int i = 0; i < 10; i++) {
-//		return PlayerAttackCollisionWorldPos[i];
-//	}
-//}
 
 ///スピードのセッター
 void PlayerArm::SetSpeed(Vector3 Speed)

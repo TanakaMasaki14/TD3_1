@@ -42,8 +42,6 @@ void GameScene::Initialize() {
 	textureHandleStage3_ = TextureManager::Load("stage3.png");
 	stage3Sprite_ = Sprite::Create(textureHandleStage3_, { 0, 0 });
 	textureHandlePlayerArm_ = TextureManager::Load("blocktest.png");
-	/*stunSprite_ = Sprite::Create(textureHandleStun_, { 800, 80 });
-	textureHandleStun_ = TextureManager::Load("ikaku.png");*/
 	textureHandleKo_ = TextureManager::Load("ko.png");
 	koSprite_ = Sprite::Create(textureHandleKo_, { 0, 0 });
 	textureHandleClear_ = TextureManager::Load("clear.png");
@@ -59,7 +57,6 @@ void GameScene::Finalize() {
 	delete stage1Sprite_;
 	delete stage2Sprite_;
 	delete stage3Sprite_;
-	//delete stunSprite_;
 	delete koSprite_;
 	delete clearSprite_;
 }
@@ -210,9 +207,6 @@ void GameScene::Draw() {
 		break;
 	case 2://ステージ1
 		stage1Sprite_->Draw();
-		/*if (GamePAD_Y == true && prevGamePAD_Y == false) {
-			stunSprite_->Draw();
-		}*/
 		if (playerKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
@@ -223,9 +217,6 @@ void GameScene::Draw() {
 		break;
 	case 3:// ステージ2
 		stage2Sprite_->Draw();
-		/*if (GamePAD_Y == true && prevGamePAD_Y == false) {
-			stunSprite_->Draw();
-		}*/
 		if (playerKoFlag_ == 1) {
 			koSprite_->Draw();
 		}
@@ -236,9 +227,6 @@ void GameScene::Draw() {
 		break;
 	case 4://ステージ3
 		stage3Sprite_->Draw();
-		/*if (GamePAD_Y == true && prevGamePAD_Y == false) {
-			stunSprite_->Draw();
-		}*/
 		if (playerKoFlag_ == 1) {
 			koSprite_->Draw();
 		}

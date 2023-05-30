@@ -32,7 +32,7 @@ void Enemy::Initialize(Model* model, Model* modelFace, uint32_t textureHandle)
 	modelPlayerArm_ = Model::CreateFromOBJ("cathand");
 	modelEnemyCollision_ = Model::CreateFromOBJ("C");
 	modelAttackCollision_ = Model::CreateFromOBJ("C");
-	//
+
 	//ファイル読み込み
 	ifstream enemyfile("Text/Enemy.txt");
 	if (enemyfile.is_open()) {
@@ -315,8 +315,6 @@ void Enemy::Update()
 		MoveCalculation();
 		movementFase_ = 0;
 	}
-	//debugText_->SetPos(0, 120);
-	//debugText_->Printf("rotationZ:%f", worldTransform_.rotation_.z);
 	debugText_->SetPos(220, 50);
 	debugText_->Printf("EnemyHP:%d", enemyHp_);
 	///モーションまとめ
@@ -376,21 +374,12 @@ void Enemy::Draw(ViewProjection& viewProjection)
 			}
 		
 	}
-	//テスト用
-	//if (testhit == true) {
-	//	model_->Draw(worldTransform_, viewProjection, TesttextureHandle_);
-	//}
+
 	modelFace_->Draw(worldTransformFace_, viewProjection);
-	//for (int i = 0; i < EnemyCollisionquantity; i++) {
-	//	modelEnemyCollision_->Draw(worldTransformEnemyCollision_[i], viewProjection);
-	//}
 	if (attackrange_ == true) {
 		if (input_->PushKey(DIK_Q) == 0) {
 			modelAttackRange_->Draw(worldTransformAttackrange_, viewProjection, textureHandle_);
 		}
-		//for (int i = 0; i < 10; i++) {
-		//	modelAttackCollision_->Draw(worldTransformAttackCollision_[i], viewProjection);
-		//}
 	}
 }
 void Enemy::Motion()
@@ -510,7 +499,6 @@ void Enemy::GetHeavy()
 }
 void Enemy::GetStun()
 {
-	//testhit = true;
 	if (weakAttack_ == true) {
 		weakStartmotionFrame_ = 3;
 		weakAttackingFrame_ = 10;
@@ -982,7 +970,6 @@ void Enemy::StunAttack()
 		}
 		//攻撃中
 		if (stunStartmotionFrame_ < 0 && stunAttackingFrame_ > 0) {
-			//37.0f, 20.0f, 0.0f x:7 y:7
 			if (stunAttackingFrame_ > 55) {
 				worldTransformFace_.translation_.x += 1.4f;
 				worldTransformFace_.translation_.y -= 1.4f;
@@ -1120,11 +1107,6 @@ Vector3 Enemy::GetWorldTransformEnemyCollision6()
 	EnemyCollisionWorldPos.z = worldTransformEnemyCollision_[6].translation_.z;
 	return EnemyCollisionWorldPos;
 }
-///
-/// ////////////////////////////////////////////////////////////////////////////////////
-///
-/// <summary>
-/// カス
 /// </summary>
 /// <returns></returns>
 Vector3 Enemy::GetWorldTransformEnemyAttackCollision0()
@@ -1223,17 +1205,3 @@ Vector3 Enemy::GetScaleEnemyAttackCollision()
 	EnemyAttackCollisionScale.z = worldTransformEnemyCollision_[0].scale_.z;
 	return EnemyAttackCollisionScale;
 }
-//Vector3 Enemy::GetWorldTransformEnemyAttackCollision()
-//{
-//	Vector3 EnemyAttackCollisionWorldPos[10];
-//
-//	for (int i = 0; i < 10; i++) {
-//		EnemyAttackCollisionWorldPos[i].x = worldTransformAttackCollision_[i].translation_.x;
-//		EnemyAttackCollisionWorldPos[i].y = worldTransformAttackCollision_[i].translation_.y;
-//		EnemyAttackCollisionWorldPos[i].z = worldTransformAttackCollision_[i].translation_.z;
-//	}
-//
-//	for (int i = 0; i < 10; i++) {
-//		return EnemyAttackCollisionWorldPos[i];
-//	}
-//}
